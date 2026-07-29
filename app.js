@@ -18,24 +18,183 @@ const baseCommittees = [
 { id:17,type:'CPS',name:'Comité de Participación Social Nuevo Hermosillo',municipality:'Hermosillo',colony:'Nuevo Hermosillo',program:'',members:7,date:'2026-05-10',lat:29.008,lng:-110.934,status:'Activo'},
 { id:18,type:'CPS',name:'Comité de Participación Social Los Olivos',municipality:'Hermosillo',colony:'Los Olivos',program:'',members:8,date:'2026-05-23',lat:29.024,lng:-110.979,status:'Activo'}
 ];
-let committees = JSON.parse(localStorage.getItem('cp_committees')||'null') || baseCommittees;
-let map, markers=[], typeChart, territoryChart, viewMode='cards';
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-function save(){localStorage.setItem('cp_committees',JSON.stringify(committees));}
-function kpis(){const ccs=committees.filter(x=>x.type==='CCS'),cps=committees.filter(x=>x.type==='CPS');const members=committees.reduce((a,b)=>a+Number(b.members||0),0);const muni=new Set(ccs.map(x=>x.municipality)).size;const colonies=new Set(cps.map(x=>x.colony).filter(Boolean)).size;const vals={committees:committees.length,ccs:ccs.length,cps:cps.length,members,municipalities:muni,colonies};Object.entries(vals).forEach(([k,v])=>$$(`[data-kpi="${k}"]`).forEach(e=>e.textContent=v));$$('[data-hero-kpi="committees"]').forEach(e=>e.textContent=committees.length);}
-function options(){const munis=[...new Set(committees.map(x=>x.municipality))].sort(),cols=[...new Set(committees.map(x=>x.colony).filter(Boolean))].sort();['municipalityFilter','directoryMunicipality'].forEach(id=>{$('#'+id).innerHTML='<option value="">Todos los municipios</option>'+munis.map(x=>`<option>${x}</option>`).join('')});['colonyFilter','directoryColony'].forEach(id=>{$('#'+id).innerHTML='<option value="">Todas las colonias</option>'+cols.map(x=>`<option>${x}</option>`).join('')});}
-function initMap(){map=L.map('committeeMap',{scrollWheelZoom:false}).setView([29.3,-110.7],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);renderMap();}
-function filteredMap(){const q=$('#mapSearch').value.toLowerCase(),m=$('#municipalityFilter').value,c=$('#colonyFilter').value,types=$$('.type-check:checked').map(x=>x.value);return committees.filter(x=>types.includes(x.type)&&(!m||x.municipality===m)&&(!c||x.colony===c)&&(!q||[x.name,x.municipality,x.colony,x.program].join(' ').toLowerCase().includes(q)));}
-function renderMap(){markers.forEach(m=>map.removeLayer(m));markers=[];const data=filteredMap();data.forEach(x=>{const color=x.type==='CCS'?'#a72861':'#6e3f72';const icon=L.divIcon({className:'committee-map-marker',html:`<span style="display:block;width:18px;height:18px;background:${color};border:3px solid white;border-radius:50%;box-shadow:0 3px 12px #0005"></span>`,iconSize:[18,18],iconAnchor:[9,9]});const location=x.type==='CCS'?x.municipality:x.colony+', Hermosillo';const popup=`<strong>${x.name}</strong><span class="map-popup-location">${location}</span><button type="button" onclick="showDetail(${x.id})">Ver ficha</button>`;const m=L.marker([x.lat,x.lng],{icon}).addTo(map).bindPopup(popup,{className:'committee-map-popup',maxWidth:300,autoPanPadding:[24,24]});markers.push(m)});$('#visibleCount').textContent=`${data.length} comités visibles`;}
-function filteredDirectory(){const q=$('#directorySearch').value.toLowerCase(),t=$('#directoryType').value,m=$('#directoryMunicipality').value,c=$('#directoryColony').value;return committees.filter(x=>(!t||x.type===t)&&(!m||x.municipality===m)&&(!c||x.colony===c)&&(!q||[x.name,x.municipality,x.colony,x.program].join(' ').toLowerCase().includes(q)));}
-function renderDirectory(){const data=filteredDirectory(),wrap=$('#committeeDirectory');wrap.className='directory-grid'+(viewMode==='table'?' table-view':'');$('#resultsText').textContent=`${data.length} comités encontrados`;wrap.innerHTML=data.map(x=>`<article class="committee-card"><div class="committee-top"><span class="type-badge ${x.type==='CPS'?'cps':''}">${x.type==='CCS'?'Contraloría Social':'Participación Social'}</span></div><h3>${x.name}</h3><div class="committee-meta"><span><i class="fa-solid fa-location-dot"></i> ${x.type==='CCS'?x.municipality:x.colony+', Hermosillo'}</span><span><i class="fa-solid fa-users"></i> ${x.members} integrantes</span><span><i class="fa-solid fa-calendar"></i> ${formatDate(x.date)}</span></div><button class="btn btn-ghost" onclick="showDetail(${x.id})">Consultar ficha</button></article>`).join('');}
-function formatDate(d){return new Date(d+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});}
-window.showDetail=id=>{const x=committees.find(y=>y.id===id);if(!x)return;if(map)map.closePopup();$('#detailContent').innerHTML=`<div class="detail-hero"><span class="type-badge ${x.type==='CPS'?'cps':''}">${x.type==='CCS'?'Comité de Contraloría Social':'Comité de Participación Social'}</span><h2>${x.name}</h2><p>${x.type==='CCS'?'Mecanismo ciudadano de vigilancia y seguimiento de programas sociales.':'Mecanismo de organización comunitaria y colaboración vecinal.'}</p></div><div class="detail-grid"><div><span>Municipio</span><strong>${x.municipality}</strong></div>${x.type==='CPS'?`<div><span>Colonia</span><strong>${x.colony}</strong></div>`:`<div><span>Programa</span><strong>${x.program}</strong></div>`}<div><span>Integrantes</span><strong>${x.members}</strong></div><div><span>Fecha de integración</span><strong>${formatDate(x.date)}</strong></div><div><span>Estatus</span><strong>${x.status}</strong></div><div><span>Ubicación</span><strong>${x.lat.toFixed(4)}, ${x.lng.toFixed(4)}</strong></div></div>`;openModal('#detailModal');};
-function charts(){if(typeChart)typeChart.destroy();if(territoryChart)territoryChart.destroy();const ccs=committees.filter(x=>x.type==='CCS').length,cps=committees.filter(x=>x.type==='CPS').length;typeChart=new Chart($('#typeChart'),{type:'bar',data:{labels:['Contraloría Social','Participación Social'],datasets:[{data:[ccs,cps],backgroundColor:['#a72861','#6e3f72'],borderRadius:12,borderSkipped:false}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#eee4e8'}},x:{grid:{display:false}}}}});const state=new Set(committees.filter(x=>x.type==='CCS').map(x=>x.municipality)).size,colonies=new Set(committees.filter(x=>x.type==='CPS').map(x=>x.colony)).size;territoryChart=new Chart($('#territoryChart'),{type:'doughnut',data:{labels:['Municipios con CCS','Colonias con CPS'],datasets:[{data:[state,colonies],backgroundColor:['#a72861','#6e3f72'],borderWidth:0}]},options:{cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:18}}}}});}
-function admin(){kpis();$('#adminRows').innerHTML=committees.map(x=>`<tr><td>${x.name}</td><td>${x.type}</td><td>${x.type==='CCS'?x.municipality:x.colony}</td><td><button class="action-btn" onclick="editCommittee(${x.id})"><i class="fa-solid fa-pen"></i></button><button class="action-btn" onclick="deleteCommittee(${x.id})"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');}
-window.editCommittee=id=>{const x=committees.find(y=>y.id===id);$('#formTitle').textContent='Editar comité';$('#committeeId').value=x.id;$('#committeeType').value=x.type;$('#committeeName').value=x.name;$('#committeeMunicipality').value=x.municipality;$('#committeeColony').value=x.colony;$('#committeeProgram').value=x.program;$('#committeeMembers').value=x.members;$('#committeeDate').value=x.date;$('#committeeLat').value=x.lat;$('#committeeLng').value=x.lng;toggleFormFields();openModal('#formModal');};
-window.deleteCommittee=id=>{if(confirm('¿Eliminar este comité?')){committees=committees.filter(x=>x.id!==id);save();refresh();}};
-function toggleFormFields(){const cps=$('#committeeType').value==='CPS';$('#colonyField').style.display=cps?'block':'none';$('#programField').style.display=cps?'none':'block';$('#committeeMunicipality').value=cps?'Hermosillo':$('#committeeMunicipality').value;}
-function openModal(sel){$(sel).classList.add('open');$(sel).setAttribute('aria-hidden','false');document.body.style.overflow='hidden';}function closeModal(sel){$(sel).classList.remove('open');$(sel).setAttribute('aria-hidden','true');document.body.style.overflow='';}
-function refresh(){kpis();options();renderMap();renderDirectory();charts();admin();}
-document.addEventListener('DOMContentLoaded',()=>{initMap();kpis();options();renderDirectory();charts();admin();$$('.reveal').forEach(el=>new IntersectionObserver(([e],o)=>{if(e.isIntersecting){el.classList.add('visible');o.disconnect()}},{threshold:.12}).observe(el));$('.menu-toggle').onclick=()=>{$('.main-nav').classList.toggle('open')};['mapSearch','municipalityFilter','colonyFilter'].forEach(id=>$('#'+id).addEventListener('input',renderMap));$$('.type-check').forEach(x=>x.addEventListener('change',renderMap));$('#resetMap').onclick=()=>{map.setView([29.3,-110.7],6);$('#mapSearch').value='';$('#municipalityFilter').value='';$('#colonyFilter').value='';$$('.type-check').forEach(x=>x.checked=true);renderMap()};['directorySearch','directoryType','directoryMunicipality','directoryColony'].forEach(id=>$('#'+id).addEventListener('input',renderDirectory));$('#clearFilters').onclick=()=>{['directorySearch','directoryType','directoryMunicipality','directoryColony'].forEach(id=>$('#'+id).value='');renderDirectory()};$$('[data-view]').forEach(b=>b.onclick=()=>{$$('[data-view]').forEach(x=>x.classList.remove('active'));b.classList.add('active');viewMode=b.dataset.view;renderDirectory()});$$('[data-type-jump]').forEach(b=>b.onclick=()=>{$('#directoryType').value=b.dataset.typeJump;renderDirectory();location.hash='directorio'});$$('[data-open-admin]').forEach(b=>b.onclick=()=>openModal('#adminDrawer'));$$('[data-close-admin]').forEach(b=>b.onclick=()=>closeModal('#adminDrawer'));$$('[data-close-modal]').forEach(b=>b.onclick=()=>closeModal('#detailModal'));$$('[data-close-form]').forEach(b=>b.onclick=()=>closeModal('#formModal'));$('#newCommittee').onclick=()=>{$('#committeeForm').reset();$('#committeeId').value='';$('#formTitle').textContent='Nuevo comité';toggleFormFields();openModal('#formModal')};$('#committeeType').onchange=toggleFormFields;$('#committeeForm').onsubmit=e=>{e.preventDefault();const id=Number($('#committeeId').value)||Date.now();const obj={id,type:$('#committeeType').value,name:$('#committeeName').value,municipality:$('#committeeMunicipality').value,colony:$('#committeeColony').value,program:$('#committeeProgram').value,members:Number($('#committeeMembers').value),date:$('#committeeDate').value,lat:Number($('#committeeLat').value),lng:Number($('#committeeLng').value),status:'Activo'};const i=committees.findIndex(x=>x.id===id);if(i>=0)committees[i]=obj;else committees.push(obj);save();closeModal('#formModal');refresh()};$('#contactForm').onsubmit=e=>{e.preventDefault();alert('Solicitud registrada de forma demostrativa.');e.target.reset()};});
+
+let committees;
+try {
+  committees = JSON.parse(localStorage.getItem('cp_committees')) || structuredClone(baseCommittees);
+} catch {
+  committees = structuredClone(baseCommittees);
+}
+
+let map;
+let markers=[];
+let typeChart;
+let territoryChart;
+let viewMode='cards';
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+
+function save(){ localStorage.setItem('cp_committees',JSON.stringify(committees)); }
+function formatDate(d){ return new Date(`${d}T12:00:00`).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'}); }
+function openLayer(sel){ const el=$(sel); if(!el) return; el.classList.add('open'); el.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+function closeLayer(sel){ const el=$(sel); if(!el) return; el.classList.remove('open'); el.setAttribute('aria-hidden','true'); if(!$('.modal.open')&&!$('.admin-drawer.open')) document.body.style.overflow=''; }
+
+function kpis(){
+  const ccs=committees.filter(x=>x.type==='CCS');
+  const cps=committees.filter(x=>x.type==='CPS');
+  const vals={
+    committees:committees.length,
+    ccs:ccs.length,
+    cps:cps.length,
+    members:committees.reduce((a,b)=>a+Number(b.members||0),0),
+    municipalities:new Set(ccs.map(x=>x.municipality)).size,
+    colonies:new Set(cps.map(x=>x.colony).filter(Boolean)).size
+  };
+  Object.entries(vals).forEach(([k,v])=>$$(`[data-kpi="${k}"]`).forEach(e=>e.textContent=v));
+  $$('[data-hero-kpi="committees"]').forEach(e=>e.textContent=committees.length);
+}
+
+function options(){
+  const munis=[...new Set(committees.map(x=>x.municipality).filter(Boolean))].sort();
+  const cols=[...new Set(committees.map(x=>x.colony).filter(Boolean))].sort();
+  ['municipalityFilter','directoryMunicipality'].forEach(id=>{ const e=$('#'+id); if(e)e.innerHTML='<option value="">Todos los municipios</option>'+munis.map(x=>`<option>${x}</option>`).join(''); });
+  ['colonyFilter','directoryColony'].forEach(id=>{ const e=$('#'+id); if(e)e.innerHTML='<option value="">Todas las colonias</option>'+cols.map(x=>`<option>${x}</option>`).join(''); });
+}
+
+function initMap(){
+  map=L.map('committeeMap',{scrollWheelZoom:true,zoomControl:true,wheelPxPerZoomLevel:60}).setView([29.3,-110.7],6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors',maxZoom:19}).addTo(map);
+  renderMap();
+  setTimeout(()=>map.invalidateSize(),150);
+}
+
+function filteredMap(){
+  const q=($('#mapSearch')?.value||'').toLowerCase();
+  const m=$('#municipalityFilter')?.value||'';
+  const c=$('#colonyFilter')?.value||'';
+  const types=$$('.type-check:checked').map(x=>x.value);
+  return committees.filter(x=>types.includes(x.type)&&(!m||x.municipality===m)&&(!c||x.colony===c)&&(!q||[x.name,x.municipality,x.colony,x.program].join(' ').toLowerCase().includes(q)));
+}
+
+function renderMap(){
+  if(!map) return;
+  markers.forEach(m=>m.remove());
+  markers=[];
+  const data=filteredMap();
+  data.forEach(x=>{
+    const color=x.type==='CCS'?'#a72861':'#6e3f72';
+    const icon=L.divIcon({
+      className:'committee-map-marker',
+      html:`<span class="marker-dot" style="--marker-color:${color}"></span>`,
+      iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-12]
+    });
+    const location=x.type==='CCS'?x.municipality:`${x.colony}, Hermosillo`;
+    const popup=L.popup({className:'committee-map-popup',maxWidth:310,autoPan:true,autoPanPadding:[40,40]})
+      .setContent(`<div class="map-popup-card"><strong>${x.name}</strong><span class="map-popup-location">${location}</span><button type="button" data-popup-id="${x.id}">Ver ficha</button></div>`);
+    const marker=L.marker([x.lat,x.lng],{icon,keyboard:true,title:x.name}).addTo(map).bindPopup(popup);
+    marker.on('click',()=>marker.openPopup());
+    marker.on('popupopen',e=>{
+      const popupEl=e.popup.getElement();
+      const btn=popupEl?.querySelector('[data-popup-id]');
+      if(btn){
+        btn.addEventListener('click',event=>{
+          event.preventDefault();
+          event.stopPropagation();
+          showDetail(btn.dataset.popupId);
+        },{once:true});
+      }
+    });
+    markers.push(marker);
+  });
+  if($('#visibleCount')) $('#visibleCount').textContent=`${data.length} comités visibles`;
+}
+
+function filteredDirectory(){
+  const q=($('#directorySearch')?.value||'').toLowerCase();
+  const t=$('#directoryType')?.value||'';
+  const m=$('#directoryMunicipality')?.value||'';
+  const c=$('#directoryColony')?.value||'';
+  return committees.filter(x=>(!t||x.type===t)&&(!m||x.municipality===m)&&(!c||x.colony===c)&&(!q||[x.name,x.municipality,x.colony,x.program].join(' ').toLowerCase().includes(q)));
+}
+
+function renderDirectory(){
+  const data=filteredDirectory();
+  const wrap=$('#committeeDirectory');
+  if(!wrap)return;
+  wrap.className='directory-grid'+(viewMode==='table'?' table-view':'');
+  $('#resultsText').textContent=`${data.length} comités encontrados`;
+  wrap.innerHTML=data.map(x=>`<article class="committee-card"><div class="committee-top"><span class="type-badge ${x.type==='CPS'?'cps':''}">${x.type==='CCS'?'Contraloría Social':'Participación Social'}</span></div><h3>${x.name}</h3><div class="committee-meta"><span><i class="fa-solid fa-location-dot"></i> ${x.type==='CCS'?x.municipality:`${x.colony}, Hermosillo`}</span><span><i class="fa-solid fa-users"></i> ${x.members} integrantes</span><span><i class="fa-solid fa-calendar"></i> ${formatDate(x.date)}</span></div><button class="btn btn-ghost" data-detail-id="${x.id}">Consultar ficha</button></article>`).join('');
+  wrap.querySelectorAll('[data-detail-id]').forEach(b=>b.onclick=event=>{ event.preventDefault(); showDetail(b.dataset.detailId); });
+}
+
+window.showDetail=function(id){
+  const x=committees.find(y=>String(y.id)===String(id));
+  if(!x){ console.warn('No se encontró el comité solicitado:',id); return; }
+  map?.closePopup();
+  $('#detailContent').innerHTML=`<div class="detail-hero"><span class="type-badge ${x.type==='CPS'?'cps':''}">${x.type==='CCS'?'Comité de Contraloría Social':'Comité de Participación Social'}</span><h2>${x.name}</h2><p>${x.type==='CCS'?'Mecanismo ciudadano de vigilancia y seguimiento de programas sociales.':'Mecanismo de organización comunitaria y colaboración vecinal.'}</p></div><div class="detail-grid"><div><span>Municipio</span><strong>${x.municipality}</strong></div>${x.type==='CPS'?`<div><span>Colonia</span><strong>${x.colony}</strong></div>`:`<div><span>Programa</span><strong>${x.program}</strong></div>`}<div><span>Integrantes</span><strong>${x.members}</strong></div><div><span>Fecha de integración</span><strong>${formatDate(x.date)}</strong></div><div><span>Estatus</span><strong>${x.status}</strong></div><div><span>Ubicación</span><strong>${Number(x.lat).toFixed(4)}, ${Number(x.lng).toFixed(4)}</strong></div></div>`;
+  openLayer('#detailModal');
+};
+
+function charts(){
+  if(typeChart)typeChart.destroy(); if(territoryChart)territoryChart.destroy();
+  const ccs=committees.filter(x=>x.type==='CCS').length,cps=committees.filter(x=>x.type==='CPS').length;
+  typeChart=new Chart($('#typeChart'),{type:'bar',data:{labels:['Contraloría Social','Participación Social'],datasets:[{data:[ccs,cps],backgroundColor:['#a72861','#6e3f72'],borderRadius:12,borderSkipped:false}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#eee4e8'}},x:{grid:{display:false}}}}});
+  const state=new Set(committees.filter(x=>x.type==='CCS').map(x=>x.municipality)).size;
+  const colonies=new Set(committees.filter(x=>x.type==='CPS').map(x=>x.colony)).size;
+  territoryChart=new Chart($('#territoryChart'),{type:'doughnut',data:{labels:['Municipios con CCS','Colonias con CPS'],datasets:[{data:[state,colonies],backgroundColor:['#a72861','#6e3f72'],borderWidth:0}]},options:{cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:18}}}}});
+}
+
+function admin(){
+  kpis();
+  const rows=$('#adminRows'); if(!rows)return;
+  rows.innerHTML=committees.map(x=>`<tr><td>${x.name}</td><td>${x.type}</td><td>${x.type==='CCS'?x.municipality:x.colony}</td><td><button class="action-btn" data-edit-id="${x.id}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button><button class="action-btn danger" data-delete-id="${x.id}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+  rows.querySelectorAll('[data-edit-id]').forEach(b=>b.onclick=()=>editCommittee(Number(b.dataset.editId)));
+  rows.querySelectorAll('[data-delete-id]').forEach(b=>b.onclick=()=>deleteCommittee(Number(b.dataset.deleteId)));
+}
+
+function setAdminTab(tab){
+  $$('.admin-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));
+  $$('.admin-panel').forEach(p=>p.hidden=p.dataset.adminPanel!==tab);
+}
+
+window.editCommittee=function(id){
+  const x=committees.find(y=>y.id===id); if(!x)return;
+  $('#formTitle').textContent='Editar comité'; $('#committeeId').value=x.id; $('#committeeType').value=x.type; $('#committeeName').value=x.name; $('#committeeMunicipality').value=x.municipality; $('#committeeColony').value=x.colony; $('#committeeProgram').value=x.program; $('#committeeMembers').value=x.members; $('#committeeDate').value=x.date; $('#committeeLat').value=x.lat; $('#committeeLng').value=x.lng; toggleFormFields(); openLayer('#formModal');
+};
+window.deleteCommittee=function(id){ if(confirm('¿Eliminar este comité?')){ committees=committees.filter(x=>x.id!==id); save(); refresh(); } };
+function toggleFormFields(){ const cps=$('#committeeType').value==='CPS'; $('#colonyField').style.display=cps?'block':'none'; $('#programField').style.display=cps?'none':'block'; $('#committeeColony').required=cps; $('#committeeProgram').required=!cps; if(cps) $('#committeeMunicipality').value='Hermosillo'; }
+function refresh(){ kpis(); options(); renderMap(); renderDirectory(); charts(); admin(); }
+
+function bindUI(){
+  $('.menu-toggle').onclick=()=>$('.main-nav').classList.toggle('open');
+  ['mapSearch','municipalityFilter','colonyFilter'].forEach(id=>$('#'+id)?.addEventListener('input',renderMap));
+  $$('.type-check').forEach(x=>x.addEventListener('change',renderMap));
+  $('#resetMap').onclick=()=>{ map.setView([29.3,-110.7],6); $('#mapSearch').value=''; $('#municipalityFilter').value=''; $('#colonyFilter').value=''; $$('.type-check').forEach(x=>x.checked=true); renderMap(); };
+  ['directorySearch','directoryType','directoryMunicipality','directoryColony'].forEach(id=>$('#'+id)?.addEventListener('input',renderDirectory));
+  $('#clearFilters').onclick=()=>{ ['directorySearch','directoryType','directoryMunicipality','directoryColony'].forEach(id=>$('#'+id).value=''); renderDirectory(); };
+  $$('[data-view]').forEach(b=>b.onclick=()=>{ $$('[data-view]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); viewMode=b.dataset.view; renderDirectory(); });
+  $$('[data-type-jump]').forEach(b=>b.onclick=()=>{ $('#directoryType').value=b.dataset.typeJump; renderDirectory(); location.hash='directorio'; });
+  $$('[data-open-admin]').forEach(b=>b.onclick=()=>{ openLayer('#adminDrawer'); setAdminTab('resumen'); setTimeout(()=>map?.invalidateSize(),50); });
+  $$('[data-close-admin]').forEach(b=>b.onclick=()=>closeLayer('#adminDrawer'));
+  $$('[data-close-modal]').forEach(b=>b.onclick=()=>closeLayer('#detailModal'));
+  $$('[data-close-form]').forEach(b=>b.onclick=()=>closeLayer('#formModal'));
+  $$('.admin-tabs button').forEach(b=>b.onclick=()=>setAdminTab(b.dataset.adminTab));
+  $('#newCommittee').onclick=()=>{ $('#committeeForm').reset(); $('#committeeId').value=''; $('#formTitle').textContent='Nuevo comité'; toggleFormFields(); openLayer('#formModal'); };
+  $('#committeeType').onchange=toggleFormFields;
+  $('#committeeForm').onsubmit=e=>{ e.preventDefault(); const id=Number($('#committeeId').value)||Date.now(); const obj={id,type:$('#committeeType').value,name:$('#committeeName').value.trim(),municipality:$('#committeeMunicipality').value.trim(),colony:$('#committeeColony').value.trim(),program:$('#committeeProgram').value.trim(),members:Number($('#committeeMembers').value),date:$('#committeeDate').value,lat:Number($('#committeeLat').value),lng:Number($('#committeeLng').value),status:'Activo'}; const i=committees.findIndex(x=>x.id===id); if(i>=0)committees[i]=obj; else committees.push(obj); save(); closeLayer('#formModal'); refresh(); setAdminTab('comites'); };
+  $('#contactForm').onsubmit=e=>{e.preventDefault();alert('Solicitud registrada de forma demostrativa.');e.target.reset();};
+  $('#resetDemoData')?.addEventListener('click',()=>{ if(confirm('¿Restablecer los datos demostrativos?')){ committees=structuredClone(baseCommittees); save(); refresh(); } });
+  document.addEventListener('click',e=>{
+    const popupButton=e.target.closest('[data-popup-id]');
+    if(!popupButton) return;
+    e.preventDefault();
+    e.stopPropagation();
+    showDetail(popupButton.dataset.popupId);
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeLayer('#detailModal'); closeLayer('#formModal'); closeLayer('#adminDrawer'); } });
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  initMap(); kpis(); options(); renderDirectory(); charts(); admin(); bindUI();
+  $$('.reveal').forEach(el=>new IntersectionObserver(([e],o)=>{if(e.isIntersecting){el.classList.add('visible');o.disconnect();}},{threshold:.12}).observe(el));
+});
