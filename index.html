@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plataforma de Comités de Contraloría y Participación Social de la Secretaría de Bienestar del Estado de Sonora.">
+  <title>Comités de Contraloría y Participación Social | Bienestar Sonora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <div class="prototype-bar">Prototipo institucional · Datos demostrativos · Ejercicio de transparencia proactiva</div>
+
+  <header class="site-header" id="inicio">
+    <div class="container nav-wrap">
+      <a class="brand" href="#inicio" aria-label="Inicio">
+        <span class="brand-mark">CP</span>
+        <span><strong>Contraloría y Participación Social</strong><small>Bienestar Sonora</small></span>
+      </a>
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a href="#tipos">Comités</a><a href="#mapa">Mapa</a><a href="#directorio">Directorio</a><a href="#herramientas">Herramientas</a><a href="#resultados">Resultados</a>
+        <button class="btn btn-dark btn-sm" data-open-admin><i class="fa-solid fa-lock"></i> Administración</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero section">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow"><i class="fa-solid fa-circle-check"></i> Transparencia, comunidad y participación que generan valor público</span>
+          <h1>La ciudadanía vigila, participa y transforma.</h1>
+          <p>Conoce los Comités de Contraloría Social de Sonora y los Comités de Participación Social de las colonias de Hermosillo.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="#mapa">Explorar el territorio <i class="fa-solid fa-arrow-right"></i></a><a class="btn btn-ghost" href="#directorio">Consultar comités</a></div>
+          <div class="trust-row"><span>✓ Abierta</span><span>✓ Accesible</span><span>✓ Territorial</span><span>✓ Ciudadana</span></div>
+        </div>
+        <div class="hero-visual reveal">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="sonora-card">
+            <div class="mini-map" aria-hidden="true"><span class="pulse p1 ccs"></span><span class="pulse p2 cps"></span><span class="pulse p3 ccs"></span><span class="pulse p4 cps"></span></div>
+            <div class="floating-stat stat-a"><strong data-hero-kpi="committees">36</strong><span>Comités registrados</span><small>Dos mecanismos ciudadanos</small></div>
+            <div class="floating-stat stat-b"><i class="fa-solid fa-location-dot"></i><div><strong>Presencia territorial</strong><span>Sonora y colonias de Hermosillo</span></div></div>
+            <div class="sonora-caption"><i class="fa-solid fa-people-group"></i><div><strong>Participación con propósito</strong><small>Información pública para colaborar, vigilar y mejorar</small></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics section-sm" aria-label="Indicadores principales">
+      <div class="container metric-grid">
+        <article><span class="metric-icon"><i class="fa-solid fa-people-group"></i></span><strong data-kpi="committees">0</strong><small>Comités registrados</small></article>
+        <article><span class="metric-icon"><i class="fa-solid fa-shield-halved"></i></span><strong data-kpi="ccs">0</strong><small>Contraloría Social</small></article>
+        <article><span class="metric-icon"><i class="fa-solid fa-house-user"></i></span><strong data-kpi="cps">0</strong><small>Participación Social</small></article>
+        <article><span class="metric-icon"><i class="fa-solid fa-users"></i></span><strong data-kpi="members">0</strong><small>Personas integrantes</small></article>
+      </div>
+    </section>
+
+    <section class="section intro-band" id="tipos">
+      <div class="container split-heading reveal"><div><span class="section-kicker">Dos figuras, una sola visión</span><h2>Participación social con identidad y propósito.</h2></div><p>La plataforma integra dos tipos de comités sin confundir sus funciones, territorios ni alcances.</p></div>
+      <div class="container type-grid">
+        <article class="type-card type-ccs reveal"><div class="type-icon"><i class="fa-solid fa-shield-heart"></i></div><span>Ámbito estatal</span><h3>Comités de Contraloría Social</h3><p>Acompañan y vigilan programas sociales de la Secretaría en distintos municipios de Sonora.</p><ul><li>Vigilancia ciudadana</li><li>Transparencia de programas</li><li>Seguimiento institucional</li></ul><button class="btn btn-ghost" data-type-jump="CCS">Explorar Contraloría Social</button></article>
+        <article class="type-card type-cps reveal"><div class="type-icon"><i class="fa-solid fa-people-roof"></i></div><span>Hermosillo, Sonora</span><h3>Comités de Participación Social</h3><p>Fortalecen la organización comunitaria y la colaboración entre ciudadanía y gobierno en las colonias de Hermosillo.</p><ul><li>Organización comunitaria</li><li>Participación vecinal</li><li>Gestión colaborativa</li></ul><button class="btn btn-ghost" data-type-jump="CPS">Explorar Participación Social</button></article>
+      </div>
+    </section>
+
+    <section class="section map-section" id="mapa">
+      <div class="container section-head reveal"><div><span class="section-kicker">Mapa territorial</span><h2>Dos formas de participar, un territorio compartido.</h2><p>Explora los comités, filtra por tipo y consulta sus datos públicos.</p></div><button class="btn btn-ghost" id="resetMap"><i class="fa-solid fa-crosshairs"></i> Ver todo</button></div>
+      <div class="container map-layout">
+        <aside class="map-panel reveal">
+          <label>Tipo de comité</label>
+          <div class="check-row"><label><input type="checkbox" value="CCS" class="type-check" checked><span class="dot ccs-dot"></span> Contraloría Social</label><label><input type="checkbox" value="CPS" class="type-check" checked><span class="dot cps-dot"></span> Participación Social</label></div>
+          <label for="mapSearch">Buscar comité</label><div class="input-icon"><i class="fa-solid fa-magnifying-glass"></i><input id="mapSearch" type="search" placeholder="Nombre, municipio o colonia"></div>
+          <label for="municipalityFilter">Municipio</label><select id="municipalityFilter"><option value="">Todos los municipios</option></select>
+          <label for="colonyFilter">Colonia</label><select id="colonyFilter"><option value="">Todas las colonias</option></select>
+          <div class="legend"><strong>Tipos de comité</strong><span><i class="dot ccs-dot"></i> Contraloría Social</span><span><i class="dot cps-dot"></i> Participación Social</span></div>
+          <div class="territorial-reading"><span>Lectura territorial</span><strong id="visibleCount">0 comités visibles</strong><small>Selecciona un marcador para consultar su ficha.</small></div>
+        </aside>
+        <div class="map-frame reveal"><div id="committeeMap" role="application" aria-label="Mapa de Comités de Contraloría y Participación Social"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="directorio">
+      <div class="container section-head reveal"><div><span class="section-kicker">Directorio integrado</span><h2>Comités que fortalecen el bienestar.</h2><p>Consulta por tipo, municipio, colonia, programa o nombre.</p></div><div class="view-toggle"><button class="active" data-view="cards"><i class="fa-solid fa-grip"></i></button><button data-view="table"><i class="fa-solid fa-table-list"></i></button></div></div>
+      <div class="container filters reveal"><div class="input-icon grow"><i class="fa-solid fa-magnifying-glass"></i><input id="directorySearch" type="search" placeholder="Buscar comité, municipio, colonia o programa"></div><select id="directoryType"><option value="">Todos los tipos</option><option value="CCS">Contraloría Social</option><option value="CPS">Participación Social</option></select><select id="directoryMunicipality"><option value="">Todos los municipios</option></select><select id="directoryColony"><option value="">Todas las colonias</option></select><button class="btn btn-ghost btn-sm" id="clearFilters">Limpiar</button></div>
+      <div class="container"><p class="results-text" id="resultsText"></p><div class="directory-grid" id="committeeDirectory"></div></div>
+    </section>
+
+    <section class="section tools-section" id="herramientas">
+      <div class="container split-heading reveal"><div><span class="section-kicker">Herramientas y aprendizaje</span><h2>Capacidades para participar mejor.</h2></div><p>Recursos breves, gratuitos y adaptados a las necesidades de cada tipo de comité.</p></div>
+      <div class="container tools-grid">
+        <article class="tool-card reveal"><div class="tool-icon"><i class="fa-solid fa-graduation-cap"></i></div><span>Curso introductorio</span><h3>Contraloría Social</h3><p>Propósito, atribuciones y herramientas para la vigilancia ciudadana.</p><a href="#">Comenzar curso →</a></article>
+        <article class="tool-card reveal"><div class="tool-icon"><i class="fa-solid fa-house-user"></i></div><span>Guía comunitaria</span><h3>Participación Social</h3><p>Organización vecinal, acuerdos y colaboración para mejorar la comunidad.</p><a href="#">Consultar guía →</a></article>
+        <article class="tool-card reveal"><div class="tool-icon"><i class="fa-solid fa-list-check"></i></div><span>Plantillas</span><h3>Formatos para seguimiento</h3><p>Minutas, listas de asistencia, cédulas y reportes en un solo lugar.</p><a href="#">Ver formatos →</a></article>
+        <article class="tool-card reveal"><div class="tool-icon"><i class="fa-solid fa-scale-balanced"></i></div><span>Marco institucional</span><h3>Normatividad y criterios</h3><p>Documentos oficiales organizados de forma sencilla y comprensible.</p><a href="#">Consultar documentos →</a></article>
+      </div>
+    </section>
+
+    <section class="section dashboard" id="resultados">
+      <div class="container section-head reveal"><div><span class="section-kicker">Centro de datos</span><h2>Información para mejores decisiones.</h2><p>Indicadores demostrativos para orientar cobertura, acompañamiento y participación.</p></div><span class="demo-badge">Datos demostrativos</span></div>
+      <div class="container dashboard-grid"><article class="chart-card reveal"><div class="card-head"><h3>Comités por tipo</h3><i class="fa-solid fa-chart-column"></i></div><canvas id="typeChart" height="230"></canvas></article><article class="chart-card reveal"><div class="card-head"><h3>Distribución territorial</h3><i class="fa-solid fa-chart-pie"></i></div><canvas id="territoryChart" height="230"></canvas></article><article class="insight-card reveal"><span>Participación ciudadana</span><h3>Una política pública que se construye desde el territorio.</h3><p>La integración de ambos tipos de comités permite reconocer distintas formas de organización, vigilancia y colaboración ciudadana.</p><div class="insight-metrics"><div><strong data-kpi="municipalities">0</strong><span>Municipios con CCS</span></div><div><strong data-kpi="colonies">0</strong><span>Colonias con CPS</span></div></div></article></div>
+    </section>
+
+    <section class="section process-section"><div class="container split-heading reveal"><div><span class="section-kicker">Ruta de fortalecimiento</span><h2>De la organización a la incidencia ciudadana.</h2></div><p>Un proceso común que respeta la identidad y función de cada comité.</p></div><div class="container process-grid"><div><span>1</span><strong>Integración</strong><small>Conformación ciudadana</small></div><div><span>2</span><strong>Registro</strong><small>Datos y documentos</small></div><div><span>3</span><strong>Capacitación</strong><small>Herramientas prácticas</small></div><div><span>4</span><strong>Participación</strong><small>Vigilancia o colaboración</small></div><div><span>5</span><strong>Resultados</strong><small>Seguimiento y mejora</small></div></div></section>
+
+    <section class="section participate" id="participa"><div class="container participate-card reveal"><div><span class="section-kicker light">Participación y contacto</span><h2>¿Formas parte de un comité?</h2><p>Solicita orientación, capacitación o apoyo para fortalecer las actividades de tu comité.</p><ul><li><i class="fa-solid fa-check"></i> Solicitar capacitación</li><li><i class="fa-solid fa-check"></i> Reportar una actividad</li><li><i class="fa-solid fa-check"></i> Proponer una mejora</li></ul></div><form id="contactForm"><label>Nombre<input required></label><label>Tipo de comité<select required><option value="">Selecciona</option><option>Contraloría Social</option><option>Participación Social</option></select></label><label>¿Cómo podemos ayudarte?<select required><option value="">Selecciona una opción</option><option>Solicitar capacitación</option><option>Reportar actividad</option><option>Resolver una duda</option><option>Proponer una mejora</option></select></label><label>Mensaje<textarea rows="4" required></textarea></label><button class="btn btn-light" type="submit">Enviar solicitud</button><small>No incluyas datos personales sensibles. Este prototipo no envía información a un servidor.</small></form></div></section>
+  </main>
+
+  <footer><div class="container footer-grid"><div><a class="brand footer-brand" href="#inicio"><span class="brand-mark">CP</span><span><strong>Contraloría y Participación Social</strong><small>Bienestar Sonora</small></span></a><p>Prototipo funcional para transparentar, fortalecer y visibilizar los mecanismos ciudadanos de participación social.</p></div><div><h4>Plataforma</h4><a href="#mapa">Mapa territorial</a><a href="#directorio">Directorio</a><a href="#herramientas">Herramientas</a></div><div><h4>Institucional</h4><a href="#resultados">Datos e indicadores</a><a href="#participa">Participación</a><button class="footer-link" data-open-admin>Panel demostrativo</button></div></div><div class="container footer-bottom">© 2026 · Secretaría de Bienestar del Estado de Sonora <span>Datos demostrativos · Diseñado para GitHub Pages</span></div></footer>
+
+  <div class="modal" id="detailModal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><article class="modal-card"><button class="modal-close" data-close-modal>×</button><div id="detailContent"></div></article></div>
+  <div class="admin-drawer" id="adminDrawer" aria-hidden="true"><div class="admin-backdrop" data-close-admin></div><aside><div class="admin-head"><div class="brand"><span class="brand-mark">CP</span><span><strong>Panel institucional</strong><small>Vista demostrativa</small></span></div><button data-close-admin>×</button></div><div class="admin-tabs"><button class="active">Resumen</button><button>Comités</button><button>Documentos</button><button>Capacitaciones</button></div><p class="admin-note">Sin autenticación real. En producción debe implementarse una capa segura.</p><div class="admin-title"><div><span>Panel demostrativo</span><h2>Gestión institucional clara y ágil</h2></div><button class="btn btn-primary" id="newCommittee">Nuevo comité</button></div><div class="admin-kpis"><article><strong data-kpi="committees">0</strong><span>Comités registrados</span></article><article><strong data-kpi="ccs">0</strong><span>Contraloría Social</span></article><article><strong data-kpi="cps">0</strong><span>Participación Social</span></article></div><div class="admin-table-wrap"><table><thead><tr><th>Comité</th><th>Tipo</th><th>Territorio</th><th>Acciones</th></tr></thead><tbody id="adminRows"></tbody></table></div></aside></div>
+  <div class="modal" id="formModal" aria-hidden="true"><div class="modal-backdrop" data-close-form></div><article class="modal-card form-card"><button class="modal-close" data-close-form>×</button><span class="section-kicker">Registro demostrativo</span><h2 id="formTitle">Nuevo comité</h2><form id="committeeForm"><input type="hidden" id="committeeId"><label>Tipo de comité<select id="committeeType" required><option value="CCS">Contraloría Social</option><option value="CPS">Participación Social</option></select></label><label>Nombre<input id="committeeName" required></label><label>Municipio<input id="committeeMunicipality" required></label><label id="colonyField">Colonia<input id="committeeColony"></label><label id="programField">Programa social<input id="committeeProgram"></label><label>Número de integrantes<input id="committeeMembers" type="number" min="1" required></label><label>Fecha de integración<input id="committeeDate" type="date" required></label><div class="form-grid"><label>Latitud<input id="committeeLat" type="number" step="any" required></label><label>Longitud<input id="committeeLng" type="number" step="any" required></label></div><div class="form-actions"><button type="button" class="btn btn-ghost" data-close-form>Cancelar</button><button class="btn btn-primary" type="submit">Guardar comité</button></div></form></article></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script><script src="app.js"></script>
+</body>
+</html>
