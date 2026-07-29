@@ -1,7 +1,7 @@
-# Plataforma de Comités de Contraloría y Participación Social — v6
+# Plataforma de Comités de Contraloría y Participación Social — v10
 
-Mejora incorporada:
-
-- El mapa permite acercar y alejar con la rueda del mouse.
-- Se conserva el control de zoom y toda la estética institucional.
-- Compatible con GitHub Pages.
+Mejoras del curso:
+- El reconocimiento se visualiza en la misma página.
+- La impresión/guardado como PDF se ejecuta sin ventanas emergentes.
+- Formato A4 horizontal de una sola página.
+- Se conserva la navegación accesible y la retroalimentación manual.

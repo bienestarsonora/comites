@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Curso interactivo ciudadano de introducción a la Contraloría Social.">
+  <title>Curso: Introducción a la Contraloría Social | Bienestar Sonora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="curso.css">
+</head>
+<body>
+  <a class="skip-link" href="#courseStage">Saltar al curso</a>
+  <header class="course-header">
+    <a class="course-brand" href="index.html#herramientas" aria-label="Volver a la plataforma">
+      <span class="brand-mark">CP</span>
+      <span><strong>Contraloría y Participación Social</strong><small>Bienestar Sonora</small></span>
+    </a>
+    <div class="header-actions">
+      <button class="icon-button" id="fontToggle" aria-label="Aumentar tamaño de texto"><i class="fa-solid fa-font"></i></button>
+      <button class="icon-button" id="contrastToggle" aria-label="Activar alto contraste"><i class="fa-solid fa-circle-half-stroke"></i></button>
+      <a class="exit-link" href="index.html#herramientas"><i class="fa-solid fa-arrow-left"></i> Salir del curso</a>
+    </div>
+  </header>
+
+  <div class="course-shell">
+    <aside class="course-sidebar" aria-label="Progreso del curso">
+      <div class="sidebar-card">
+        <span class="course-label">Curso ciudadano</span>
+        <h1>Introducción a la Contraloría Social</h1>
+        <p>Aprende de forma sencilla cómo participar, observar y contribuir a mejorar los programas públicos.</p>
+        <div class="progress-wrap" aria-live="polite">
+          <div class="progress-meta"><strong id="progressText">0% completado</strong><span id="screenCounter">1 de 11</span></div>
+          <div class="progress-track"><span id="progressBar"></span></div>
+        </div>
+      </div>
+      <nav class="course-nav" id="courseNav" aria-label="Temas del curso"></nav>
+      <div class="sidebar-note"><i class="fa-regular fa-clock"></i><span><strong>Duración estimada</strong><small>10 a 15 minutos</small></span></div>
+    </aside>
+
+    <main class="course-main" id="courseStage" tabindex="-1">
+      <section class="screen active" data-title="Bienvenida" data-icon="fa-play">
+        <div class="welcome-grid">
+          <div>
+            <span class="eyebrow"><i class="fa-solid fa-people-group"></i> Participar también es cuidar lo público</span>
+            <h2>Conoce la Contraloría Social de manera clara, práctica y cercana.</h2>
+            <p class="lead">Este recorrido te ayudará a comprender qué es, para qué sirve y cómo puede participar la ciudadanía.</p>
+            <div class="welcome-badges"><span><i class="fa-regular fa-clock"></i> 10–15 min</span><span><i class="fa-solid fa-signal"></i> Nivel básico</span><span><i class="fa-solid fa-mobile-screen"></i> Autoguiado</span></div>
+            <button class="primary-action" data-next>Comenzar curso <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+          <div class="welcome-visual" aria-hidden="true">
+            <div class="community-orbit"></div>
+            <div class="people-card"><i class="fa-solid fa-people-group"></i><strong>Ciudadanía informada</strong><small>Participa · Observa · Propone</small></div>
+            <span class="float-pill p-a"><i class="fa-solid fa-eye"></i> Vigilancia</span>
+            <span class="float-pill p-b"><i class="fa-solid fa-comments"></i> Diálogo</span>
+            <span class="float-pill p-c"><i class="fa-solid fa-check"></i> Mejora</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-title="¿Qué es?" data-icon="fa-circle-question">
+        <span class="eyebrow">Tema 1</span><h2>¿Qué es la Contraloría Social?</h2>
+        <div class="concept-card"><div class="concept-icon"><i class="fa-solid fa-handshake-angle"></i></div><p>Es la participación organizada de las personas beneficiarias y de la ciudadanía para <strong>dar seguimiento, observar y acompañar</strong> la correcta ejecución de los programas públicos.</p></div>
+        <div class="flow-row">
+          <article><i class="fa-solid fa-user-group"></i><strong>Ciudadanía</strong><small>Se informa y participa</small></article><i class="fa-solid fa-arrow-right flow-arrow"></i>
+          <article><i class="fa-solid fa-people-roof"></i><strong>Comité</strong><small>Organiza la observación</small></article><i class="fa-solid fa-arrow-right flow-arrow"></i>
+          <article><i class="fa-solid fa-building-columns"></i><strong>Gobierno</strong><small>Informa y da seguimiento</small></article>
+        </div>
+        <div class="callout"><i class="fa-solid fa-lightbulb"></i><p>No necesitas ser especialista. Lo más importante es recibir información clara, observar y comunicar lo que encuentres.</p></div>
+      </section>
+
+      <section class="screen" data-title="¿Para qué sirve?" data-icon="fa-bullseye">
+        <span class="eyebrow">Tema 2</span><h2>¿Para qué sirve?</h2><p class="lead">Selecciona cada tarjeta para descubrir su propósito.</p>
+        <div class="flip-grid">
+          <button class="flip-card"><span><i class="fa-solid fa-magnifying-glass"></i><strong>Transparencia</strong><small>Toca para conocer más</small></span><span><strong>Transparencia</strong><p>Permite conocer cómo se aplican las acciones y recursos de un programa.</p></span></button>
+          <button class="flip-card"><span><i class="fa-solid fa-users"></i><strong>Participación</strong><small>Toca para conocer más</small></span><span><strong>Participación</strong><p>Involucra a las personas beneficiarias en el seguimiento de lo público.</p></span></button>
+          <button class="flip-card"><span><i class="fa-solid fa-eye"></i><strong>Vigilancia</strong><small>Toca para conocer más</small></span><span><strong>Vigilancia</strong><p>Ayuda a observar que las actividades se realicen conforme a lo informado.</p></span></button>
+          <button class="flip-card"><span><i class="fa-solid fa-chart-line"></i><strong>Mejora</strong><small>Toca para conocer más</small></span><span><strong>Mejora</strong><p>Genera observaciones y propuestas útiles para fortalecer los programas.</p></span></button>
+        </div>
+      </section>
+
+      <section class="screen" data-title="¿Quién participa?" data-icon="fa-user-group">
+        <span class="eyebrow">Tema 3</span><h2>¿Quiénes participan?</h2><p class="lead">Haz clic en cada persona para conocer su papel.</p>
+        <div class="role-layout">
+          <div class="role-list">
+            <button class="role-button active" data-role="beneficiarios"><i class="fa-solid fa-people-group"></i><span>Personas beneficiarias</span></button>
+            <button class="role-button" data-role="comite"><i class="fa-solid fa-people-roof"></i><span>Comité</span></button>
+            <button class="role-button" data-role="dependencia"><i class="fa-solid fa-building-columns"></i><span>Dependencia responsable</span></button>
+            <button class="role-button" data-role="ciudadania"><i class="fa-solid fa-person-circle-question"></i><span>Ciudadanía</span></button>
+          </div>
+          <article class="role-detail" id="roleDetail"></article>
+        </div>
+      </section>
+
+      <section class="screen" data-title="¿Qué hace un comité?" data-icon="fa-list-check">
+        <span class="eyebrow">Tema 4</span><h2>¿Qué hace un Comité de Contraloría Social?</h2>
+        <div class="timeline">
+          <article><span>1</span><div><strong>Se integra</strong><p>Las personas beneficiarias acuerdan organizarse.</p></div></article>
+          <article><span>2</span><div><strong>Recibe información</strong><p>Conoce objetivos, acciones y características del programa.</p></div></article>
+          <article><span>3</span><div><strong>Da seguimiento</strong><p>Observa cómo se desarrollan las actividades.</p></div></article>
+          <article><span>4</span><div><strong>Comunica</strong><p>Comparte observaciones, dudas o propuestas.</p></div></article>
+          <article><span>5</span><div><strong>Contribuye a mejorar</strong><p>Ayuda a detectar oportunidades de atención.</p></div></article>
+        </div>
+      </section>
+
+      <section class="screen" data-title="Mitos y realidades" data-icon="fa-scale-balanced">
+        <span class="eyebrow">Actividad</span><h2>Mitos y realidades</h2><p class="lead">Decide si cada afirmación es verdadera o falsa.</p>
+        <div class="myth-card" id="mythCard"><span class="activity-count" id="mythCount"></span><h3 id="mythStatement"></h3><div class="choice-row"><button data-myth-answer="true"><i class="fa-solid fa-check"></i> Verdadero</button><button data-myth-answer="false"><i class="fa-solid fa-xmark"></i> Falso</button></div><div class="feedback" id="mythFeedback" aria-live="polite"></div><button type="button" class="activity-next" id="nextMythButton" hidden>Siguiente pregunta <i class="fa-solid fa-arrow-right"></i></button></div>
+      </section>
+
+      <section class="screen" data-title="¿Qué puede observar?" data-icon="fa-eye">
+        <span class="eyebrow">Actividad</span><h2>¿Qué puede observar un comité?</h2><p class="lead">Selecciona todas las opciones que correspondan.</p>
+        <div class="check-activity" id="observationActivity">
+          <label><input type="checkbox" data-correct="true"><span><i class="fa-solid fa-box-open"></i> Que los apoyos o acciones lleguen conforme a lo informado.</span></label>
+          <label><input type="checkbox" data-correct="true"><span><i class="fa-solid fa-file-lines"></i> Que la información entregada sea clara.</span></label>
+          <label><input type="checkbox" data-correct="false"><span><i class="fa-solid fa-gavel"></i> Imponer sanciones directamente.</span></label>
+          <label><input type="checkbox" data-correct="true"><span><i class="fa-solid fa-calendar-check"></i> Que las actividades se realicen en las fechas previstas.</span></label>
+          <label><input type="checkbox" data-correct="false"><span><i class="fa-solid fa-user-secret"></i> Investigar datos personales de otras personas.</span></label>
+        </div>
+        <button class="secondary-action" id="checkObservations">Revisar respuestas</button><div class="feedback" id="observationFeedback" aria-live="polite"></div>
+      </section>
+
+      <section class="screen" data-title="Caso práctico" data-icon="fa-map-location-dot">
+        <span class="eyebrow">Caso práctico</span><h2>Una situación en tu comunidad</h2>
+        <div class="case-card"><div class="case-story"><i class="fa-solid fa-basket-shopping"></i><p>Una comunidad recibe un programa de apoyo alimentario. El comité nota que algunas personas no comprenden la fecha ni el lugar de entrega.</p></div><h3>¿Qué debería hacer el comité?</h3><div class="case-options">
+          <button data-case="wrong">Publicar nombres de beneficiarios en redes sociales.</button>
+          <button data-case="right">Solicitar información clara y apoyar a comunicarla por medios adecuados.</button>
+          <button data-case="wrong">Suspender por cuenta propia la entrega del programa.</button>
+        </div><div class="feedback" id="caseFeedback" aria-live="polite"></div></div>
+      </section>
+
+      <section class="screen" data-title="Lo aprendido" data-icon="fa-star">
+        <span class="eyebrow">Resumen</span><h2>Hasta aquí aprendiste que…</h2>
+        <div class="summary-grid">
+          <article><i class="fa-solid fa-handshake-angle"></i><strong>La Contraloría Social es participación organizada.</strong></article>
+          <article><i class="fa-solid fa-eye"></i><strong>El comité observa, da seguimiento y comunica.</strong></article>
+          <article><i class="fa-solid fa-circle-info"></i><strong>La información debe ser clara y accesible.</strong></article>
+          <article><i class="fa-solid fa-arrow-trend-up"></i><strong>Las observaciones ciudadanas ayudan a mejorar.</strong></article>
+        </div>
+        <div class="callout success"><i class="fa-solid fa-circle-check"></i><p>La participación informada fortalece la confianza, la transparencia y el valor público.</p></div>
+      </section>
+
+      <section class="screen" data-title="Evaluación" data-icon="fa-clipboard-check">
+        <span class="eyebrow">Evaluación final</span><h2>Comprueba lo aprendido</h2><p class="lead">Responde 10 preguntas. Necesitas al menos 80% para aprobar.</p>
+        <div id="quizContainer"></div>
+        <button class="primary-action" id="submitQuiz">Calificar evaluación</button>
+        <div class="quiz-result" id="quizResult" aria-live="polite"></div><button type="button" class="activity-next" id="continueToCertificate" hidden>Continuar al reconocimiento <i class="fa-solid fa-arrow-right"></i></button>
+      </section>
+
+      <section class="screen" data-title="Constancia" data-icon="fa-award">
+        <div class="certificate-intro"><span class="eyebrow">Cierre del curso</span><h2>Genera tu reconocimiento de participación</h2><p id="certificateEligibility">Para generarlo debes aprobar la evaluación con al menos 80%.</p><div class="certificate-status" id="certificateStatus" aria-live="polite"></div><label for="participantName">Nombre completo</label><input id="participantName" type="text" autocomplete="name" placeholder="Escribe tu nombre completo"><div class="certificate-actions"><button class="primary-action" id="generateCertificate"><i class="fa-solid fa-award"></i> Generar reconocimiento</button><button class="secondary-action" id="goToEvaluation" type="button"><i class="fa-solid fa-clipboard-check"></i> Ir a la evaluación</button></div></div>
+        <article class="certificate" id="certificate" hidden>
+          <div class="certificate-border"><span class="certificate-mark">CP</span><small>Secretaría de Bienestar · Estado de Sonora</small><h2>Reconocimiento de participación</h2><p>Se otorga a</p><h3 id="certificateName"></h3><p>por concluir satisfactoriamente el curso ciudadano</p><strong>Introducción a la Contraloría Social</strong><div class="certificate-meta"><span id="certificateDate"></span><span>Resultado: <b id="certificateScore"></b></span></div><p class="certificate-note">Documento demostrativo de formación ciudadana.</p></div>
+          <div class="certificate-download-help"><i class="fa-solid fa-circle-info"></i><p>Al continuar se abrirá el cuadro de impresión del navegador en esta misma página. Selecciona <strong>Guardar como PDF</strong> para descargar tu reconocimiento.</p></div><button class="secondary-action print-button" id="printCertificate" type="button"><i class="fa-solid fa-file-pdf"></i> Descargar o imprimir reconocimiento</button>
+        </article>
+      </section>
+
+      <footer class="course-controls">
+        <button class="control-button" id="prevButton"><i class="fa-solid fa-arrow-left"></i> Anterior</button>
+        <button class="control-button primary" id="nextButton">Continuar <i class="fa-solid fa-arrow-right"></i></button>
+      </footer>
+    </main>
+  </div>
+  <script src="curso.js"></script>
+</body>
+</html>
