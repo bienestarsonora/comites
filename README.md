@@ -18,3 +18,8 @@ Sube a la raíz de `bienestarsonora/comites`: `index.html`, `styles.css`, `app.j
 
 ## Supabase
 Ejecuta `supabase.sql` completo en SQL Editor. Después despliega la función `supabase/functions/admin-create-user/index.ts`. Nunca coloques una secret/service_role key en GitHub Pages.
+
+## Actualización de administración
+- Filtro por tipo de comité en el panel de Administración.
+- Etiquetas de color para diferenciar visualmente Contraloría Social y Bienestar y Participación Ciudadana.
+- Contador dinámico de registros visibles según el filtro seleccionado.

@@ -424,10 +424,23 @@ function renderAdmin() {
   fillContentForm();
 }
 
+function committeeTypeLabel(type) {
+  return type === 'CCS' ? 'Contraloría Social' : 'Bienestar y Participación Ciudadana';
+}
+
+function committeeTypeTag(type) {
+  const klass = type === 'CCS' ? 'ccs' : 'bpc';
+  return `<span class="admin-type-tag ${klass}"><i></i>${esc(committeeTypeLabel(type))}</span>`;
+}
+
 function renderCommitteeAdmin() {
   const rows = $('#adminRows');
   if (!rows) return;
-  rows.innerHTML = adminCommittees.length ? adminCommittees.map(x => `<tr><td><strong>${esc(x.name)}</strong>${x.public ? '' : '<small class="private-label">Privado</small>'}</td><td>${esc(x.type)}</td><td>${esc(x.type === 'CCS' ? x.municipality : x.colony)}</td><td>${esc(x.status)}</td><td><button class="action-btn" data-edit-id="${esc(x.id)}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-id="${esc(x.id)}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="5">No hay comités registrados.</td></tr>';
+  const typeFilter = $('#adminCommitteeTypeFilter')?.value || '';
+  const filtered = adminCommittees.filter(x => !typeFilter || x.type === typeFilter);
+  const count = $('#adminCommitteeFilterCount');
+  if (count) count.textContent = `${filtered.length} ${filtered.length === 1 ? 'comité' : 'comités'}`;
+  rows.innerHTML = filtered.length ? filtered.map(x => `<tr><td><strong>${esc(x.name)}</strong>${x.public ? '' : '<small class="private-label">Privado</small>'}</td><td>${committeeTypeTag(x.type)}</td><td>${esc(x.type === 'CCS' ? x.municipality : x.colony)}</td><td>${esc(x.status)}</td><td><button class="action-btn" data-edit-id="${esc(x.id)}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-id="${esc(x.id)}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="5">No hay comités que coincidan con el filtro seleccionado.</td></tr>';
 }
 
 function populateCommitteeSelects() {
@@ -895,6 +908,7 @@ function bindUI() {
   $$('[data-close-password]').forEach(btn => btn.addEventListener('click', () => closeLayer('#passwordModal')));
   $('#logoutBtn')?.addEventListener('click', logout);
   $('#refreshAdmin')?.addEventListener('click', async () => { await Promise.all([loadPublicData(), loadAdminData()]); toast('Información actualizada.'); });
+  $('#adminCommitteeTypeFilter')?.addEventListener('change', renderCommitteeAdmin);
 
   $('#newCommittee')?.addEventListener('click', newCommitteeForm);
   $('#committeeType')?.addEventListener('change', toggleFormFields);

@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=20260818-final">
+  <link rel="stylesheet" href="styles.css?v=20260818-adminfilter">
 </head>
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -128,7 +128,25 @@
 
     <div class="admin-panel" data-admin-panel="resumen"><div class="admin-title"><div><span>Resumen operativo</span><h2>Gestión institucional</h2></div><button class="btn btn-ghost" id="refreshAdmin"><i class="fa-solid fa-rotate"></i> Actualizar</button></div><div class="admin-kpis"><article><strong data-kpi="committees">0</strong><span>Comités registrados</span></article><article><strong data-kpi="ccs">0</strong><span>Contraloría Social</span></article><article><strong data-kpi="cps">0</strong><span>Bienestar y Participación Ciudadana</span></article></div><div class="admin-summary-grid"><article><i class="fa-solid fa-map-location-dot"></i><strong data-kpi="municipalities">0</strong><span>Municipios con CCS</span></article><article><i class="fa-solid fa-house-user"></i><strong data-kpi="colonies">0</strong><span>Colonias con CPS</span></article><article><i class="fa-solid fa-users"></i><strong data-kpi="members">0</strong><span>Integrantes registrados</span></article></div></div>
 
-    <div class="admin-panel" data-admin-panel="comites" hidden><div class="admin-title"><div><span>Registro y actualización</span><h2>Comités</h2></div><button class="btn btn-primary" id="newCommittee">Nuevo comité</button></div><div class="admin-table-wrap"><table><thead><tr><th>Comité</th><th>Tipo</th><th>Territorio</th><th>Estatus</th><th>Acciones</th></tr></thead><tbody id="adminRows"></tbody></table></div></div>
+    <div class="admin-panel" data-admin-panel="comites" hidden>
+      <div class="admin-title"><div><span>Registro y actualización</span><h2>Comités</h2></div><button class="btn btn-primary" id="newCommittee">Nuevo comité</button></div>
+      <div class="admin-filter-bar" aria-label="Filtros de comités">
+        <div class="admin-filter-control">
+          <label for="adminCommitteeTypeFilter">Filtrar por tipo</label>
+          <select id="adminCommitteeTypeFilter">
+            <option value="">Todos los comités</option>
+            <option value="CCS">Contraloría Social</option>
+            <option value="CPS">Bienestar y Participación Ciudadana</option>
+          </select>
+        </div>
+        <div class="admin-type-legend" aria-label="Identificación por color">
+          <span class="admin-type-tag ccs"><i></i> Contraloría Social</span>
+          <span class="admin-type-tag bpc"><i></i> Bienestar y Participación Ciudadana</span>
+        </div>
+        <strong id="adminCommitteeFilterCount" class="admin-filter-count"></strong>
+      </div>
+      <div class="admin-table-wrap"><table><thead><tr><th>Comité</th><th>Tipo</th><th>Territorio</th><th>Estatus</th><th>Acciones</th></tr></thead><tbody id="adminRows"></tbody></table></div>
+    </div>
 
     <div class="admin-panel" data-admin-panel="documentos" hidden><div class="admin-title"><div><span>Gestión documental</span><h2>Documentos</h2></div><button class="btn btn-primary" id="newDocument">Subir documento</button></div><div id="adminDocuments" class="admin-cards"></div></div>
 
@@ -157,6 +175,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js?v=20260818-final"></script>
-  <script src="app.js?v=20260818-final"></script>
+  <script src="app.js?v=20260818-adminfilter"></script>
 </body>
 </html>
