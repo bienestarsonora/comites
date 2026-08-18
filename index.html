@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=20260818-v8">
+  <link rel="stylesheet" href="styles.css?v=20260818-v9">
 </head>
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -84,7 +84,12 @@
           <div class="legend"><strong>Tipos de comité</strong><span><i class="dot ccs-dot"></i> Contraloría Social</span><span><i class="dot cps-dot"></i> Bienestar y Participación Ciudadana</span></div>
           <div class="territorial-reading"><span>Lectura territorial</span><strong id="visibleCount">0 comités visibles</strong><small>Selecciona un marcador para consultar su ficha.</small></div>
         </aside>
-        <div class="map-frame reveal"><div id="committeeMap" role="application" aria-label="Mapa de Comités de Contraloría Social, Bienestar y Participación Ciudadana"></div></div>
+        <div class="map-frame reveal" id="mapFrame">
+          <button class="map-fullscreen-btn" id="mapFullscreenBtn" type="button" aria-label="Ver mapa en pantalla completa" title="Pantalla completa">
+            <i class="fa-solid fa-expand"></i><span>Pantalla completa</span>
+          </button>
+          <div id="committeeMap" role="application" aria-label="Mapa de Comités de Contraloría Social, Bienestar y Participación Ciudadana"></div>
+        </div>
       </div>
     </section>
 
@@ -156,7 +161,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260818-v8"></script>
-  <script src="app.js?v=20260818-v8"></script>
+  <script src="supabase-config.js?v=20260818-v9"></script>
+  <script src="app.js?v=20260818-v9"></script>
 </body>
 </html>

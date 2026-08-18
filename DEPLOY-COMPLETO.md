@@ -38,3 +38,10 @@ Sube a la raíz de `bienestarsonora/comites` TODOS los archivos y carpetas de es
 ## v8 — zoom con rueda del mouse
 - El mapa permite acercar y alejar directamente con la rueda del mouse.
 - El zoom queda habilitado permanentemente, sin necesidad de hacer clic o enfocar antes el mapa.
+
+
+## v9 — mapa fullscreen
+- Botón `Pantalla completa` sobre el mapa.
+- Usa la Fullscreen API del navegador con fallback visual.
+- Al entrar o salir se recalcula automáticamente el tamaño de Leaflet.
+- En fullscreen se conserva búsqueda, zoom con rueda, filtros, marcadores y popups.

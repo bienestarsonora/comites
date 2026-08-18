@@ -203,3 +203,75 @@ body.layer-open{overflow:hidden}
 .admin-filter-count{align-self:center;color:var(--muted);font-size:12px;white-space:nowrap}
 #adminRows td:nth-child(2){min-width:190px}
 @media(max-width:760px){.admin-filter-bar{grid-template-columns:1fr;align-items:stretch}.admin-filter-count{justify-self:start}.admin-type-legend{padding:0}}
+
+
+/* v9 · Mapa en pantalla completa */
+.map-frame{position:relative}
+.map-fullscreen-btn{
+  position:absolute;
+  top:20px;
+  right:20px;
+  z-index:950;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:42px;
+  padding:0 14px;
+  border:1px solid rgba(111,18,56,.14);
+  border-radius:13px;
+  background:rgba(255,255,255,.96);
+  color:var(--wine);
+  box-shadow:0 8px 24px rgba(50,20,35,.13);
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+  transition:.2s ease;
+}
+.map-fullscreen-btn:hover,
+.map-fullscreen-btn:focus-visible{
+  transform:translateY(-1px);
+  background:#fff;
+  box-shadow:0 12px 30px rgba(50,20,35,.18);
+}
+.map-fullscreen-btn.active{
+  background:var(--wine);
+  color:#fff;
+  border-color:var(--wine);
+}
+#mapFrame:fullscreen,
+#mapFrame:-webkit-full-screen,
+#mapFrame.map-pseudo-fullscreen{
+  width:100vw!important;
+  height:100vh!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#fff;
+}
+#mapFrame:fullscreen #committeeMap,
+#mapFrame:-webkit-full-screen #committeeMap,
+#mapFrame.map-pseudo-fullscreen #committeeMap{
+  width:100%!important;
+  height:100vh!important;
+  border-radius:0!important;
+}
+#mapFrame:fullscreen .map-fullscreen-btn,
+#mapFrame:-webkit-full-screen .map-fullscreen-btn,
+#mapFrame.map-pseudo-fullscreen .map-fullscreen-btn{
+  top:18px;
+  right:18px;
+}
+#mapFrame.map-pseudo-fullscreen{
+  position:fixed!important;
+  inset:0!important;
+  z-index:9999!important;
+}
+body.map-fullscreen-open{overflow:hidden}
+
+@media(max-width:680px){
+  .map-fullscreen-btn span{display:none}
+  .map-fullscreen-btn{width:44px;padding:0;justify-content:center}
+}

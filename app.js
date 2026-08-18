@@ -243,6 +243,60 @@ function initMap() {
   map.scrollWheelZoom.enable();
 }
 
+
+function isMapFullscreen() {
+  const frame = $('#mapFrame');
+  return document.fullscreenElement === frame ||
+    document.webkitFullscreenElement === frame ||
+    frame?.classList.contains('map-pseudo-fullscreen');
+}
+
+function syncMapFullscreenButton() {
+  const button = $('#mapFullscreenBtn');
+  if (!button) return;
+  const active = isMapFullscreen();
+  button.classList.toggle('active', active);
+  button.setAttribute('aria-label', active ? 'Salir de pantalla completa' : 'Ver mapa en pantalla completa');
+  button.title = active ? 'Salir de pantalla completa' : 'Pantalla completa';
+  button.innerHTML = `<i class="fa-solid ${active ? 'fa-compress' : 'fa-expand'}"></i><span>${active ? 'Salir' : 'Pantalla completa'}</span>`;
+  setTimeout(() => map?.invalidateSize({ animate: false }), 80);
+}
+
+async function toggleMapFullscreen() {
+  const frame = $('#mapFrame');
+  if (!frame) return;
+
+  try {
+    if (isMapFullscreen()) {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else {
+        frame.classList.remove('map-pseudo-fullscreen');
+        document.body.classList.remove('map-fullscreen-open');
+        syncMapFullscreenButton();
+      }
+      return;
+    }
+
+    if (frame.requestFullscreen) {
+      await frame.requestFullscreen();
+    } else if (frame.webkitRequestFullscreen) {
+      frame.webkitRequestFullscreen();
+    } else {
+      frame.classList.add('map-pseudo-fullscreen');
+      document.body.classList.add('map-fullscreen-open');
+      syncMapFullscreenButton();
+    }
+  } catch (error) {
+    // Fallback visual si el navegador bloquea la Fullscreen API.
+    frame.classList.toggle('map-pseudo-fullscreen');
+    document.body.classList.toggle('map-fullscreen-open', frame.classList.contains('map-pseudo-fullscreen'));
+    syncMapFullscreenButton();
+  }
+}
+
 function mapFiltered() {
   const types = $$('.type-check:checked').map(x => x.value);
   const q = ($('#mapSearch')?.value || '').trim().toLowerCase();
@@ -919,6 +973,18 @@ function bindUI() {
     nav.classList.toggle('open');
     $('.menu-toggle').setAttribute('aria-expanded', nav.classList.contains('open') ? 'true' : 'false');
   });
+  $('#mapFullscreenBtn')?.addEventListener('click', toggleMapFullscreen);
+  document.addEventListener('fullscreenchange', syncMapFullscreenButton);
+  document.addEventListener('webkitfullscreenchange', syncMapFullscreenButton);
+  document.addEventListener('keydown', event => {
+    const frame = $('#mapFrame');
+    if (event.key === 'Escape' && frame?.classList.contains('map-pseudo-fullscreen')) {
+      frame.classList.remove('map-pseudo-fullscreen');
+      document.body.classList.remove('map-fullscreen-open');
+      syncMapFullscreenButton();
+    }
+  });
+
   let mapSearchTimer;
   $('#mapSearch')?.addEventListener('input', () => {
     renderMap();
