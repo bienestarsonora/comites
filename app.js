@@ -11,21 +11,21 @@ const FALLBACK_COMMITTEES = [
   {id:'f8',type:'CCS',name:'Comité de Contraloría Social Agua Prieta',municipality:'Agua Prieta',colony:'',program:'Programa de Bienestar Social',members:7,date:'2026-05-08',lat:31.3307,lng:-109.5489,status:'Activo',description:'',public:true},
   {id:'f9',type:'CCS',name:'Comité de Contraloría Social Etchojoa',municipality:'Etchojoa',colony:'',program:'Apoyo Alimentario',members:7,date:'2026-05-16',lat:26.9104,lng:-109.626,status:'Activo',description:'',public:true},
   {id:'f10',type:'CCS',name:'Comité de Contraloría Social Álamos',municipality:'Álamos',colony:'',program:'Apoyo Comunitario',members:7,date:'2026-05-24',lat:27.0275,lng:-108.9404,status:'Activo',description:'',public:true},
-  {id:'f11',type:'CPS',name:'Comité de Participación Social El Mirador',municipality:'Hermosillo',colony:'El Mirador',program:'',members:8,date:'2026-02-15',lat:29.118,lng:-110.993,status:'Activo',description:'',public:true},
-  {id:'f12',type:'CPS',name:'Comité de Participación Social Las Cuevitas',municipality:'Hermosillo',colony:'Las Cuevitas',program:'',members:9,date:'2026-02-28',lat:29.064,lng:-111.012,status:'Activo',description:'',public:true},
-  {id:'f13',type:'CPS',name:'Comité de Participación Social Villas del Real',municipality:'Hermosillo',colony:'Villas del Real',program:'',members:7,date:'2026-03-14',lat:29.129,lng:-110.947,status:'Activo',description:'',public:true},
-  {id:'f14',type:'CPS',name:'Comité de Participación Social Cañada de los Negros',municipality:'Hermosillo',colony:'Cañada de los Negros',program:'',members:7,date:'2026-03-28',lat:29.083,lng:-110.928,status:'Activo',description:'',public:true},
-  {id:'f15',type:'CPS',name:'Comité de Participación Social Internacional',municipality:'Hermosillo',colony:'Internacional',program:'',members:10,date:'2026-04-11',lat:29.096,lng:-111.018,status:'Activo',description:'',public:true},
-  {id:'f16',type:'CPS',name:'Comité de Participación Social Solidaridad',municipality:'Hermosillo',colony:'Solidaridad',program:'',members:8,date:'2026-04-26',lat:29.132,lng:-111.002,status:'Activo',description:'',public:true},
-  {id:'f17',type:'CPS',name:'Comité de Participación Social Nuevo Hermosillo',municipality:'Hermosillo',colony:'Nuevo Hermosillo',program:'',members:7,date:'2026-05-10',lat:29.008,lng:-110.934,status:'Activo',description:'',public:true},
-  {id:'f18',type:'CPS',name:'Comité de Participación Social Los Olivos',municipality:'Hermosillo',colony:'Los Olivos',program:'',members:8,date:'2026-05-23',lat:29.024,lng:-110.979,status:'Activo',description:'',public:true}
+  {id:'f11',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana El Mirador',municipality:'Hermosillo',colony:'El Mirador',program:'',members:8,date:'2026-02-15',lat:29.118,lng:-110.993,status:'Activo',description:'',public:true},
+  {id:'f12',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana Las Cuevitas',municipality:'Hermosillo',colony:'Las Cuevitas',program:'',members:9,date:'2026-02-28',lat:29.064,lng:-111.012,status:'Activo',description:'',public:true},
+  {id:'f13',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana Villas del Real',municipality:'Hermosillo',colony:'Villas del Real',program:'',members:7,date:'2026-03-14',lat:29.129,lng:-110.947,status:'Activo',description:'',public:true},
+  {id:'f14',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana Cañada de los Negros',municipality:'Hermosillo',colony:'Cañada de los Negros',program:'',members:7,date:'2026-03-28',lat:29.083,lng:-110.928,status:'Activo',description:'',public:true},
+  {id:'f15',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana Internacional',municipality:'Hermosillo',colony:'Internacional',program:'',members:10,date:'2026-04-11',lat:29.096,lng:-111.018,status:'Activo',description:'',public:true},
+  {id:'f16',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana Solidaridad',municipality:'Hermosillo',colony:'Solidaridad',program:'',members:8,date:'2026-04-26',lat:29.132,lng:-111.002,status:'Activo',description:'',public:true},
+  {id:'f17',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana Nuevo Hermosillo',municipality:'Hermosillo',colony:'Nuevo Hermosillo',program:'',members:7,date:'2026-05-10',lat:29.008,lng:-110.934,status:'Activo',description:'',public:true},
+  {id:'f18',type:'CPS',name:'Comité de Bienestar y Participación Ciudadana Los Olivos',municipality:'Hermosillo',colony:'Los Olivos',program:'',members:8,date:'2026-05-23',lat:29.024,lng:-110.979,status:'Activo',description:'',public:true}
 ];
 
 const DEFAULT_CONTENT = {
   hero: {
     eyebrow: 'Transparencia, comunidad y participación que generan valor público',
     title: 'La ciudadanía vigila, participa y transforma.',
-    subtitle: 'Conoce los Comités de Contraloría Social de Sonora y los Comités de Participación Social de las colonias de Hermosillo.'
+    subtitle: 'Conoce los Comités de Contraloría Social de Sonora y los Comités de Bienestar y Participación Ciudadana de las colonias de Hermosillo.'
   },
   participation: {
     title: '¿Formas parte de un comité?',
@@ -285,7 +285,7 @@ function renderDirectory() {
   $('#resultsText').textContent = `${data.length} comités encontrados`;
   wrap.innerHTML = data.length ? data.map(x => `
     <article class="committee-card">
-      <div class="committee-top"><span class="type-badge ${x.type === 'CPS' ? 'cps' : ''}">${x.type === 'CCS' ? 'Contraloría Social' : 'Participación Social'}</span></div>
+      <div class="committee-top"><span class="type-badge ${x.type === 'CPS' ? 'cps' : ''}">${x.type === 'CCS' ? 'Contraloría Social' : 'Bienestar y Participación Ciudadana'}</span></div>
       <h3>${esc(x.name)}</h3>
       <div class="committee-meta">
         <span><i class="fa-solid fa-location-dot"></i> ${esc(x.type === 'CCS' ? x.municipality : `${x.colony}, Hermosillo`)}</span>
@@ -300,12 +300,17 @@ function showDetail(id) {
   const x = committees.find(y => String(y.id) === String(id));
   if (!x) return;
   map?.closePopup();
+  const docs = publicDocuments.filter(doc => String(doc.committee_id || '') === String(x.id));
+  const photos = docs.filter(doc => String(doc.mime_type || '').startsWith('image/') || doc.category === 'Fotografía');
+  const files = docs.filter(doc => !photos.includes(doc));
+  const photoHtml = photos.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-images"></i> Fotografías</h3><div class="detail-gallery">${photos.map(doc => `<a href="${esc(doc._url || '#')}" target="_blank" rel="noopener"><img src="${esc(doc._url || '')}" alt="${esc(doc.title || 'Fotografía del comité')}" loading="lazy"><span>${esc(doc.title || 'Fotografía')}</span></a>`).join('')}</div></section>` : '';
+  const fileHtml = files.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-folder-open"></i> Expediente público</h3><div class="detail-files">${files.map(doc => `<a href="${esc(doc._url || '#')}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i><div><strong>${esc(doc.title)}</strong><span>${esc(doc.category || 'Documento')}</span></div></a>`).join('')}</div></section>` : '';
   $('#detailContent').innerHTML = `
-    <div class="detail-hero"><span class="type-badge ${x.type === 'CPS' ? 'cps' : ''}">${x.type === 'CCS' ? 'Comité de Contraloría Social' : 'Comité de Participación Social'}</span><h2>${esc(x.name)}</h2><p>${esc(x.description || (x.type === 'CCS' ? 'Mecanismo ciudadano de vigilancia y seguimiento de programas sociales.' : 'Mecanismo de organización comunitaria y colaboración vecinal.'))}</p></div>
-    <div class="detail-grid"><div><span>Municipio</span><strong>${esc(x.municipality)}</strong></div>${x.type === 'CPS' ? `<div><span>Colonia</span><strong>${esc(x.colony)}</strong></div>` : `<div><span>Programa</span><strong>${esc(x.program || 'No especificado')}</strong></div>`}<div><span>Integrantes</span><strong>${x.members}</strong></div><div><span>Fecha de integración</span><strong>${esc(formatDate(x.date))}</strong></div><div><span>Estatus</span><strong>${esc(x.status)}</strong></div><div><span>Ubicación</span><strong>${x.lat.toFixed(4)}, ${x.lng.toFixed(4)}</strong></div></div>`;
+    <div class="detail-hero"><span class="type-badge ${x.type === 'CPS' ? 'cps' : ''}">${x.type === 'CCS' ? 'Comité de Contraloría Social' : 'Comité de Bienestar y Participación Ciudadana'}</span><h2>${esc(x.name)}</h2><p>${esc(x.description || (x.type === 'CCS' ? 'Mecanismo ciudadano de vigilancia y seguimiento de programas sociales.' : 'Mecanismo de organización comunitaria, bienestar y participación ciudadana.'))}</p></div>
+    <div class="detail-grid"><div><span>Municipio</span><strong>${esc(x.municipality)}</strong></div>${x.type === 'CPS' ? `<div><span>Colonia</span><strong>${esc(x.colony)}</strong></div>` : `<div><span>Programa</span><strong>${esc(x.program || 'No especificado')}</strong></div>`}<div><span>Integrantes</span><strong>${x.members}</strong></div><div><span>Fecha de integración</span><strong>${esc(formatDate(x.date))}</strong></div><div><span>Estatus</span><strong>${esc(x.status)}</strong></div><div><span>Ubicación</span><strong>${x.lat.toFixed(4)}, ${x.lng.toFixed(4)}</strong></div></div>
+    ${fileHtml}${photoHtml}${!docs.length ? '<p class="detail-empty">Aún no hay documentos públicos cargados para este comité.</p>' : ''}`;
   openLayer('#detailModal');
 }
-
 function charts() {
   if (!$('#typeChart') || !$('#territoryChart')) return;
   if (typeChart) typeChart.destroy();
@@ -314,7 +319,7 @@ function charts() {
   const cps = committees.filter(x => x.type === 'CPS').length;
   typeChart = new Chart($('#typeChart'), {
     type: 'bar',
-    data: { labels: ['Contraloría Social','Participación Social'], datasets: [{ data: [ccs,cps], backgroundColor: ['#a72861','#6e3f72'], borderRadius: 12, borderSkipped: false }] },
+    data: { labels: ['Contraloría Social','Bienestar y Participación Ciudadana'], datasets: [{ data: [ccs,cps], backgroundColor: ['#a72861','#6e3f72'], borderRadius: 12, borderSkipped: false }] },
     options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#eee4e8' } }, x: { grid: { display: false } } } }
   });
   const municipalities = new Set(committees.filter(x => x.type === 'CCS').map(x => x.municipality)).size;
@@ -329,13 +334,13 @@ function charts() {
 function renderPublicResources() {
   const wrap = $('#publicResources');
   if (!wrap) return;
-  $('#resourceCount').textContent = `${publicDocuments.length} ${publicDocuments.length === 1 ? 'recurso' : 'recursos'}`;
-  wrap.innerHTML = publicDocuments.length ? publicDocuments.map(doc => `
+  const resources = publicDocuments.filter(doc => !(String(doc.mime_type || '').startsWith('image/') || doc.category === 'Fotografía'));
+  $('#resourceCount').textContent = `${resources.length} ${resources.length === 1 ? 'recurso' : 'recursos'}`;
+  wrap.innerHTML = resources.length ? resources.map(doc => `
     <a class="resource-card" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener noreferrer" data-category="${esc(doc.category)}">
       <i class="fa-solid fa-file-arrow-down"></i><div><span>${esc(doc.category || 'General')}</span><strong>${esc(doc.title)}</strong><small>${esc(doc.description || 'Abrir documento')}</small></div>
     </a>`).join('') : '<p class="resource-empty">Aún no hay documentos públicos cargados.</p>';
 }
-
 function refreshPublic() {
   applySiteContent();
   kpis(committees);
@@ -429,7 +434,7 @@ function populateCommitteeSelects() {
   const opts = adminCommittees.map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');
   const doc = $('#documentCommittee');
   const training = $('#trainingCommittee');
-  if (doc) doc.innerHTML = `<option value="">Documento general</option>${opts}`;
+  if (doc) doc.innerHTML = `<option value="">Selecciona un comité</option>${opts}`;
   if (training) training.innerHTML = `<option value="">General</option>${opts}`;
 }
 
@@ -438,7 +443,7 @@ function renderDocumentAdmin() {
   if (!wrap) return;
   wrap.innerHTML = adminDocuments.length ? adminDocuments.map(doc => {
     const committee = adminCommittees.find(x => x.id === doc.committee_id);
-    return `<article class="admin-card"><div class="admin-card-icon"><i class="fa-solid fa-file-lines"></i></div><div><span>${esc(doc.category || 'General')} · ${doc.public ? 'Público' : 'Interno'}</span><h3>${esc(doc.title)}</h3><p>${esc(committee?.name || doc.description || 'Documento general')}</p><a href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>${isAdmin() ? `<button class="action-btn danger" data-delete-document="${esc(doc.id)}" aria-label="Eliminar documento"><i class="fa-solid fa-trash"></i></button>` : ''}</article>`;
+    return `<article class="admin-card"><div class="admin-card-icon"><i class="fa-solid fa-folder-open"></i></div><div><span>${esc(doc.category || 'General')} · ${doc.public ? 'Público' : 'Interno'}</span><h3>${esc(doc.title)}</h3><p>${esc(committee?.name || doc.description || 'Documento general')}</p><a href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>${isAdmin() ? `<button class="action-btn danger" data-delete-document="${esc(doc.id)}" aria-label="Eliminar documento"><i class="fa-solid fa-trash"></i></button>` : ''}</article>`;
   }).join('') : '<div class="empty-state"><i class="fa-solid fa-folder-open"></i><h3>Sin documentos</h3><p>Sube el primer documento institucional.</p></div>';
 }
 
@@ -553,37 +558,52 @@ async function deleteCommittee(id) {
 async function saveDocument(event) {
   event.preventDefault();
   if (!db || !isStaff()) return;
-  const file = $('#documentFile').files[0];
-  if (!file) return;
-  if (file.size > 15 * 1024 * 1024) { toast('El archivo supera el límite de 15 MB.', 'error'); return; }
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '-');
-  const path = `${currentSession.user.id}/${crypto.randomUUID()}-${safeName}`;
-  const upload = await db.storage.from('committee-documents').upload(path, file, { cacheControl: '3600', upsert: false });
-  if (upload.error) { console.error(upload.error); toast('No se pudo subir el archivo.', 'error'); return; }
-  const insert = await db.from('documents').insert({
-    title: $('#documentTitle').value.trim(),
-    category: $('#documentCategory').value,
-    committee_id: $('#documentCommittee').value || null,
-    description: $('#documentDescription').value.trim(),
-    storage_path: path,
-    file_url: '',
-    public: $('#documentPublic').checked,
-    created_by: currentSession.user.id
-  });
-  if (insert.error) {
-    console.error(insert.error);
-    await db.storage.from('committee-documents').remove([path]);
-    toast('No se pudo registrar el documento.', 'error');
-    return;
+  const files = [...($('#documentFile').files || [])];
+  const committeeId = $('#documentCommittee').value;
+  if (!committeeId) { toast('Selecciona el comité al que pertenece el expediente.', 'error'); return; }
+  if (!files.length) return;
+  if (files.some(file => file.size > 15 * 1024 * 1024)) { toast('Uno de los archivos supera el límite de 15 MB.', 'error'); return; }
+  const baseTitle = $('#documentTitle').value.trim();
+  const category = $('#documentCategory').value;
+  const description = $('#documentDescription').value.trim();
+  const isPublic = $('#documentPublic').checked;
+  let uploaded = 0;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '-');
+    const path = `${committeeId}/${crypto.randomUUID()}-${safeName}`;
+    const upload = await db.storage.from('committee-documents').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type || undefined });
+    if (upload.error) { console.error(upload.error); toast(`No se pudo subir ${file.name}.`, 'error'); continue; }
+    const title = files.length === 1 ? baseTitle : `${baseTitle} · ${i + 1}`;
+    const insert = await db.from('documents').insert({
+      title,
+      category,
+      committee_id: committeeId,
+      description,
+      storage_path: path,
+      file_url: '',
+      file_name: file.name,
+      mime_type: file.type || '',
+      file_size: file.size,
+      public: isPublic,
+      created_by: currentSession.user.id
+    });
+    if (insert.error) {
+      console.error(insert.error);
+      await db.storage.from('committee-documents').remove([path]);
+      toast(`No se pudo registrar ${file.name}.`, 'error');
+      continue;
+    }
+    uploaded++;
   }
+  if (!uploaded) return;
   $('#documentForm').reset();
   $('#documentPublic').checked = true;
   closeLayer('#documentModal');
-  toast('Documento publicado correctamente.');
+  toast(uploaded === 1 ? 'Archivo agregado al expediente.' : `${uploaded} archivos agregados al expediente.`);
   await Promise.all([loadPublicData(), loadAdminData()]);
   setAdminTab('documentos');
 }
-
 async function deleteDocument(id) {
   if (!isAdmin() || !confirm('¿Eliminar este documento?')) return;
   const doc = adminDocuments.find(x => x.id === id);
@@ -663,6 +683,32 @@ async function deleteRequest(id) {
   if (error) { console.error(error); toast('No se pudo eliminar.', 'error'); return; }
   toast('Solicitud eliminada.');
   await loadAdminData();
+}
+
+async function createUserFromAdmin(event) {
+  event.preventDefault();
+  if (!db || !isAdmin()) return;
+  const message = $('#newUserMessage');
+  message.hidden = true;
+  const payload = {
+    full_name: $('#newUserName').value.trim(),
+    email: $('#newUserEmail').value.trim(),
+    password: $('#newUserPassword').value,
+    role: $('#newUserRole').value
+  };
+  if (payload.password.length < 8) { message.hidden = false; message.textContent = 'La contraseña debe tener al menos 8 caracteres.'; return; }
+  const { data, error } = await db.functions.invoke('admin-create-user', { body: payload });
+  if (error || !data?.ok) {
+    console.error(error || data);
+    message.hidden = false;
+    message.textContent = data?.error || error?.message || 'No se pudo crear el usuario. Verifica que la función admin-create-user esté desplegada.';
+    return;
+  }
+  $('#userCreateForm').reset();
+  closeLayer('#userModal');
+  toast('Usuario creado correctamente.');
+  await loadAdminData();
+  setAdminTab('usuarios');
 }
 
 async function saveUser(id) {
@@ -840,10 +886,10 @@ function bindUI() {
   $$('[data-close-form]').forEach(btn => btn.addEventListener('click', () => closeLayer('#formModal')));
   $$('[data-close-document]').forEach(btn => btn.addEventListener('click', () => closeLayer('#documentModal')));
   $$('[data-close-training]').forEach(btn => btn.addEventListener('click', () => closeLayer('#trainingModal')));
+  $$('[data-close-user]').forEach(btn => btn.addEventListener('click', () => closeLayer('#userModal')));
   $$('.admin-tabs button').forEach(btn => btn.addEventListener('click', () => setAdminTab(btn.dataset.adminTab)));
 
   $('#loginForm')?.addEventListener('submit', login);
-  $('#registerAccount')?.addEventListener('click', registerAccount);
   $('#forgotPassword')?.addEventListener('click', forgotPassword);
   $('#passwordForm')?.addEventListener('submit', updatePassword);
   $$('[data-close-password]').forEach(btn => btn.addEventListener('click', () => closeLayer('#passwordModal')));
@@ -855,6 +901,8 @@ function bindUI() {
   $('#committeeForm')?.addEventListener('submit', saveCommittee);
   $('#newDocument')?.addEventListener('click', () => { $('#documentForm').reset(); $('#documentPublic').checked = true; openLayer('#documentModal'); });
   $('#documentForm')?.addEventListener('submit', saveDocument);
+  $('#newUser')?.addEventListener('click', () => { $('#userCreateForm').reset(); $('#newUserMessage').hidden = true; openLayer('#userModal'); });
+  $('#userCreateForm')?.addEventListener('submit', createUserFromAdmin);
   $('#newTraining')?.addEventListener('click', newTrainingForm);
   $('#trainingForm')?.addEventListener('submit', saveTraining);
   $('#contentForm')?.addEventListener('submit', saveContent);
@@ -885,7 +933,7 @@ function bindUI() {
   });
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') ['#detailModal','#loginModal','#passwordModal','#formModal','#documentModal','#trainingModal','#adminDrawer'].forEach(closeLayer);
+    if (event.key === 'Escape') ['#detailModal','#loginModal','#passwordModal','#formModal','#documentModal','#trainingModal','#userModal','#adminDrawer'].forEach(closeLayer);
   });
 
   $$('[data-resource-category]').forEach(link => link.addEventListener('click', () => {
