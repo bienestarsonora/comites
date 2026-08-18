@@ -264,9 +264,35 @@ function renderMap() {
     const popup = L.popup({ className: 'committee-map-popup', maxWidth: 310, autoPan: true, autoPanPadding: [40,40] })
       .setContent(`<div class="map-popup-card"><strong>${esc(x.name)}</strong><span class="map-popup-location">${esc(location)}</span><button type="button" data-popup-id="${esc(x.id)}">Ver ficha</button></div>`);
     const marker = L.marker([x.lat,x.lng], { icon: markerIcon(x.type), keyboard: true, title: x.name }).addTo(map).bindPopup(popup);
+    marker._committeeId = String(x.id);
     markers.push(marker);
   });
-  $('#visibleCount').textContent = `${data.length} comités visibles`;
+  $('#visibleCount').textContent = `${data.length} ${data.length === 1 ? 'comité visible' : 'comités visibles'}`;
+}
+
+function focusMapSearchResults() {
+  if (!map) return;
+  const query = ($('#mapSearch')?.value || '').trim();
+  if (!query) return;
+
+  const data = mapFiltered().filter(x => Number.isFinite(x.lat) && Number.isFinite(x.lng));
+  if (!data.length) return;
+
+  if (data.length === 1) {
+    const item = data[0];
+    const zoom = item.type === 'CPS' ? 16 : 14;
+    const marker = markers.find(m => m._committeeId === String(item.id));
+    map.flyTo([item.lat, item.lng], zoom, { animate: true, duration: 0.55 });
+    if (marker) {
+      map.once('moveend', () => marker.openPopup());
+    }
+    return;
+  }
+
+  const bounds = L.latLngBounds(data.map(x => [x.lat, x.lng]));
+  if (bounds.isValid()) {
+    map.flyToBounds(bounds, { padding: [55, 55], maxZoom: 14, animate: true, duration: 0.55 });
+  }
 }
 
 function filteredDirectory() {
@@ -866,7 +892,13 @@ function bindUI() {
     nav.classList.toggle('open');
     $('.menu-toggle').setAttribute('aria-expanded', nav.classList.contains('open') ? 'true' : 'false');
   });
-  ['mapSearch','municipalityFilter','colonyFilter'].forEach(id => $(`#${id}`)?.addEventListener('input', renderMap));
+  let mapSearchTimer;
+  $('#mapSearch')?.addEventListener('input', () => {
+    renderMap();
+    clearTimeout(mapSearchTimer);
+    mapSearchTimer = setTimeout(focusMapSearchResults, 220);
+  });
+  ['municipalityFilter','colonyFilter'].forEach(id => $(`#${id}`)?.addEventListener('input', renderMap));
   $$('.type-check').forEach(x => x.addEventListener('change', renderMap));
   $('#resetMap')?.addEventListener('click', () => {
     map?.setView([29.3,-110.7],6);
