@@ -58,3 +58,8 @@
   #certificate .certificate-note{font-size:3.1mm!important;margin-top:4mm!important}
   #certificate .print-button,#certificate .certificate-download-help{display:none!important}
 }
+
+/* Identidad institucional */
+.course-logo{width:170px;height:auto;display:block}.course-brand{gap:14px}.certificate-logo{width:190px;height:auto;display:block;margin:0 auto 14px}.certificate-mark{display:none!important}
+@media(max-width:680px){.course-logo{width:145px}.course-brand span:last-child{display:none}.certificate-logo{width:160px}}
+@media print{#certificate .certificate-logo{width:50mm!important;height:auto!important;margin:0 auto 5mm!important}}
