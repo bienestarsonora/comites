@@ -27,3 +27,14 @@ Sube a la raíz de `bienestarsonora/comites` TODOS los archivos y carpetas de es
 - Carga múltiple de fotografías.
 - Fotografías visibles en la ficha pública cuando se marquen como públicas.
 - Supabase Auth, RLS y Storage privado.
+
+
+## v7 — búsqueda del mapa
+- Cada búsqueda nueva cancela cualquier movimiento anterior del mapa.
+- Cuando hay una coincidencia única o exacta, el mapa fuerza centro y zoom al comité encontrado.
+- Al cambiar de un resultado a otro (por ejemplo, Caborca → Navojoa), el nuevo resultado siempre reposiciona el mapa.
+
+
+## v8 — zoom con rueda del mouse
+- El mapa permite acercar y alejar directamente con la rueda del mouse.
+- El zoom queda habilitado permanentemente, sin necesidad de hacer clic o enfocar antes el mapa.

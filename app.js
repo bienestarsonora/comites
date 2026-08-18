@@ -227,13 +227,20 @@ function options() {
 
 function initMap() {
   if (!$('#committeeMap') || map) return;
-  map = L.map('committeeMap', { scrollWheelZoom: false, zoomControl: true }).setView([29.3, -110.7], 6);
+  map = L.map('committeeMap', {
+    scrollWheelZoom: true,
+    zoomControl: true,
+    wheelDebounceTime: 30,
+    wheelPxPerZoomLevel: 60
+  }).setView([29.3, -110.7], 6);
+
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
-  map.on('focus', () => map.scrollWheelZoom.enable());
-  map.on('blur', () => map.scrollWheelZoom.disable());
+
+  // Zoom con la rueda del mouse habilitado de forma permanente.
+  map.scrollWheelZoom.enable();
 }
 
 function mapFiltered() {
@@ -272,26 +279,46 @@ function renderMap() {
 
 function focusMapSearchResults() {
   if (!map) return;
-  const query = ($('#mapSearch')?.value || '').trim();
+  const query = ($('#mapSearch')?.value || '').trim().toLowerCase();
   if (!query) return;
 
   const data = mapFiltered().filter(x => Number.isFinite(x.lat) && Number.isFinite(x.lng));
   if (!data.length) return;
 
-  if (data.length === 1) {
-    const item = data[0];
-    const zoom = item.type === 'CPS' ? 16 : 14;
-    const marker = markers.find(m => m._committeeId === String(item.id));
-    map.flyTo([item.lat, item.lng], zoom, { animate: true, duration: 0.55 });
+  // Detiene cualquier vuelo anterior. Esto evita que una búsqueda nueva
+  // (por ejemplo, cambiar de Caborca a Navojoa) quede anulada por la animación previa.
+  map.stop();
+
+  // Prioriza una coincidencia exacta por nombre, municipio o colonia.
+  const exact = data.find(x =>
+    String(x.name || '').toLowerCase() === query ||
+    String(x.municipality || '').toLowerCase() === query ||
+    String(x.colony || '').toLowerCase() === query
+  );
+
+  const target = exact || (data.length === 1 ? data[0] : null);
+
+  if (target) {
+    const zoom = target.type === 'CPS' ? 16 : 14;
+    const marker = markers.find(m => m._committeeId === String(target.id));
+
+    // setView es intencionalmente inmediato y determinista.
+    // Cada nueva búsqueda fuerza centro + nivel de zoom aunque el mapa
+    // venga de una búsqueda anterior.
+    map.setView([target.lat, target.lng], zoom, { animate: false });
+
     if (marker) {
-      map.once('moveend', () => marker.openPopup());
+      setTimeout(() => {
+        marker.openPopup();
+        map.panInside([target.lat, target.lng], { padding: [70, 70], animate: false });
+      }, 40);
     }
     return;
   }
 
   const bounds = L.latLngBounds(data.map(x => [x.lat, x.lng]));
   if (bounds.isValid()) {
-    map.flyToBounds(bounds, { padding: [55, 55], maxZoom: 14, animate: true, duration: 0.55 });
+    map.fitBounds(bounds, { padding: [55, 55], maxZoom: 14, animate: false });
   }
 }
 
