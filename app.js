@@ -45,6 +45,11 @@ let adminDocuments = [];
 let trainings = [];
 let requests = [];
 let profiles = [];
+let publicTrainings = [];
+let publicEvents = [];
+let publicCommitments = [];
+let adminEvents = [];
+let adminCommitments = [];
 let siteContent = structuredClone(DEFAULT_CONTENT);
 let currentSession = null;
 let currentProfile = null;
@@ -52,6 +57,8 @@ let map;
 let markers = [];
 let typeChart;
 let territoryChart;
+let commitmentStatusChart;
+let commitmentTrendChart;
 let viewMode = 'cards';
 
 function normalizeCommittee(row) {
@@ -155,6 +162,68 @@ function formatDate(date) {
   return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function daysBetween(start, end) {
+  if (!start || !end) return null;
+  const a = new Date(`${start}T12:00:00`);
+  const b = new Date(`${end}T12:00:00`);
+  if (Number.isNaN(a.getTime()) || Number.isNaN(b.getTime())) return null;
+  return Math.max(0, Math.round((b - a) / 86400000));
+}
+
+function isImageDocument(doc) {
+  return String(doc?.mime_type || '').startsWith('image/') || doc?.category === 'Fotografía';
+}
+
+function impactStats(sourceCommittees = committees, sourceTrainings = publicTrainings, sourceEvents = publicEvents, sourceCommitments = publicCommitments, sourceDocuments = publicDocuments) {
+  const active = sourceCommittees.filter(x => x.status === 'Activo').length;
+  const trainedIds = new Set(sourceTrainings.filter(x => x.status === 'Realizada' && x.committee_id).map(x => String(x.committee_id)));
+  const trainedPct = sourceCommittees.length ? Math.round(sourceCommittees.filter(x => trainedIds.has(String(x.id))).length / sourceCommittees.length * 100) : 0;
+  const completed = sourceCommitments.filter(x => x.status === 'Cumplido');
+  const completedPct = sourceCommitments.length ? Math.round(completed.length / sourceCommitments.length * 100) : 0;
+  const responseDays = completed.map(x => daysBetween(x.commitment_date || x.created_at?.slice(0,10), x.completed_date || x.updated_at?.slice(0,10))).filter(x => Number.isFinite(x));
+  const avgDays = responseDays.length ? Math.round(responseDays.reduce((a,b)=>a+b,0) / responseDays.length * 10) / 10 : null;
+  const sessions = sourceEvents.filter(x => ['Sesión','Reunión'].includes(x.event_type)).length;
+  const participations = sourceCommittees.reduce((sum,x)=>sum+Number(x.members||0),0) + sourceTrainings.filter(x=>x.status==='Realizada').reduce((sum,x)=>sum+Number(x.attendees||0),0);
+  const completeFiles = sourceCommittees.filter(c => {
+    const docs = sourceDocuments.filter(d => String(d.committee_id||'') === String(c.id));
+    return docs.some(d => d.category === 'Acta constitutiva') && docs.some(isImageDocument);
+  }).length;
+  const completeFilesPct = sourceCommittees.length ? Math.round(completeFiles / sourceCommittees.length * 100) : 0;
+  return { active, trainedPct, events: sourceEvents.length, commitments: sourceCommitments.length, completedPct, avgDays, sessions, participations, completeFilesPct };
+}
+
+function committeeStrengthScore(committee) {
+  const id = String(committee.id);
+  const docs = publicDocuments.filter(d => String(d.committee_id||'') === id);
+  const trainingsFor = publicTrainings.filter(t => String(t.committee_id||'') === id && t.status === 'Realizada');
+  const eventsFor = publicEvents.filter(e => String(e.committee_id||'') === id);
+  const commitmentsFor = publicCommitments.filter(c => String(c.committee_id||'') === id);
+  const hasActa = docs.some(d => d.category === 'Acta constitutiva');
+  const hasEvidence = docs.some(isImageDocument) || docs.some(d => d.category === 'Evidencia');
+  const recentActivity = eventsFor.length > 0;
+  const followup = commitmentsFor.length ? (commitmentsFor.some(c => ['Cumplido','En proceso'].includes(c.status)) ? 15 : 8) : 0;
+  const parts = {
+    constitucion: hasActa ? 20 : 0,
+    capacitacion: trainingsFor.length ? 20 : 0,
+    actividad: recentActivity ? 20 : 0,
+    evidencia: hasEvidence ? 15 : 0,
+    seguimiento: followup,
+    participacion: Number(committee.members||0) > 0 ? 10 : 0
+  };
+  return { ...parts, total: Object.values(parts).reduce((a,b)=>a+b,0) };
+}
+
+async function optionalData(promise, label) {
+  try {
+    const res = await promise;
+    if (res.error) { console.warn(`Módulo opcional ${label}:`, res.error.message); return []; }
+    return res.data || [];
+  } catch (error) {
+    console.warn(`Módulo opcional ${label}:`, error?.message || error);
+    return [];
+  }
+}
+
 function kpis(source = committees) {
   const ccs = source.filter(x => x.type === 'CCS').length;
   const cps = source.filter(x => x.type === 'CPS').length;
@@ -178,6 +247,9 @@ async function loadPublicData() {
   if (!db) {
     committees = structuredClone(FALLBACK_COMMITTEES);
     publicDocuments = [];
+    publicTrainings = [];
+    publicEvents = [];
+    publicCommitments = [];
     siteContent = structuredClone(DEFAULT_CONTENT);
     setConnectionBanner('La plataforma está en modo local hasta completar la conexión de Supabase.', 'warning');
     refreshPublic();
@@ -196,6 +268,14 @@ async function loadPublicData() {
 
     committees = committeeRes.data.map(normalizeCommittee);
     publicDocuments = await hydrateDocumentUrls(documentRes.data || []);
+    const [trainingRows, eventRows, commitmentRows] = await Promise.all([
+      optionalData(db.from('trainings').select('*').eq('public', true).order('training_date', { ascending: false }), 'capacitaciones públicas'),
+      optionalData(db.from('committee_events').select('*').eq('public', true).order('event_date', { ascending: false }), 'bitácora pública'),
+      optionalData(db.from('commitments').select('*').eq('public', true).order('commitment_date', { ascending: false }), 'compromisos públicos')
+    ]);
+    publicTrainings = trainingRows;
+    publicEvents = eventRows;
+    publicCommitments = commitmentRows;
     siteContent = structuredClone(DEFAULT_CONTENT);
     (contentRes.data || []).forEach(row => { if (row.key && row.value) siteContent[row.key] = row.value; });
     setConnectionBanner('');
@@ -204,6 +284,9 @@ async function loadPublicData() {
     console.error(error);
     committees = structuredClone(FALLBACK_COMMITTEES);
     publicDocuments = [];
+    publicTrainings = [];
+    publicEvents = [];
+    publicCommitments = [];
     setConnectionBanner('No fue posible consultar la base de datos. Se muestra una copia local temporal.', 'error');
     refreshPublic();
   }
@@ -408,20 +491,27 @@ function showDetail(id) {
   if (!x) return;
   map?.closePopup();
   const docs = publicDocuments.filter(doc => String(doc.committee_id || '') === String(x.id));
-  const photos = docs.filter(doc => String(doc.mime_type || '').startsWith('image/') || doc.category === 'Fotografía');
+  const photos = docs.filter(isImageDocument);
   const files = docs.filter(doc => !photos.includes(doc));
+  const events = publicEvents.filter(e => String(e.committee_id||'') === String(x.id)).sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||'')));
+  const commitments = publicCommitments.filter(c => String(c.committee_id||'') === String(x.id)).sort((a,b)=>String(b.commitment_date||'').localeCompare(String(a.commitment_date||'')));
+  const score = committeeStrengthScore(x);
+  const scoreLabel = score.total >= 80 ? 'Comité consolidado' : score.total >= 60 ? 'Comité en fortalecimiento' : score.total >= 40 ? 'Comité en desarrollo' : 'Fortalecimiento inicial';
   const photoHtml = photos.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-images"></i> Fotografías</h3><div class="detail-gallery">${photos.map(doc => `<a href="${esc(doc._url || '#')}" target="_blank" rel="noopener"><img src="${esc(doc._url || '')}" alt="${esc(doc.title || 'Fotografía del comité')}" loading="lazy"><span>${esc(doc.title || 'Fotografía')}</span></a>`).join('')}</div></section>` : '';
   const fileHtml = files.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-folder-open"></i> Expediente público</h3><div class="detail-files">${files.map(doc => `<a href="${esc(doc._url || '#')}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i><div><strong>${esc(doc.title)}</strong><span>${esc(doc.category || 'Documento')}</span></div></a>`).join('')}</div></section>` : '';
+  const timelineHtml = events.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-timeline"></i> Bitácora de acciones</h3><div class="public-timeline">${events.map(e => `<article><time>${esc(formatDate(e.event_date))}</time><span class="event-dot"></span><div><b>${esc(e.event_type)}</b><strong>${esc(e.title)}</strong>${e.description ? `<p>${esc(e.description)}</p>` : ''}</div></article>`).join('')}</div></section>` : '';
+  const commitmentsHtml = commitments.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-list-check"></i> Seguimiento de compromisos</h3><div class="public-commitments">${commitments.map(c => `<article class="commitment-card status-${esc(String(c.status).toLowerCase().replaceAll(' ','-'))}"><div><strong>${esc(c.title)}</strong><span>${esc(c.responsible_agency || 'Responsable por definir')}</span></div><span class="status-chip">${esc(c.status)}</span><small>Fecha límite: ${esc(formatDate(c.due_date))}${Number.isFinite(Number(c.progress)) ? ` · Avance: ${Number(c.progress)}%` : ''}</small></article>`).join('')}</div></section>` : '';
   $('#detailContent').innerHTML = `
     <div class="detail-hero"><span class="type-badge ${x.type === 'CPS' ? 'cps' : ''}">${x.type === 'CCS' ? 'Comité de Contraloría Social' : 'Comité de Bienestar y Participación Ciudadana'}</span><h2>${esc(x.name)}</h2><p>${esc(x.description || (x.type === 'CCS' ? 'Mecanismo ciudadano de vigilancia y seguimiento de programas sociales.' : 'Mecanismo de organización comunitaria, bienestar y participación ciudadana.'))}</p></div>
     <div class="detail-grid"><div><span>Municipio</span><strong>${esc(x.municipality)}</strong></div>${x.type === 'CPS' ? `<div><span>Colonia</span><strong>${esc(x.colony)}</strong></div>` : `<div><span>Programa</span><strong>${esc(x.program || 'No especificado')}</strong></div>`}<div><span>Integrantes</span><strong>${x.members}</strong></div><div><span>Fecha de integración</span><strong>${esc(formatDate(x.date))}</strong></div><div><span>Estatus</span><strong>${esc(x.status)}</strong></div><div><span>Ubicación</span><strong>${x.lat.toFixed(4)}, ${x.lng.toFixed(4)}</strong></div></div>
-    ${fileHtml}${photoHtml}${!docs.length ? '<p class="detail-empty">Aún no hay documentos públicos cargados para este comité.</p>' : ''}`;
+    <section class="strength-card"><div><span>Índice de Fortalecimiento del Comité</span><strong>${score.total}<small>/100</small></strong><b>${scoreLabel}</b></div><div class="strength-bars">${[['Constitución',score.constitucion,20],['Capacitación',score.capacitacion,20],['Actividad',score.actividad,20],['Evidencia',score.evidencia,15],['Seguimiento',score.seguimiento,15],['Participación',score.participacion,10]].map(([label,value,max])=>`<label><span>${label}<b>${value}/${max}</b></span><i><em style="width:${Math.round(value/max*100)}%"></em></i></label>`).join('')}</div></section>
+    ${commitmentsHtml}${timelineHtml}${fileHtml}${photoHtml}${!docs.length && !events.length && !commitments.length ? '<p class="detail-empty">Este comité aún no cuenta con expediente o seguimiento público registrado.</p>' : ''}`;
   openLayer('#detailModal');
 }
+
 function charts() {
   if (!$('#typeChart') || !$('#territoryChart')) return;
-  if (typeChart) typeChart.destroy();
-  if (territoryChart) territoryChart.destroy();
+  [typeChart, territoryChart, commitmentStatusChart, commitmentTrendChart].forEach(chart => chart?.destroy());
   const ccs = committees.filter(x => x.type === 'CCS').length;
   const cps = committees.filter(x => x.type === 'CPS').length;
   typeChart = new Chart($('#typeChart'), {
@@ -433,9 +523,72 @@ function charts() {
   const colonies = new Set(committees.filter(x => x.type === 'CPS').map(x => x.colony)).size;
   territoryChart = new Chart($('#territoryChart'), {
     type: 'doughnut',
-    data: { labels: ['Municipios con CCS','Colonias con CPS'], datasets: [{ data: [municipalities,colonies], backgroundColor: ['#a72861','#6e3f72'], borderWidth: 0 }] },
+    data: { labels: ['Municipios con CCS','Colonias con BPC'], datasets: [{ data: [municipalities,colonies], backgroundColor: ['#a72861','#6e3f72'], borderWidth: 0 }] },
     options: { cutout: '70%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 18 } } } }
   });
+  if ($('#commitmentStatusChart')) {
+    const statuses = ['Cumplido','En proceso','Vencido','Por iniciar'];
+    const counts = statuses.map(s => publicCommitments.filter(c => c.status === s).length);
+    commitmentStatusChart = new Chart($('#commitmentStatusChart'), {
+      type: 'doughnut', data: { labels: statuses, datasets: [{ data: counts, backgroundColor: ['#2f9e62','#e9b949','#c83f49','#b8adb3'], borderWidth: 0 }] },
+      options: { cutout: '67%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } } }
+    });
+  }
+  if ($('#commitmentTrendChart')) {
+    const now = new Date();
+    const months = Array.from({length:12}, (_,i) => { const d = new Date(now.getFullYear(), now.getMonth()-11+i, 1); return { key:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`, label:d.toLocaleDateString('es-MX',{month:'short'}) }; });
+    const values = months.map(m => publicCommitments.filter(c => c.status === 'Cumplido' && String(c.completed_date||'').startsWith(m.key)).length);
+    commitmentTrendChart = new Chart($('#commitmentTrendChart'), {
+      type: 'line', data: { labels: months.map(m=>m.label), datasets: [{ label:'Cumplidos', data: values, borderColor:'#6f1238', backgroundColor:'rgba(111,18,56,.08)', tension:.35, fill:true, pointRadius:3 }] },
+      options: { plugins: { legend: { display:false } }, scales:{ y:{ beginAtZero:true, ticks:{precision:0}, grid:{color:'#eee4e8'} }, x:{grid:{display:false}} } }
+    });
+  }
+}
+
+function renderImpactDashboard() {
+  const stats = impactStats();
+  const values = { active: stats.active, trainedPct: `${stats.trainedPct}%`, events: stats.events, completedPct: `${stats.completedPct}%`, avgDays: stats.avgDays == null ? '—' : `${stats.avgDays} días`, sessions: stats.sessions, participations: stats.participations, completeFilesPct: `${stats.completeFilesPct}%` };
+  Object.entries(values).forEach(([key,value]) => $$(`[data-impact="${key}"]`).forEach(el => el.textContent = typeof value === 'number' ? value.toLocaleString('es-MX') : value));
+  const updated = $('#openDataUpdated');
+  if (updated) updated.textContent = new Date().toLocaleString('es-MX', { dateStyle:'medium', timeStyle:'short' });
+}
+
+function csvCell(value) {
+  const s = String(value ?? '');
+  return /[",\n]/.test(s) ? `"${s.replaceAll('"','""')}"` : s;
+}
+
+function downloadText(filename, text, mime='text/plain;charset=utf-8') {
+  const blob = new Blob([text], { type:mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function openDataPayload() {
+  return {
+    generated_at: new Date().toISOString(),
+    source: 'Secretaría de Bienestar del Estado de Sonora',
+    committees,
+    commitments: publicCommitments,
+    actions: publicEvents,
+    trainings: publicTrainings.map(({notes,created_by,...rest}) => rest),
+    documents: publicDocuments.map(({_url,storage_path,created_by,...rest}) => ({...rest, url:_url || rest.file_url || ''}))
+  };
+}
+
+function downloadOpenCsv() {
+  const headers = ['id','tipo','nombre','municipio','colonia','programa','integrantes','fecha_integracion','estatus','latitud','longitud','indice_fortalecimiento'];
+  const rows = committees.map(c => [c.id,c.type,c.name,c.municipality,c.colony,c.program,c.members,c.date,c.status,c.lat,c.lng,committeeStrengthScore(c).total]);
+  downloadText('comites-datos-abiertos.csv', [headers,...rows].map(r=>r.map(csvCell).join(',')).join('\n'), 'text/csv;charset=utf-8');
+}
+
+function downloadOpenJson() { downloadText('comites-datos-abiertos.json', JSON.stringify(openDataPayload(), null, 2), 'application/json;charset=utf-8'); }
+
+function downloadDataDictionary() {
+  const rows = [
+    ['campo','descripcion'],['id','Identificador único del comité'],['tipo','CCS = Contraloría Social; CPS = Bienestar y Participación Ciudadana'],['nombre','Denominación pública del comité'],['municipio','Municipio'],['colonia','Colonia cuando aplica'],['programa','Programa social cuando aplica'],['integrantes','Número de integrantes registrados'],['fecha_integracion','Fecha de integración'],['estatus','Activo, En seguimiento o Inactivo'],['latitud','Coordenada geográfica'],['longitud','Coordenada geográfica'],['indice_fortalecimiento','Puntaje 0-100 calculado con la metodología publicada']
+  ];
+  downloadText('diccionario-datos-comites.csv', rows.map(r=>r.map(csvCell).join(',')).join('\n'), 'text/csv;charset=utf-8');
 }
 
 function renderPublicResources() {
@@ -455,6 +608,7 @@ function refreshPublic() {
   renderMap();
   renderDirectory();
   renderPublicResources();
+  renderImpactDashboard();
   charts();
 }
 
@@ -497,21 +651,24 @@ function prepareAdminRoleUI() {
 
 async function loadAdminData() {
   if (!db || !isStaff()) return;
-  const calls = [
+  const [committeesRes, documentsRes, trainingsRes, requestsRes] = await Promise.all([
     db.from('committees').select('*').order('integration_date', { ascending: false }),
     db.from('documents').select('*').order('created_at', { ascending: false }),
     db.from('trainings').select('*').order('training_date', { ascending: false }),
     db.from('contact_requests').select('*').order('created_at', { ascending: false })
-  ];
-  if (isAdmin()) calls.push(db.from('profiles').select('*').order('email'));
-  const results = await Promise.all(calls);
-  const firstError = results.find(r => r.error)?.error;
-  if (firstError) { console.error(firstError); toast('No se pudo cargar el panel.', 'error'); return; }
-  adminCommittees = results[0].data.map(normalizeCommittee);
-  adminDocuments = await hydrateDocumentUrls(results[1].data || []);
-  trainings = results[2].data || [];
-  requests = results[3].data || [];
-  profiles = isAdmin() ? (results[4].data || []) : [];
+  ]);
+  const coreError = [committeesRes,documentsRes,trainingsRes,requestsRes].find(r=>r.error)?.error;
+  if (coreError) { console.error(coreError); toast('No se pudo cargar el panel.', 'error'); return; }
+  adminCommittees = committeesRes.data.map(normalizeCommittee);
+  adminDocuments = await hydrateDocumentUrls(documentsRes.data || []);
+  trainings = trainingsRes.data || [];
+  requests = requestsRes.data || [];
+  const extras = await Promise.all([
+    optionalData(db.from('committee_events').select('*').order('event_date', {ascending:false}), 'acciones'),
+    optionalData(db.from('commitments').select('*').order('commitment_date', {ascending:false}), 'compromisos'),
+    isAdmin() ? optionalData(db.from('profiles').select('*').order('email'), 'usuarios') : Promise.resolve([])
+  ]);
+  adminEvents = extras[0]; adminCommitments = extras[1]; profiles = extras[2];
   renderAdmin();
 }
 
@@ -523,12 +680,14 @@ function setAdminTab(tab) {
 
 function renderAdmin() {
   renderCommitteeAdmin();
+  renderActionsAdmin();
   renderDocumentAdmin();
   renderTrainingAdmin();
   renderRequestsAdmin();
   renderUsersAdmin();
   populateCommitteeSelects();
   fillContentForm();
+  renderAdminImpact();
 }
 
 function committeeTypeLabel(type) {
@@ -554,8 +713,92 @@ function populateCommitteeSelects() {
   const opts = adminCommittees.map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');
   const doc = $('#documentCommittee');
   const training = $('#trainingCommittee');
+  const action = $('#actionCommittee');
   if (doc) doc.innerHTML = `<option value="">Selecciona un comité</option>${opts}`;
   if (training) training.innerHTML = `<option value="">General</option>${opts}`;
+  if (action) action.innerHTML = `<option value="">Selecciona un comité</option>${opts}`;
+}
+
+function statusClass(status) {
+  return String(status||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replaceAll(' ','-');
+}
+
+function renderActionsAdmin() {
+  const commitmentsWrap = $('#adminCommitments');
+  const eventsWrap = $('#adminEvents');
+  if (commitmentsWrap) {
+    $('#commitmentAdminCount').textContent = `${adminCommitments.length} registros`;
+    commitmentsWrap.innerHTML = adminCommitments.length ? adminCommitments.map(c => {
+      const committee = adminCommittees.find(x=>String(x.id)===String(c.committee_id));
+      return `<article class="admin-action-card"><div><span class="status-chip ${statusClass(c.status)}">${esc(c.status)}</span><h4>${esc(c.title)}</h4><p>${esc(committee?.name || 'Comité no disponible')} · ${esc(c.responsible_agency || 'Responsable por definir')}</p><small>Fecha límite: ${esc(formatDate(c.due_date))} · Avance ${Number(c.progress||0)}%</small></div><div><button class="action-btn" data-edit-commitment="${esc(c.id)}"><i class="fa-solid fa-pen"></i></button>${isAdmin()?`<button class="action-btn danger" data-delete-commitment="${esc(c.id)}"><i class="fa-solid fa-trash"></i></button>`:''}</div></article>`;
+    }).join('') : '<div class="empty-state"><h3>Sin compromisos</h3><p>Registra el primer compromiso institucional.</p></div>';
+  }
+  if (eventsWrap) {
+    $('#eventAdminCount').textContent = `${adminEvents.length} registros`;
+    eventsWrap.innerHTML = adminEvents.length ? adminEvents.map(e => {
+      const committee = adminCommittees.find(x=>String(x.id)===String(e.committee_id));
+      return `<article class="admin-event-card"><time>${esc(formatDate(e.event_date))}</time><div><span>${esc(e.event_type)}</span><h4>${esc(e.title)}</h4><p>${esc(committee?.name || 'Comité no disponible')}</p></div><div><button class="action-btn" data-edit-event="${esc(e.id)}"><i class="fa-solid fa-pen"></i></button>${isAdmin()?`<button class="action-btn danger" data-delete-event="${esc(e.id)}"><i class="fa-solid fa-trash"></i></button>`:''}</div></article>`;
+    }).join('') : '<div class="empty-state"><h3>Sin acciones</h3><p>Registra la primera acción de seguimiento.</p></div>';
+  }
+}
+
+function renderAdminImpact() {
+  const stats = impactStats(adminCommittees, trainings, adminEvents, adminCommitments, adminDocuments);
+  const values = { commitments:stats.commitments, completedPct:`${stats.completedPct}%`, events:stats.events, avgDays:stats.avgDays == null ? '—' : `${stats.avgDays} días` };
+  Object.entries(values).forEach(([key,value]) => $$(`[data-impact-admin="${key}"]`).forEach(el => el.textContent = value));
+}
+
+function toggleActionFields() {
+  const commitment = $('#actionRecordType')?.value === 'commitment';
+  if ($('#eventFields')) $('#eventFields').hidden = commitment;
+  if ($('#commitmentFields')) $('#commitmentFields').hidden = !commitment;
+  if ($('#eventDate')) $('#eventDate').required = !commitment;
+  if ($('#commitmentDate')) $('#commitmentDate').required = commitment;
+}
+
+function newActionForm() {
+  $('#actionForm').reset();
+  $('#actionId').value = '';
+  $('#actionPublic').checked = true;
+  $('#actionRecordType').value = 'event';
+  $('#actionFormTitle').textContent = 'Nueva acción o compromiso';
+  $('#eventDate').value = new Date().toISOString().slice(0,10);
+  toggleActionFields();
+  openLayer('#actionModal');
+}
+
+function editEvent(id) {
+  const e = adminEvents.find(x=>String(x.id)===String(id)); if (!e) return;
+  $('#actionForm').reset(); $('#actionId').value=e.id; $('#actionRecordType').value='event'; $('#actionCommittee').value=e.committee_id||''; $('#eventType').value=e.event_type; $('#eventDate').value=e.event_date||''; $('#actionTitle').value=e.title||''; $('#actionDescription').value=e.description||''; $('#actionPublic').checked=e.public!==false; $('#actionFormTitle').textContent='Editar acción'; toggleActionFields(); openLayer('#actionModal');
+}
+
+function editCommitment(id) {
+  const c = adminCommitments.find(x=>String(x.id)===String(id)); if (!c) return;
+  $('#actionForm').reset(); $('#actionId').value=c.id; $('#actionRecordType').value='commitment'; $('#actionCommittee').value=c.committee_id||''; $('#actionTitle').value=c.title||''; $('#actionDescription').value=c.description||''; $('#commitmentAgency').value=c.responsible_agency||''; $('#commitmentDate').value=c.commitment_date||''; $('#commitmentDueDate').value=c.due_date||''; $('#commitmentStatus').value=c.status||'Por iniciar'; $('#commitmentProgress').value=Number(c.progress||0); $('#commitmentCompletedDate').value=c.completed_date||''; $('#actionPublic').checked=c.public!==false; $('#actionFormTitle').textContent='Editar compromiso'; toggleActionFields(); openLayer('#actionModal');
+}
+
+async function saveAction(event) {
+  event.preventDefault(); if (!db || !isStaff()) return;
+  const id = $('#actionId').value; const kind = $('#actionRecordType').value;
+  let result;
+  if (kind === 'commitment') {
+    const status = $('#commitmentStatus').value;
+    const completedDate = status === 'Cumplido' ? ($('#commitmentCompletedDate').value || new Date().toISOString().slice(0,10)) : ($('#commitmentCompletedDate').value || null);
+    const payload = { committee_id:$('#actionCommittee').value, title:$('#actionTitle').value.trim(), description:$('#actionDescription').value.trim(), responsible_agency:$('#commitmentAgency').value.trim(), commitment_date:$('#commitmentDate').value, due_date:$('#commitmentDueDate').value || null, completed_date:completedDate, status, progress:Number($('#commitmentProgress').value||0), public:$('#actionPublic').checked, updated_by:currentSession.user.id };
+    result = id ? await db.from('commitments').update(payload).eq('id',id) : await db.from('commitments').insert({...payload,created_by:currentSession.user.id});
+  } else {
+    const payload = { committee_id:$('#actionCommittee').value, event_type:$('#eventType').value, event_date:$('#eventDate').value, title:$('#actionTitle').value.trim(), description:$('#actionDescription').value.trim(), public:$('#actionPublic').checked, updated_by:currentSession.user.id };
+    result = id ? await db.from('committee_events').update(payload).eq('id',id) : await db.from('committee_events').insert({...payload,created_by:currentSession.user.id});
+  }
+  if (result.error) { console.error(result.error); toast('No se pudo guardar el registro. Ejecuta primero supabase.sql v11 si aún no lo has hecho.', 'error'); return; }
+  closeLayer('#actionModal'); toast(id?'Registro actualizado.':'Registro creado.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('acciones');
+}
+
+async function deleteAction(kind,id) {
+  if (!isAdmin() || !confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
+  const table = kind === 'commitment' ? 'commitments' : 'committee_events';
+  const {error} = await db.from(table).delete().eq('id',id); if (error) { toast('No se pudo eliminar.', 'error'); return; }
+  toast('Registro eliminado.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('acciones');
 }
 
 function renderDocumentAdmin() {
@@ -1023,6 +1266,7 @@ function bindUI() {
   $$('[data-close-modal]').forEach(btn => btn.addEventListener('click', () => closeLayer('#detailModal')));
   $$('[data-close-form]').forEach(btn => btn.addEventListener('click', () => closeLayer('#formModal')));
   $$('[data-close-document]').forEach(btn => btn.addEventListener('click', () => closeLayer('#documentModal')));
+  $$('[data-close-action]').forEach(btn => btn.addEventListener('click', () => closeLayer('#actionModal')));
   $$('[data-close-training]').forEach(btn => btn.addEventListener('click', () => closeLayer('#trainingModal')));
   $$('[data-close-user]').forEach(btn => btn.addEventListener('click', () => closeLayer('#userModal')));
   $$('.admin-tabs button').forEach(btn => btn.addEventListener('click', () => setAdminTab(btn.dataset.adminTab)));
@@ -1036,6 +1280,9 @@ function bindUI() {
   $('#adminCommitteeTypeFilter')?.addEventListener('change', renderCommitteeAdmin);
 
   $('#newCommittee')?.addEventListener('click', newCommitteeForm);
+  $('#newAction')?.addEventListener('click', newActionForm);
+  $('#actionRecordType')?.addEventListener('change', toggleActionFields);
+  $('#actionForm')?.addEventListener('submit', saveAction);
   $('#committeeType')?.addEventListener('change', toggleFormFields);
   $('#committeeForm')?.addEventListener('submit', saveCommittee);
   $('#newDocument')?.addEventListener('click', () => { $('#documentForm').reset(); $('#documentPublic').checked = true; openLayer('#documentModal'); });
@@ -1046,6 +1293,9 @@ function bindUI() {
   $('#trainingForm')?.addEventListener('submit', saveTraining);
   $('#contentForm')?.addEventListener('submit', saveContent);
   $('#contactForm')?.addEventListener('submit', submitContact);
+  $('#downloadCsv')?.addEventListener('click', downloadOpenCsv);
+  $('#downloadJson')?.addEventListener('click', downloadOpenJson);
+  $('#downloadDictionary')?.addEventListener('click', downloadDataDictionary);
 
   document.addEventListener('click', event => {
     const detail = event.target.closest('[data-detail-id], [data-popup-id]');
@@ -1056,6 +1306,14 @@ function bindUI() {
     if (del) { deleteCommittee(del.dataset.deleteId); return; }
     const delDoc = event.target.closest('[data-delete-document]');
     if (delDoc) { deleteDocument(delDoc.dataset.deleteDocument); return; }
+    const editCommitmentBtn = event.target.closest('[data-edit-commitment]');
+    if (editCommitmentBtn) { editCommitment(editCommitmentBtn.dataset.editCommitment); return; }
+    const delCommitmentBtn = event.target.closest('[data-delete-commitment]');
+    if (delCommitmentBtn) { deleteAction('commitment', delCommitmentBtn.dataset.deleteCommitment); return; }
+    const editEventBtn = event.target.closest('[data-edit-event]');
+    if (editEventBtn) { editEvent(editEventBtn.dataset.editEvent); return; }
+    const delEventBtn = event.target.closest('[data-delete-event]');
+    if (delEventBtn) { deleteAction('event', delEventBtn.dataset.deleteEvent); return; }
     const editTrainingBtn = event.target.closest('[data-edit-training]');
     if (editTrainingBtn) { editTraining(editTrainingBtn.dataset.editTraining); return; }
     const delTrainingBtn = event.target.closest('[data-delete-training]');
@@ -1072,7 +1330,7 @@ function bindUI() {
   });
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') ['#detailModal','#loginModal','#passwordModal','#formModal','#documentModal','#trainingModal','#userModal','#adminDrawer'].forEach(closeLayer);
+    if (event.key === 'Escape') ['#detailModal','#loginModal','#passwordModal','#formModal','#documentModal','#actionModal','#trainingModal','#userModal','#adminDrawer'].forEach(closeLayer);
   });
 
   $$('[data-resource-category]').forEach(link => link.addEventListener('click', () => {

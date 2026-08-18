@@ -1,9 +1,22 @@
-# Configuración final
+# Configuración v11
 
-1. Ejecuta `supabase.sql` completo en el proyecto COMITES. Es idempotente y puede ejecutarse sobre la instalación actual.
-2. Conserva `supabase-config.js` con la URL y la `anon` key que ya comprobaste que funcionan.
-3. Despliega la Edge Function `admin-create-user` desde Supabase Dashboard > Edge Functions. Debe requerir JWT.
-4. Sube **todo el contenido del paquete** a la raíz del repositorio, no parches sueltos.
-5. En Auth > URL Configuration usa `https://bienestarsonora.github.io/comites/`.
+## Supabase
+Ejecuta `supabase.sql` completo en SQL Editor. El script conserva los módulos de comités, documentos, capacitaciones, acciones, compromisos, contenido y solicitudes.
 
-La Edge Function usa `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY` únicamente en el servidor de Supabase; no expongas la service role key en el frontend.
+Tablas funcionales principales:
+- `profiles`
+- `committees`
+- `documents`
+- `trainings`
+- `committee_events`
+- `commitments`
+- `site_content`
+- `contact_requests`
+
+El script elimina, si existieran por una versión previa, los triggers, función y tabla de auditoría automática.
+
+## Usuarios
+La creación de usuarios desde el panel requiere la Edge Function `admin-create-user` incluida en `supabase/functions/admin-create-user/`. Nunca expongas una `service_role` o secret key en el frontend.
+
+## Storage
+Se mantiene el bucket privado para documentos de comité y sus políticas RLS.

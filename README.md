@@ -1,20 +1,18 @@
-# Plataforma de Comités de Contraloría Social, Bienestar y Participación Ciudadana
+# Comités de Contraloría Social, Bienestar y Participación Ciudadana
 
-Paquete completo de producción para GitHub Pages + Supabase.
+Versión v11 · Impacto, transparencia y gobierno abierto.
 
-## Incluye
-- Portal público con mapa, directorio, indicadores y curso.
-- Panel de administración con Auth y RLS.
-- Alta, edición y baja de comités.
-- Expediente por comité: actas constitutivas, documentos, evidencias y fotografías.
-- Creación de usuarios desde el panel mediante Edge Function segura.
-- Roles: administrador, capturista y consulta.
-- Solicitudes ciudadanas y capacitaciones.
-- Contenido principal editable.
-- Logo institucional original proporcionado por la Secretaría.
+## Funcionalidades principales
+- Directorio y mapa interactivo de comités.
+- Filtros, búsqueda, zoom con rueda y mapa en pantalla completa.
+- Panel institucional con roles Administrador, Capturista y Consulta.
+- Registro y edición de comités.
+- Expediente digital por comité con documentos, actas y fotografías.
+- Capacitaciones.
+- Acciones y compromisos con responsable, fechas, avance y semáforo.
+- Tablero de impacto con indicadores calculados desde los datos registrados.
+- Índice de Fortalecimiento del Comité con metodología visible.
+- Datos abiertos en CSV y JSON y diccionario de datos.
+- Solicitudes ciudadanas.
 
-## Archivos de producción
-Sube a la raíz de `bienestarsonora/comites`: `index.html`, `styles.css`, `app.js`, `curso-contraloria.html`, `curso.css`, `curso.js`, `supabase-config.js` y la carpeta `assets`.
-
-## Supabase
-Ejecuta `supabase.sql` completo en SQL Editor. Después despliega la función `supabase/functions/admin-create-user/index.ts`. Nunca coloques una secret/service_role key en GitHub Pages.
+Esta versión no incluye auditoría automática ni historial automático de cambios. Tampoco incorpora cuentas ciudadanas, replicabilidad ni costos.
