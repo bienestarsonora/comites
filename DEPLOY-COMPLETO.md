@@ -44,3 +44,12 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - También muestra todas las fotografías y evidencias adicionales ya cargadas.
 - La tabla de comités indica Acta, Lista y cantidad de fotografías/evidencias existentes.
 - Para instalar esta versión hay que ejecutar nuevamente el `supabase.sql` completo.
+
+
+## v17 — evidencias visibles
+- El total del expediente muestra todos los archivos: acta + lista + evidencias adicionales.
+- La sección de evidencias aclara que su contador excluye acta y lista.
+- Antes de guardar, muestra cuántos archivos adicionales fueron seleccionados y sus nombres.
+- Las nuevas evidencias son públicas por default.
+- Cada evidencia ya cargada puede cambiarse individualmente entre Pública y No pública desde Editar comité.
+- No requiere cambios en Supabase respecto de v16.

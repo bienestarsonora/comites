@@ -520,3 +520,104 @@ body.map-fullscreen-open{overflow:hidden}
   .core-existing-card{grid-template-columns:auto minmax(0,1fr)}
   .core-existing-open{grid-column:2;width:max-content}
 }
+
+
+/* v17 · Evidencias: conteo claro + visibilidad individual */
+.core-existing-title>div strong,
+.core-existing-title>div span{display:block}
+.core-existing-title>div span{
+  margin-top:2px;
+  font-size:10px;
+  color:var(--muted);
+}
+.existing-evidence-head>div strong,
+.existing-evidence-head>div small{display:block}
+.existing-evidence-head>div small{
+  margin-top:2px;
+  font-size:9px;
+  color:var(--muted);
+}
+.existing-evidence-item{
+  grid-template-columns:auto minmax(0,1fr) auto;
+}
+.existing-evidence-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.evidence-visibility-btn,
+.evidence-open-btn{
+  min-height:30px;
+  border-radius:9px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--wine);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:6px 8px;
+  font-size:9px;
+  font-weight:800;
+  cursor:pointer;
+}
+.evidence-visibility-btn.public{
+  background:#eef8f1;
+  color:#24693f;
+  border-color:#cfe6d6;
+}
+.evidence-visibility-btn.private{
+  background:#f5f0f2;
+  color:#6d5e66;
+}
+.evidence-open-btn{width:32px;padding:0}
+.selected-evidence-preview{
+  margin-top:10px;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+}
+.selected-evidence-preview[hidden]{display:none!important}
+.selected-evidence-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:7px;
+}
+.selected-evidence-head strong{font-size:10px}
+.selected-evidence-head span{
+  padding:3px 7px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:800;
+}
+.selected-evidence-head span.public{
+  background:#eaf7ef;
+  color:#24693f;
+}
+.selected-evidence-head span.private{
+  background:#f4eef1;
+  color:#6d5e66;
+}
+.selected-evidence-list{
+  display:grid;
+  gap:5px;
+}
+.selected-evidence-list span{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  font-size:9px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+@media(max-width:680px){
+  .existing-evidence-item{grid-template-columns:auto minmax(0,1fr)}
+  .existing-evidence-actions{grid-column:2;justify-content:flex-start}
+  .selected-evidence-head{align-items:flex-start;flex-direction:column}
+}

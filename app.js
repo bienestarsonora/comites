@@ -1049,7 +1049,7 @@ function renderCommitteeCoreDocsStatus(committeeId = '') {
 
   const fileName = doc => doc?.file_name || doc?.title || 'Archivo registrado';
   const dateText = doc => doc?.created_at ? new Date(doc.created_at).toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric'}) : '';
-  const visibility = doc => doc?.public ? 'Público' : 'Interno';
+  const visibility = doc => doc?.public ? 'Público' : 'No público';
 
   const coreCard = (doc,label,icon) => doc
     ? `<article class="core-existing-card ready">
@@ -1068,23 +1068,82 @@ function renderCommitteeCoreDocsStatus(committeeId = '') {
 
   const extrasHtml = extras.length
     ? `<div class="existing-evidence-section">
-        <div class="existing-evidence-head"><strong>Fotografías y evidencias ya cargadas</strong><span>${extras.length} archivo${extras.length === 1 ? '' : 's'}</span></div>
+        <div class="existing-evidence-head">
+          <div><strong>Fotografías y evidencias adicionales</strong><small>No incluye el acta ni la lista de asistencia.</small></div>
+          <span>${extras.length} evidencia${extras.length === 1 ? '' : 's'} adicional${extras.length === 1 ? '' : 'es'}</span>
+        </div>
         <div class="existing-evidence-list">
           ${extras.map(doc => `
-            <a class="existing-evidence-item" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener">
+            <div class="existing-evidence-item">
               <i class="fa-solid ${isImageDocument(doc) ? 'fa-image' : 'fa-file-lines'}"></i>
-              <div><strong title="${esc(fileName(doc))}">${esc(fileName(doc))}</strong><small>${esc(doc.category || 'Evidencia')} · ${esc(dateText(doc))} · ${esc(visibility(doc))}</small></div>
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </a>`).join('')}
+              <div>
+                <strong title="${esc(fileName(doc))}">${esc(fileName(doc))}</strong>
+                <small>${esc(doc.category || 'Evidencia')} · ${esc(dateText(doc))} · ${esc(visibility(doc))}</small>
+              </div>
+              <div class="existing-evidence-actions">
+                <button type="button" class="evidence-visibility-btn ${doc.public ? 'public' : 'private'}" data-toggle-evidence-public="${esc(doc.id)}" title="${doc.public ? 'Cambiar a no pública' : 'Hacer pública'}">
+                  <i class="fa-solid ${doc.public ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                  ${doc.public ? 'Pública' : 'No pública'}
+                </button>
+                <a class="evidence-open-btn" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener" title="Abrir archivo"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>`).join('')}
         </div>
       </div>`
     : `<div class="existing-evidence-section empty"><i class="fa-regular fa-images"></i><span>No hay fotografías ni evidencias adicionales cargadas.</span></div>`;
 
   wrap.innerHTML = `
-    <div class="core-existing-title"><strong>Archivos actualmente registrados</strong><span>Así sabes exactamente qué contiene este expediente antes de reemplazar o agregar archivos.</span></div>
+    <div class="core-existing-title">
+      <div><strong>Archivos actualmente registrados</strong><span>${docs.length} archivo${docs.length === 1 ? '' : 's'} en este expediente</span></div>
+      <span>Los documentos principales se muestran por separado de las evidencias adicionales.</span>
+    </div>
     <div class="core-existing-grid">${coreCard(acta,'Acta constitutiva','fa-file-signature')}${coreCard(attendance,'Lista de asistencia','fa-list-check')}</div>
     ${extrasHtml}
   `;
+}
+
+function renderSelectedEvidenceFiles() {
+  const wrap = $('#evidenceSelectedPreview');
+  const input = $('#committeeEvidenceFiles');
+  if (!wrap || !input) return;
+  const files = [...(input.files || [])];
+
+  if (!files.length) {
+    wrap.hidden = true;
+    wrap.innerHTML = '';
+    return;
+  }
+
+  const isPublic = $('#committeeEvidencePublic')?.checked !== false;
+  wrap.hidden = false;
+  wrap.innerHTML = `
+    <div class="selected-evidence-head">
+      <strong>${files.length} archivo${files.length === 1 ? '' : 's'} seleccionado${files.length === 1 ? '' : 's'}</strong>
+      <span class="${isPublic ? 'public' : 'private'}">${isPublic ? 'Se publicarán' : 'Se guardarán como no públicos'}</span>
+    </div>
+    <div class="selected-evidence-list">
+      ${files.map(file => `<span><i class="fa-solid ${String(file.type||'').startsWith('image/') ? 'fa-image' : 'fa-file'}"></i>${esc(file.name)}</span>`).join('')}
+    </div>`;
+}
+
+async function toggleEvidenceVisibility(documentId) {
+  if (!db || !isStaff()) return;
+  const doc = adminDocuments.find(item => String(item.id) === String(documentId));
+  if (!doc) return;
+
+  const nextPublic = !doc.public;
+  const { error } = await db.from('documents').update({ public: nextPublic }).eq('id', doc.id);
+  if (error) {
+    console.error(error);
+    toast('No se pudo actualizar la visibilidad de la evidencia.', 'error');
+    return;
+  }
+
+  doc.public = nextPublic;
+  const committeeId = $('#committeeId')?.value || doc.committee_id;
+  toast(nextPublic ? 'Evidencia marcada como pública.' : 'Evidencia marcada como no pública.');
+  await Promise.all([loadPublicData(), loadAdminData()]);
+  if (committeeId) renderCommitteeCoreDocsStatus(committeeId);
 }
 
 async function uploadCommitteeDocumentFile(committeeId, file, category, title, isPublic, replaceExisting = false) {
@@ -1126,6 +1185,7 @@ function newCommitteeForm() {
   $('#committeeAttendancePublic').checked = false;
   $('#committeeEvidencePublic').checked = true;
   $('#committeeStatus').value = 'Activo';
+  renderSelectedEvidenceFiles();
   $('#formTitle').textContent = 'Nuevo comité';
   renderCommitteeCoreDocsStatus('');
   toggleFormFields();
@@ -1157,6 +1217,7 @@ function editCommittee(id) {
   $('#committeeActaFile').value = '';
   $('#committeeAttendanceFile').value = '';
   $('#committeeEvidenceFiles').value = '';
+  renderSelectedEvidenceFiles();
   renderCommitteeCoreDocsStatus(x.id);
   toggleFormFields();
   openLayer('#formModal');
@@ -1579,6 +1640,8 @@ function bindUI() {
   $('#actionForm')?.addEventListener('submit', saveAction);
   $('#committeeType')?.addEventListener('change', toggleFormFields);
   $('#committeeForm')?.addEventListener('submit', saveCommittee);
+  $('#committeeEvidenceFiles')?.addEventListener('change', renderSelectedEvidenceFiles);
+  $('#committeeEvidencePublic')?.addEventListener('change', renderSelectedEvidenceFiles);
   $('#newDocument')?.addEventListener('click', () => { $('#documentForm').reset(); $('#documentPublic').checked = true; openLayer('#documentModal'); });
   $('#documentForm')?.addEventListener('submit', saveDocument);
   $('#newUser')?.addEventListener('click', () => { $('#userCreateForm').reset(); $('#newUserMessage').hidden = true; openLayer('#userModal'); });
@@ -1600,6 +1663,8 @@ function bindUI() {
     if (del) { deleteCommittee(del.dataset.deleteId); return; }
     const delDoc = event.target.closest('[data-delete-document]');
     if (delDoc) { deleteDocument(delDoc.dataset.deleteDocument); return; }
+    const evidenceVisibility = event.target.closest('[data-toggle-evidence-public]');
+    if (evidenceVisibility) { toggleEvidenceVisibility(evidenceVisibility.dataset.toggleEvidencePublic); return; }
     const editManagementBtn = event.target.closest('[data-edit-management]');
     if (editManagementBtn) { editManagement(editManagementBtn.dataset.editManagement); return; }
     const delManagementBtn = event.target.closest('[data-delete-management]');
