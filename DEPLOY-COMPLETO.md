@@ -9,3 +9,29 @@ Este paquete sustituye integralmente la versión anterior. No es un parche.
 
 ## Cambio de v11
 Se eliminó por completo la auditoría automática: no hay pestaña de Auditoría, consultas a `audit_log`, triggers de auditoría ni tabla `audit_log`. Si esos objetos existen por una instalación previa de v10, `supabase.sql` los elimina.
+
+
+## v12 · Capacitaciones por rango de fechas
+- Cada capacitación registra fecha de inicio y fecha de término.
+- Permite cursos de una sola jornada o procesos de varias semanas.
+- Se registra el número real de sesiones (por ejemplo, 7 sesiones).
+- Los registros existentes se conservan y se migran como inicio=fin, 1 sesión.
+- Para usar esta versión, vuelve a ejecutar `supabase.sql`; el script actualiza la estructura sin borrar los datos existentes.
+
+
+## v13 · Gestiones generalizadas
+La atención de los comités se modela mediante `committee_requests`, una estructura transversal para cualquier solicitud o necesidad. La categoría es texto libre. Se separan explícitamente la fecha de solicitud, la primera respuesta institucional, el inicio de ejecución y la conclusión, por lo que un proceso largo (por ejemplo un curso de varias semanas) no se interpreta como demora institucional. Capacitaciones sigue existiendo como módulo especializado cuando se necesita registrar sesiones y rangos de fechas.
+
+
+## v14
+No requiere cambios de estructura en Supabase respecto de v13. La tabla `documents` y el bucket existentes ya soportan esta organización.
+
+Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. Las actas que ya subiste con un comité relacionado no se borran: dejan de aparecer en la Biblioteca pública y quedan visibles desde el expediente del comité correspondiente.
+
+
+## v15 — listado progresivo de comités
+- El Directorio muestra 9 comités inicialmente.
+- El botón `Mostrar más comités` carga 9 adicionales en cada clic.
+- El contador indica cuántos se muestran del total filtrado.
+- Al cambiar búsqueda o filtros, el listado vuelve automáticamente a los primeros 9 resultados.
+- La vista compacta conserva todos los resultados para consulta tabular.

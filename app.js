@@ -41,6 +41,7 @@ let db = null;
 let committees = [];
 let adminCommittees = [];
 let publicDocuments = [];
+let resourceVisibleCount = 9;
 let adminDocuments = [];
 let trainings = [];
 let requests = [];
@@ -48,8 +49,10 @@ let profiles = [];
 let publicTrainings = [];
 let publicEvents = [];
 let publicCommitments = [];
+let publicManagements = [];
 let adminEvents = [];
 let adminCommitments = [];
+let adminManagements = [];
 let siteContent = structuredClone(DEFAULT_CONTENT);
 let currentSession = null;
 let currentProfile = null;
@@ -57,9 +60,11 @@ let map;
 let markers = [];
 let typeChart;
 let territoryChart;
-let commitmentStatusChart;
-let commitmentTrendChart;
+let requestStatusChart;
+let requestTrendChart;
 let viewMode = 'cards';
+let directoryVisibleCount = 9;
+const DIRECTORY_PAGE_SIZE = 9;
 
 function normalizeCommittee(row) {
   return {
@@ -162,6 +167,14 @@ function formatDate(date) {
   return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function formatDateRange(start, end) {
+  const a = start || end;
+  const b = end || start;
+  if (!a && !b) return 'Sin fecha';
+  if (!b || a === b) return formatDate(a);
+  return `${formatDate(a)} — ${formatDate(b)}`;
+}
+
 function daysBetween(start, end) {
   if (!start || !end) return null;
   const a = new Date(`${start}T12:00:00`);
@@ -174,37 +187,41 @@ function isImageDocument(doc) {
   return String(doc?.mime_type || '').startsWith('image/') || doc?.category === 'Fotografía';
 }
 
-function impactStats(sourceCommittees = committees, sourceTrainings = publicTrainings, sourceEvents = publicEvents, sourceCommitments = publicCommitments, sourceDocuments = publicDocuments) {
+function impactStats(sourceCommittees = committees, sourceManagements = publicManagements, sourceEvents = publicEvents, sourceCommitments = publicCommitments, sourceDocuments = publicDocuments) {
   const active = sourceCommittees.filter(x => x.status === 'Activo').length;
-  const trainedIds = new Set(sourceTrainings.filter(x => x.status === 'Realizada' && x.committee_id).map(x => String(x.committee_id)));
-  const trainedPct = sourceCommittees.length ? Math.round(sourceCommittees.filter(x => trainedIds.has(String(x.id))).length / sourceCommittees.length * 100) : 0;
-  const completed = sourceCommitments.filter(x => x.status === 'Cumplido');
-  const completedPct = sourceCommitments.length ? Math.round(completed.length / sourceCommitments.length * 100) : 0;
-  const responseDays = completed.map(x => daysBetween(x.commitment_date || x.created_at?.slice(0,10), x.completed_date || x.updated_at?.slice(0,10))).filter(x => Number.isFinite(x));
-  const avgDays = responseDays.length ? Math.round(responseDays.reduce((a,b)=>a+b,0) / responseDays.length * 10) / 10 : null;
-  const sessions = sourceEvents.filter(x => ['Sesión','Reunión'].includes(x.event_type)).length;
-  const participations = sourceCommittees.reduce((sum,x)=>sum+Number(x.members||0),0) + sourceTrainings.filter(x=>x.status==='Realizada').reduce((sum,x)=>sum+Number(x.attendees||0),0);
+  const requests = sourceManagements.length;
+  const concluded = sourceManagements.filter(x => x.status === 'Concluida');
+  const requestsCompletedPct = requests ? Math.round(concluded.length / requests * 100) : 0;
+  const responseDays = sourceManagements
+    .map(x => daysBetween(x.request_date, x.first_response_date))
+    .filter(x => Number.isFinite(x));
+  const avgResponseDays = responseDays.length ? Math.round(responseDays.reduce((a,b)=>a+b,0) / responseDays.length * 10) / 10 : null;
+  const inProgress = sourceManagements.filter(x => ['En gestión','Programada','En ejecución'].includes(x.status)).length;
+  const completedCommitments = sourceCommitments.filter(x => x.status === 'Cumplido');
+  const commitmentsCompletedPct = sourceCommitments.length ? Math.round(completedCommitments.length / sourceCommitments.length * 100) : 0;
   const completeFiles = sourceCommittees.filter(c => {
     const docs = sourceDocuments.filter(d => String(d.committee_id||'') === String(c.id));
-    return docs.some(d => d.category === 'Acta constitutiva') && docs.some(isImageDocument);
+    return docs.some(d => d.category === 'Acta constitutiva') && docs.some(d => d.category === 'Lista de asistencia');
   }).length;
   const completeFilesPct = sourceCommittees.length ? Math.round(completeFiles / sourceCommittees.length * 100) : 0;
-  return { active, trainedPct, events: sourceEvents.length, commitments: sourceCommitments.length, completedPct, avgDays, sessions, participations, completeFilesPct };
+  return { active, requests, requestsCompletedPct, avgResponseDays, inProgress, events: sourceEvents.length, commitmentsCompletedPct, completeFilesPct };
 }
 
 function committeeStrengthScore(committee) {
   const id = String(committee.id);
   const docs = publicDocuments.filter(d => String(d.committee_id||'') === id);
   const trainingsFor = publicTrainings.filter(t => String(t.committee_id||'') === id && t.status === 'Realizada');
+  const managementsFor = publicManagements.filter(r => String(r.committee_id||'') === id);
   const eventsFor = publicEvents.filter(e => String(e.committee_id||'') === id);
   const commitmentsFor = publicCommitments.filter(c => String(c.committee_id||'') === id);
   const hasActa = docs.some(d => d.category === 'Acta constitutiva');
+  const hasAttendance = docs.some(d => d.category === 'Lista de asistencia');
   const hasEvidence = docs.some(isImageDocument) || docs.some(d => d.category === 'Evidencia');
   const recentActivity = eventsFor.length > 0;
   const followup = commitmentsFor.length ? (commitmentsFor.some(c => ['Cumplido','En proceso'].includes(c.status)) ? 15 : 8) : 0;
   const parts = {
-    constitucion: hasActa ? 20 : 0,
-    capacitacion: trainingsFor.length ? 20 : 0,
+    constitucion: (hasActa ? 10 : 0) + (hasAttendance ? 10 : 0),
+    capacitacion: (trainingsFor.length || managementsFor.some(r => r.status === 'Concluida')) ? 20 : 0,
     actividad: recentActivity ? 20 : 0,
     evidencia: hasEvidence ? 15 : 0,
     seguimiento: followup,
@@ -250,6 +267,7 @@ async function loadPublicData() {
     publicTrainings = [];
     publicEvents = [];
     publicCommitments = [];
+    publicManagements = [];
     siteContent = structuredClone(DEFAULT_CONTENT);
     setConnectionBanner('La plataforma está en modo local hasta completar la conexión de Supabase.', 'warning');
     refreshPublic();
@@ -268,14 +286,16 @@ async function loadPublicData() {
 
     committees = committeeRes.data.map(normalizeCommittee);
     publicDocuments = await hydrateDocumentUrls(documentRes.data || []);
-    const [trainingRows, eventRows, commitmentRows] = await Promise.all([
+    const [trainingRows, eventRows, commitmentRows, managementRows] = await Promise.all([
       optionalData(db.from('trainings').select('*').eq('public', true).order('training_date', { ascending: false }), 'capacitaciones públicas'),
       optionalData(db.from('committee_events').select('*').eq('public', true).order('event_date', { ascending: false }), 'bitácora pública'),
-      optionalData(db.from('commitments').select('*').eq('public', true).order('commitment_date', { ascending: false }), 'compromisos públicos')
+      optionalData(db.from('commitments').select('*').eq('public', true).order('commitment_date', { ascending: false }), 'compromisos públicos'),
+      optionalData(db.from('committee_requests').select('*').eq('public', true).order('request_date', { ascending: false }), 'gestiones públicas')
     ]);
     publicTrainings = trainingRows;
     publicEvents = eventRows;
     publicCommitments = commitmentRows;
+    publicManagements = managementRows;
     siteContent = structuredClone(DEFAULT_CONTENT);
     (contentRes.data || []).forEach(row => { if (row.key && row.value) siteContent[row.key] = row.value; });
     setConnectionBanner('');
@@ -471,9 +491,23 @@ function renderDirectory() {
   const data = filteredDirectory();
   const wrap = $('#committeeDirectory');
   if (!wrap) return;
+
+  // En vista de tarjetas mostramos resultados de forma progresiva para
+  // evitar una página interminable cuando existen muchos comités.
+  const visibleData = viewMode === 'cards'
+    ? data.slice(0, directoryVisibleCount)
+    : data;
+
   wrap.className = `directory-grid${viewMode === 'table' ? ' table-view' : ''}`;
-  $('#resultsText').textContent = `${data.length} comités encontrados`;
-  wrap.innerHTML = data.length ? data.map(x => `
+
+  const results = $('#resultsText');
+  if (results) {
+    results.textContent = data.length
+      ? `Mostrando ${visibleData.length} de ${data.length} ${data.length === 1 ? 'comité encontrado' : 'comités encontrados'}`
+      : '0 comités encontrados';
+  }
+
+  wrap.innerHTML = visibleData.length ? visibleData.map(x => `
     <article class="committee-card">
       <div class="committee-top"><span class="type-badge ${x.type === 'CPS' ? 'cps' : ''}">${x.type === 'CCS' ? 'Contraloría Social' : 'Bienestar y Participación Ciudadana'}</span></div>
       <h3>${esc(x.name)}</h3>
@@ -484,6 +518,17 @@ function renderDirectory() {
       </div>
       <button class="btn btn-ghost" data-detail-id="${esc(x.id)}">Consultar ficha</button>
     </article>`).join('') : '<div class="empty-public">No hay comités que coincidan con los filtros.</div>';
+
+  const loadMoreWrap = $('#directoryLoadMoreWrap');
+  const loadMoreBtn = $('#directoryLoadMore');
+  if (loadMoreWrap && loadMoreBtn) {
+    const remaining = Math.max(0, data.length - visibleData.length);
+    const shouldShow = viewMode === 'cards' && remaining > 0;
+    loadMoreWrap.hidden = !shouldShow;
+    loadMoreBtn.innerHTML = shouldShow
+      ? `<span>Mostrar más comités</span><small>${remaining} restantes</small><i class="fa-solid fa-chevron-down"></i>`
+      : '';
+  }
 }
 
 function showDetail(id) {
@@ -491,27 +536,32 @@ function showDetail(id) {
   if (!x) return;
   map?.closePopup();
   const docs = publicDocuments.filter(doc => String(doc.committee_id || '') === String(x.id));
+  const acta = docs.find(doc => doc.category === 'Acta constitutiva') || null;
+  const attendance = docs.find(doc => doc.category === 'Lista de asistencia') || null;
   const photos = docs.filter(isImageDocument);
-  const files = docs.filter(doc => !photos.includes(doc));
+  const files = docs.filter(doc => !photos.includes(doc) && !['Acta constitutiva','Lista de asistencia'].includes(doc.category));
   const events = publicEvents.filter(e => String(e.committee_id||'') === String(x.id)).sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||'')));
   const commitments = publicCommitments.filter(c => String(c.committee_id||'') === String(x.id)).sort((a,b)=>String(b.commitment_date||'').localeCompare(String(a.commitment_date||'')));
+  const managements = publicManagements.filter(r => String(r.committee_id||'') === String(x.id)).sort((a,b)=>String(b.request_date||'').localeCompare(String(a.request_date||'')));
   const score = committeeStrengthScore(x);
   const scoreLabel = score.total >= 80 ? 'Comité consolidado' : score.total >= 60 ? 'Comité en fortalecimiento' : score.total >= 40 ? 'Comité en desarrollo' : 'Fortalecimiento inicial';
   const photoHtml = photos.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-images"></i> Fotografías</h3><div class="detail-gallery">${photos.map(doc => `<a href="${esc(doc._url || '#')}" target="_blank" rel="noopener"><img src="${esc(doc._url || '')}" alt="${esc(doc.title || 'Fotografía del comité')}" loading="lazy"><span>${esc(doc.title || 'Fotografía')}</span></a>`).join('')}</div></section>` : '';
-  const fileHtml = files.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-folder-open"></i> Expediente público</h3><div class="detail-files">${files.map(doc => `<a href="${esc(doc._url || '#')}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i><div><strong>${esc(doc.title)}</strong><span>${esc(doc.category || 'Documento')}</span></div></a>`).join('')}</div></section>` : '';
+  const coreFileHtml = `<section class="detail-expediente"><h3><i class="fa-solid fa-folder-tree"></i> Expediente del comité</h3><div class="detail-core-files">${acta ? `<a class="detail-core-file available" href="${esc(acta._url || '#')}" target="_blank" rel="noopener"><i class="fa-solid fa-file-signature"></i><div><strong>Acta constitutiva</strong><span>Consultar documento</span></div><b><i class="fa-solid fa-circle-check"></i> Disponible</b></a>` : `<div class="detail-core-file missing"><i class="fa-solid fa-file-signature"></i><div><strong>Acta constitutiva</strong><span>No disponible públicamente</span></div></div>`}${attendance ? `<a class="detail-core-file available" href="${esc(attendance._url || '#')}" target="_blank" rel="noopener"><i class="fa-solid fa-list-check"></i><div><strong>Lista de asistencia</strong><span>Consultar documento</span></div><b><i class="fa-solid fa-circle-check"></i> Disponible</b></a>` : `<div class="detail-core-file missing"><i class="fa-solid fa-list-check"></i><div><strong>Lista de asistencia</strong><span>No disponible públicamente</span></div></div>`}</div></section>`;
+  const fileHtml = files.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-paperclip"></i> Otros documentos y evidencias</h3><div class="detail-files">${files.map(doc => `<a href="${esc(doc._url || '#')}" target="_blank" rel="noopener"><i class="fa-solid fa-file-arrow-down"></i><div><strong>${esc(doc.title)}</strong><span>${esc(doc.category || 'Documento')}</span></div></a>`).join('')}</div></section>` : '';
   const timelineHtml = events.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-timeline"></i> Bitácora de acciones</h3><div class="public-timeline">${events.map(e => `<article><time>${esc(formatDate(e.event_date))}</time><span class="event-dot"></span><div><b>${esc(e.event_type)}</b><strong>${esc(e.title)}</strong>${e.description ? `<p>${esc(e.description)}</p>` : ''}</div></article>`).join('')}</div></section>` : '';
   const commitmentsHtml = commitments.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-list-check"></i> Seguimiento de compromisos</h3><div class="public-commitments">${commitments.map(c => `<article class="commitment-card status-${esc(String(c.status).toLowerCase().replaceAll(' ','-'))}"><div><strong>${esc(c.title)}</strong><span>${esc(c.responsible_agency || 'Responsable por definir')}</span></div><span class="status-chip">${esc(c.status)}</span><small>Fecha límite: ${esc(formatDate(c.due_date))}${Number.isFinite(Number(c.progress)) ? ` · Avance: ${Number(c.progress)}%` : ''}</small></article>`).join('')}</div></section>` : '';
+  const managementsHtml = managements.length ? `<section class="detail-expediente"><h3><i class="fa-solid fa-handshake-angle"></i> Gestiones y resultados</h3><div class="public-managements">${managements.map(r => { const response = daysBetween(r.request_date,r.first_response_date); const duration = daysBetween(r.start_date,r.completion_date); return `<article class="management-public-card"><div class="management-public-head"><span class="management-category">${esc(r.category)}</span><span class="status-chip ${statusClass(r.status)}">${esc(r.status)}</span></div><h4>${esc(r.title)}</h4>${r.description?`<p>${esc(r.description)}</p>`:''}<div class="management-dates"><span><b>Solicitud</b>${esc(formatDate(r.request_date))}</span>${r.first_response_date?`<span><b>Primera respuesta</b>${esc(formatDate(r.first_response_date))}${Number.isFinite(response)?` · ${response} ${response===1?'día':'días'}`:''}</span>`:''}${r.start_date?`<span><b>Inicio</b>${esc(formatDate(r.start_date))}</span>`:''}${r.completion_date?`<span><b>Conclusión</b>${esc(formatDate(r.completion_date))}${Number.isFinite(duration)?` · proceso de ${duration} ${duration===1?'día':'días'}`:''}</span>`:''}</div>${r.result?`<div class="management-result"><b>Resultado</b><p>${esc(r.result)}</p></div>`:''}${r.responsible_agency?`<small>Responsable: ${esc(r.responsible_agency)}</small>`:''}</article>`; }).join('')}</div></section>` : '';
   $('#detailContent').innerHTML = `
     <div class="detail-hero"><span class="type-badge ${x.type === 'CPS' ? 'cps' : ''}">${x.type === 'CCS' ? 'Comité de Contraloría Social' : 'Comité de Bienestar y Participación Ciudadana'}</span><h2>${esc(x.name)}</h2><p>${esc(x.description || (x.type === 'CCS' ? 'Mecanismo ciudadano de vigilancia y seguimiento de programas sociales.' : 'Mecanismo de organización comunitaria, bienestar y participación ciudadana.'))}</p></div>
     <div class="detail-grid"><div><span>Municipio</span><strong>${esc(x.municipality)}</strong></div>${x.type === 'CPS' ? `<div><span>Colonia</span><strong>${esc(x.colony)}</strong></div>` : `<div><span>Programa</span><strong>${esc(x.program || 'No especificado')}</strong></div>`}<div><span>Integrantes</span><strong>${x.members}</strong></div><div><span>Fecha de integración</span><strong>${esc(formatDate(x.date))}</strong></div><div><span>Estatus</span><strong>${esc(x.status)}</strong></div><div><span>Ubicación</span><strong>${x.lat.toFixed(4)}, ${x.lng.toFixed(4)}</strong></div></div>
     <section class="strength-card"><div><span>Índice de Fortalecimiento del Comité</span><strong>${score.total}<small>/100</small></strong><b>${scoreLabel}</b></div><div class="strength-bars">${[['Constitución',score.constitucion,20],['Capacitación',score.capacitacion,20],['Actividad',score.actividad,20],['Evidencia',score.evidencia,15],['Seguimiento',score.seguimiento,15],['Participación',score.participacion,10]].map(([label,value,max])=>`<label><span>${label}<b>${value}/${max}</b></span><i><em style="width:${Math.round(value/max*100)}%"></em></i></label>`).join('')}</div></section>
-    ${commitmentsHtml}${timelineHtml}${fileHtml}${photoHtml}${!docs.length && !events.length && !commitments.length ? '<p class="detail-empty">Este comité aún no cuenta con expediente o seguimiento público registrado.</p>' : ''}`;
+    ${managementsHtml}${commitmentsHtml}${timelineHtml}${coreFileHtml}${fileHtml}${photoHtml}${!docs.length && !events.length && !commitments.length && !managements.length ? '<p class="detail-empty">Este comité aún no cuenta con expediente o seguimiento público registrado.</p>' : ''}`;
   openLayer('#detailModal');
 }
 
 function charts() {
   if (!$('#typeChart') || !$('#territoryChart')) return;
-  [typeChart, territoryChart, commitmentStatusChart, commitmentTrendChart].forEach(chart => chart?.destroy());
+  [typeChart, territoryChart, requestStatusChart, requestTrendChart].forEach(chart => chart?.destroy());
   const ccs = committees.filter(x => x.type === 'CCS').length;
   const cps = committees.filter(x => x.type === 'CPS').length;
   typeChart = new Chart($('#typeChart'), {
@@ -526,20 +576,20 @@ function charts() {
     data: { labels: ['Municipios con CCS','Colonias con BPC'], datasets: [{ data: [municipalities,colonies], backgroundColor: ['#a72861','#6e3f72'], borderWidth: 0 }] },
     options: { cutout: '70%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 18 } } } }
   });
-  if ($('#commitmentStatusChart')) {
-    const statuses = ['Cumplido','En proceso','Vencido','Por iniciar'];
-    const counts = statuses.map(s => publicCommitments.filter(c => c.status === s).length);
-    commitmentStatusChart = new Chart($('#commitmentStatusChart'), {
-      type: 'doughnut', data: { labels: statuses, datasets: [{ data: counts, backgroundColor: ['#2f9e62','#e9b949','#c83f49','#b8adb3'], borderWidth: 0 }] },
-      options: { cutout: '67%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } } }
+  if ($('#requestStatusChart')) {
+    const statuses = ['Recibida','En gestión','Programada','En ejecución','Concluida','No procedente','Cancelada'];
+    const counts = statuses.map(s => publicManagements.filter(r => r.status === s).length);
+    requestStatusChart = new Chart($('#requestStatusChart'), {
+      type: 'doughnut', data: { labels: statuses, datasets: [{ data: counts, backgroundColor: ['#b8adb3','#e9b949','#8d6b9f','#4d79a8','#2f9e62','#8e8e8e','#c83f49'], borderWidth: 0 }] },
+      options: { cutout: '67%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } } } }
     });
   }
-  if ($('#commitmentTrendChart')) {
+  if ($('#requestTrendChart')) {
     const now = new Date();
     const months = Array.from({length:12}, (_,i) => { const d = new Date(now.getFullYear(), now.getMonth()-11+i, 1); return { key:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`, label:d.toLocaleDateString('es-MX',{month:'short'}) }; });
-    const values = months.map(m => publicCommitments.filter(c => c.status === 'Cumplido' && String(c.completed_date||'').startsWith(m.key)).length);
-    commitmentTrendChart = new Chart($('#commitmentTrendChart'), {
-      type: 'line', data: { labels: months.map(m=>m.label), datasets: [{ label:'Cumplidos', data: values, borderColor:'#6f1238', backgroundColor:'rgba(111,18,56,.08)', tension:.35, fill:true, pointRadius:3 }] },
+    const values = months.map(m => publicManagements.filter(r => r.status === 'Concluida' && String(r.completion_date||'').startsWith(m.key)).length);
+    requestTrendChart = new Chart($('#requestTrendChart'), {
+      type: 'line', data: { labels: months.map(m=>m.label), datasets: [{ label:'Concluidas', data: values, borderColor:'#6f1238', backgroundColor:'rgba(111,18,56,.08)', tension:.35, fill:true, pointRadius:3 }] },
       options: { plugins: { legend: { display:false } }, scales:{ y:{ beginAtZero:true, ticks:{precision:0}, grid:{color:'#eee4e8'} }, x:{grid:{display:false}} } }
     });
   }
@@ -547,7 +597,7 @@ function charts() {
 
 function renderImpactDashboard() {
   const stats = impactStats();
-  const values = { active: stats.active, trainedPct: `${stats.trainedPct}%`, events: stats.events, completedPct: `${stats.completedPct}%`, avgDays: stats.avgDays == null ? '—' : `${stats.avgDays} días`, sessions: stats.sessions, participations: stats.participations, completeFilesPct: `${stats.completeFilesPct}%` };
+  const values = { active: stats.active, requests: stats.requests, requestsCompletedPct: `${stats.requestsCompletedPct}%`, avgResponseDays: stats.avgResponseDays == null ? '—' : `${stats.avgResponseDays} días`, inProgress: stats.inProgress, commitmentsCompletedPct: `${stats.commitmentsCompletedPct}%`, events: stats.events, completeFilesPct: `${stats.completeFilesPct}%` };
   Object.entries(values).forEach(([key,value]) => $$(`[data-impact="${key}"]`).forEach(el => el.textContent = typeof value === 'number' ? value.toLocaleString('es-MX') : value));
   const updated = $('#openDataUpdated');
   if (updated) updated.textContent = new Date().toLocaleString('es-MX', { dateStyle:'medium', timeStyle:'short' });
@@ -569,6 +619,7 @@ function openDataPayload() {
     generated_at: new Date().toISOString(),
     source: 'Secretaría de Bienestar del Estado de Sonora',
     committees,
+    managements: publicManagements,
     commitments: publicCommitments,
     actions: publicEvents,
     trainings: publicTrainings.map(({notes,created_by,...rest}) => rest),
@@ -594,13 +645,26 @@ function downloadDataDictionary() {
 function renderPublicResources() {
   const wrap = $('#publicResources');
   if (!wrap) return;
-  const resources = publicDocuments.filter(doc => !(String(doc.mime_type || '').startsWith('image/') || doc.category === 'Fotografía'));
+  const resources = publicDocuments.filter(doc =>
+    !doc.committee_id &&
+    !(String(doc.mime_type || '').startsWith('image/') || doc.category === 'Fotografía')
+  );
+  const visible = resources.slice(0, resourceVisibleCount);
   $('#resourceCount').textContent = `${resources.length} ${resources.length === 1 ? 'recurso' : 'recursos'}`;
-  wrap.innerHTML = resources.length ? resources.map(doc => `
+  const shown = $('#resourceShownCount');
+  if (shown) shown.textContent = resources.length ? `Mostrando ${visible.length} de ${resources.length}` : '';
+  const more = $('#showMoreResources');
+  if (more) {
+    more.hidden = visible.length >= resources.length;
+    const remaining = Math.min(9, Math.max(0, resources.length - visible.length));
+    more.innerHTML = `<i class="fa-solid fa-chevron-down"></i> Mostrar ${remaining || 9} más`;
+  }
+  wrap.innerHTML = visible.length ? visible.map(doc => `
     <a class="resource-card" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener noreferrer" data-category="${esc(doc.category)}">
       <i class="fa-solid fa-file-arrow-down"></i><div><span>${esc(doc.category || 'General')}</span><strong>${esc(doc.title)}</strong><small>${esc(doc.description || 'Abrir documento')}</small></div>
-    </a>`).join('') : '<p class="resource-empty">Aún no hay documentos públicos cargados.</p>';
+    </a>`).join('') : '<p class="resource-empty">Aún no hay recursos institucionales generales publicados.</p>';
 }
+
 function refreshPublic() {
   applySiteContent();
   kpis(committees);
@@ -666,9 +730,10 @@ async function loadAdminData() {
   const extras = await Promise.all([
     optionalData(db.from('committee_events').select('*').order('event_date', {ascending:false}), 'acciones'),
     optionalData(db.from('commitments').select('*').order('commitment_date', {ascending:false}), 'compromisos'),
+    optionalData(db.from('committee_requests').select('*').order('request_date', {ascending:false}), 'gestiones'),
     isAdmin() ? optionalData(db.from('profiles').select('*').order('email'), 'usuarios') : Promise.resolve([])
   ]);
-  adminEvents = extras[0]; adminCommitments = extras[1]; profiles = extras[2];
+  adminEvents = extras[0]; adminCommitments = extras[1]; adminManagements = extras[2]; profiles = extras[3];
   renderAdmin();
 }
 
@@ -680,6 +745,7 @@ function setAdminTab(tab) {
 
 function renderAdmin() {
   renderCommitteeAdmin();
+  renderManagementAdmin();
   renderActionsAdmin();
   renderDocumentAdmin();
   renderTrainingAdmin();
@@ -706,7 +772,13 @@ function renderCommitteeAdmin() {
   const filtered = adminCommittees.filter(x => !typeFilter || x.type === typeFilter);
   const count = $('#adminCommitteeFilterCount');
   if (count) count.textContent = `${filtered.length} ${filtered.length === 1 ? 'comité' : 'comités'}`;
-  rows.innerHTML = filtered.length ? filtered.map(x => `<tr><td><strong>${esc(x.name)}</strong>${x.public ? '' : '<small class="private-label">Privado</small>'}</td><td>${committeeTypeTag(x.type)}</td><td>${esc(x.type === 'CCS' ? x.municipality : x.colony)}</td><td>${esc(x.status)}</td><td><button class="action-btn" data-edit-id="${esc(x.id)}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-id="${esc(x.id)}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="5">No hay comités que coincidan con el filtro seleccionado.</td></tr>';
+  const expediente = committeeId => {
+    const docs = adminDocuments.filter(d => String(d.committee_id || '') === String(committeeId));
+    const acta = docs.some(d => d.category === 'Acta constitutiva');
+    const list = docs.some(d => d.category === 'Lista de asistencia');
+    return `<div class="admin-file-status"><span class="${acta?'ok':'missing'}"><i class="fa-solid ${acta?'fa-circle-check':'fa-circle-minus'}"></i> Acta</span><span class="${list?'ok':'missing'}"><i class="fa-solid ${list?'fa-circle-check':'fa-circle-minus'}"></i> Lista</span></div>`;
+  };
+  rows.innerHTML = filtered.length ? filtered.map(x => `<tr><td><strong>${esc(x.name)}</strong>${x.public ? '' : '<small class="private-label">Privado</small>'}</td><td>${committeeTypeTag(x.type)}</td><td>${esc(x.type === 'CCS' ? x.municipality : x.colony)}</td><td>${expediente(x.id)}</td><td>${esc(x.status)}</td><td><button class="action-btn" data-edit-id="${esc(x.id)}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-id="${esc(x.id)}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="6">No hay comités que coincidan con el filtro seleccionado.</td></tr>';
 }
 
 function populateCommitteeSelects() {
@@ -714,9 +786,82 @@ function populateCommitteeSelects() {
   const doc = $('#documentCommittee');
   const training = $('#trainingCommittee');
   const action = $('#actionCommittee');
+  const management = $('#managementCommittee');
   if (doc) doc.innerHTML = `<option value="">Selecciona un comité</option>${opts}`;
   if (training) training.innerHTML = `<option value="">General</option>${opts}`;
   if (action) action.innerHTML = `<option value="">Selecciona un comité</option>${opts}`;
+  if (management) management.innerHTML = `<option value="">Selecciona un comité</option>${opts}`;
+}
+
+function managementFiltered() {
+  const status = $('#managementStatusFilter')?.value || '';
+  const q = ($('#managementSearch')?.value || '').trim().toLowerCase();
+  return adminManagements.filter(r => {
+    if (status && r.status !== status) return false;
+    if (!q) return true;
+    const committee = adminCommittees.find(c => String(c.id) === String(r.committee_id));
+    return [r.category,r.title,r.responsible_agency,r.result,committee?.name].some(v => String(v||'').toLowerCase().includes(q));
+  });
+}
+
+function renderManagementAdmin() {
+  const wrap = $('#adminManagements');
+  if (!wrap) return;
+  const rows = managementFiltered();
+  const count = $('#managementCount');
+  if (count) count.textContent = `${rows.length} ${rows.length === 1 ? 'gestión' : 'gestiones'}`;
+  wrap.innerHTML = rows.length ? rows.map(r => {
+    const committee = adminCommittees.find(c => String(c.id) === String(r.committee_id));
+    const response = daysBetween(r.request_date,r.first_response_date);
+    const duration = daysBetween(r.start_date,r.completion_date);
+    return `<article class="management-admin-card"><div class="management-admin-main"><div class="management-card-top"><span class="management-category">${esc(r.category)}</span><span class="status-chip ${statusClass(r.status)}">${esc(r.status)}</span></div><h4>${esc(r.title)}</h4><p>${esc(committee?.name || 'Comité no disponible')}${r.responsible_agency?` · ${esc(r.responsible_agency)}`:''}</p><div class="management-metrics"><span><b>Solicitud</b>${esc(formatDate(r.request_date))}</span><span><b>Primera respuesta</b>${r.first_response_date ? `${esc(formatDate(r.first_response_date))}${Number.isFinite(response)?` · ${response} ${response===1?'día':'días'}`:''}` : 'Pendiente'}</span><span><b>Ejecución</b>${r.start_date ? esc(formatDateRange(r.start_date,r.completion_date||r.start_date)) : 'Sin iniciar'}${Number.isFinite(duration)?` · ${duration} ${duration===1?'día':'días'}`:''}</span></div>${r.result?`<small class="management-admin-result">Resultado: ${esc(r.result)}</small>`:''}</div><div><button class="action-btn" data-edit-management="${esc(r.id)}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button>${isAdmin()?`<button class="action-btn danger" data-delete-management="${esc(r.id)}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button>`:''}</div></article>`;
+  }).join('') : '<div class="empty-state"><h3>Sin gestiones</h3><p>Registra la primera solicitud o necesidad de un comité.</p></div>';
+}
+
+function validateManagementDates() {
+  const req = $('#managementRequestDate')?.value;
+  const response = $('#managementResponseDate')?.value;
+  const start = $('#managementStartDate')?.value;
+  const end = $('#managementCompletionDate')?.value;
+  const msg = $('#managementDateMessage');
+  let error = '';
+  if (response && req && response < req) error = 'La primera respuesta no puede ser anterior a la solicitud.';
+  else if (start && req && start < req) error = 'El inicio de ejecución no puede ser anterior a la solicitud.';
+  else if (end && start && end < start) error = 'La conclusión no puede ser anterior al inicio de ejecución.';
+  if (msg) { msg.hidden = !error; msg.textContent = error; msg.className = 'form-message error'; }
+  return !error;
+}
+
+function newManagementForm() {
+  $('#managementForm').reset();
+  $('#managementId').value = '';
+  $('#managementPublic').checked = true;
+  $('#managementStatus').value = 'Recibida';
+  $('#managementRequestDate').value = new Date().toISOString().slice(0,10);
+  $('#managementFormTitle').textContent = 'Nueva gestión';
+  $('#managementDateMessage').hidden = true;
+  openLayer('#managementModal');
+}
+
+function editManagement(id) {
+  const r = adminManagements.find(x => String(x.id) === String(id)); if (!r) return;
+  $('#managementForm').reset();
+  $('#managementId').value=r.id; $('#managementCommittee').value=r.committee_id||''; $('#managementCategory').value=r.category||''; $('#managementTitle').value=r.title||''; $('#managementDescription').value=r.description||''; $('#managementAgency').value=r.responsible_agency||''; $('#managementRequestDate').value=r.request_date||''; $('#managementResponseDate').value=r.first_response_date||''; $('#managementStartDate').value=r.start_date||''; $('#managementCompletionDate').value=r.completion_date||''; $('#managementStatus').value=r.status||'Recibida'; $('#managementBeneficiaries').value=Number(r.beneficiaries||0); $('#managementActivities').value=Number(r.activities_count||0); $('#managementReference').value=r.reference||''; $('#managementResult').value=r.result||''; $('#managementPublic').checked=r.public!==false; $('#managementFormTitle').textContent='Editar gestión'; $('#managementDateMessage').hidden=true; openLayer('#managementModal');
+}
+
+async function saveManagement(event) {
+  event.preventDefault(); if (!db || !isStaff() || !validateManagementDates()) return;
+  const id=$('#managementId').value;
+  const payload={ committee_id:$('#managementCommittee').value, category:$('#managementCategory').value.trim(), title:$('#managementTitle').value.trim(), description:$('#managementDescription').value.trim(), responsible_agency:$('#managementAgency').value.trim(), request_date:$('#managementRequestDate').value, first_response_date:$('#managementResponseDate').value||null, start_date:$('#managementStartDate').value||null, completion_date:$('#managementCompletionDate').value||null, status:$('#managementStatus').value, beneficiaries:Number($('#managementBeneficiaries').value||0), activities_count:Number($('#managementActivities').value||0), reference:$('#managementReference').value.trim(), result:$('#managementResult').value.trim(), public:$('#managementPublic').checked, updated_by:currentSession.user.id };
+  const result=id ? await db.from('committee_requests').update(payload).eq('id',id) : await db.from('committee_requests').insert({...payload,created_by:currentSession.user.id});
+  if (result.error) { console.error(result.error); toast('No se pudo guardar la gestión. Ejecuta el supabase.sql de esta versión.', 'error'); return; }
+  closeLayer('#managementModal'); toast(id?'Gestión actualizada.':'Gestión registrada.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('gestiones');
+}
+
+async function deleteManagement(id) {
+  if (!isAdmin() || !confirm('¿Eliminar esta gestión? Esta acción no se puede deshacer.')) return;
+  const {error}=await db.from('committee_requests').delete().eq('id',id); if(error){toast('No se pudo eliminar la gestión.','error');return;}
+  toast('Gestión eliminada.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('gestiones');
 }
 
 function statusClass(status) {
@@ -743,8 +888,8 @@ function renderActionsAdmin() {
 }
 
 function renderAdminImpact() {
-  const stats = impactStats(adminCommittees, trainings, adminEvents, adminCommitments, adminDocuments);
-  const values = { commitments:stats.commitments, completedPct:`${stats.completedPct}%`, events:stats.events, avgDays:stats.avgDays == null ? '—' : `${stats.avgDays} días` };
+  const stats = impactStats(adminCommittees, adminManagements, adminEvents, adminCommitments, adminDocuments);
+  const values = { requests:stats.requests, requestsCompletedPct:`${stats.requestsCompletedPct}%`, inProgress:stats.inProgress, avgResponseDays:stats.avgResponseDays == null ? '—' : `${stats.avgResponseDays} días` };
   Object.entries(values).forEach(([key,value]) => $$(`[data-impact-admin="${key}"]`).forEach(el => el.textContent = value));
 }
 
@@ -790,7 +935,7 @@ async function saveAction(event) {
     const payload = { committee_id:$('#actionCommittee').value, event_type:$('#eventType').value, event_date:$('#eventDate').value, title:$('#actionTitle').value.trim(), description:$('#actionDescription').value.trim(), public:$('#actionPublic').checked, updated_by:currentSession.user.id };
     result = id ? await db.from('committee_events').update(payload).eq('id',id) : await db.from('committee_events').insert({...payload,created_by:currentSession.user.id});
   }
-  if (result.error) { console.error(result.error); toast('No se pudo guardar el registro. Ejecuta primero supabase.sql v11 si aún no lo has hecho.', 'error'); return; }
+  if (result.error) { console.error(result.error); toast('No se pudo guardar el registro. Ejecuta el supabase.sql de la versión instalada si aún no lo has hecho.', 'error'); return; }
   closeLayer('#actionModal'); toast(id?'Registro actualizado.':'Registro creado.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('acciones');
 }
 
@@ -804,10 +949,8 @@ async function deleteAction(kind,id) {
 function renderDocumentAdmin() {
   const wrap = $('#adminDocuments');
   if (!wrap) return;
-  wrap.innerHTML = adminDocuments.length ? adminDocuments.map(doc => {
-    const committee = adminCommittees.find(x => x.id === doc.committee_id);
-    return `<article class="admin-card"><div class="admin-card-icon"><i class="fa-solid fa-folder-open"></i></div><div><span>${esc(doc.category || 'General')} · ${doc.public ? 'Público' : 'Interno'}</span><h3>${esc(doc.title)}</h3><p>${esc(committee?.name || doc.description || 'Documento general')}</p><a href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener noreferrer">Abrir documento</a></div>${isAdmin() ? `<button class="action-btn danger" data-delete-document="${esc(doc.id)}" aria-label="Eliminar documento"><i class="fa-solid fa-trash"></i></button>` : ''}</article>`;
-  }).join('') : '<div class="empty-state"><i class="fa-solid fa-folder-open"></i><h3>Sin documentos</h3><p>Sube el primer documento institucional.</p></div>';
+  const libraryDocuments = adminDocuments.filter(doc => !doc.committee_id);
+  wrap.innerHTML = libraryDocuments.length ? libraryDocuments.map(doc => `<article class="admin-card"><div class="admin-card-icon"><i class="fa-solid fa-book-open"></i></div><div><span>${esc(doc.category || 'General')} · ${doc.public ? 'Público' : 'Interno'}</span><h3>${esc(doc.title)}</h3><p>${esc(doc.description || 'Recurso institucional general')}</p><a href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener noreferrer">Abrir recurso</a></div>${isAdmin() ? `<button class="action-btn danger" data-delete-document="${esc(doc.id)}" aria-label="Eliminar recurso"><i class="fa-solid fa-trash"></i></button>` : ''}</article>`).join('') : '<div class="empty-state"><i class="fa-solid fa-book-open"></i><h3>Biblioteca vacía</h3><p>Aquí aparecerán únicamente recursos institucionales generales.</p></div>';
 }
 
 function renderTrainingAdmin() {
@@ -815,8 +958,11 @@ function renderTrainingAdmin() {
   if (!rows) return;
   rows.innerHTML = trainings.length ? trainings.map(item => {
     const committee = adminCommittees.find(x => x.id === item.committee_id);
-    return `<tr><td><strong>${esc(item.title)}</strong><small>${esc(item.location || '')}</small></td><td>${esc(formatDate(item.training_date))}</td><td>${esc(committee?.name || 'General')}</td><td>${Number(item.attendees || 0)}</td><td>${esc(item.status)}</td><td><button class="action-btn" data-edit-training="${esc(item.id)}"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-training="${esc(item.id)}"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`;
-  }).join('') : '<tr><td colspan="6">No hay capacitaciones registradas.</td></tr>';
+    const start = item.start_date || item.training_date;
+    const end = item.end_date || item.training_date || start;
+    const sessions = Math.max(1, Number(item.sessions || 1));
+    return `<tr><td><strong>${esc(item.title)}</strong><small>${esc(item.location || '')}</small></td><td><strong>${esc(formatDateRange(start, end))}</strong></td><td><span class="training-session-badge"><i class="fa-solid fa-calendar-check"></i>${sessions} ${sessions === 1 ? 'sesión' : 'sesiones'}</span></td><td>${esc(committee?.name || 'General')}</td><td>${Number(item.attendees || 0)}</td><td>${esc(item.status)}</td><td><button class="action-btn" data-edit-training="${esc(item.id)}"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-training="${esc(item.id)}" aria-label="Eliminar capacitación"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`;
+  }).join('') : '<tr><td colspan="7">No hay capacitaciones registradas.</td></tr>';
 }
 
 function renderRequestsAdmin() {
@@ -850,12 +996,62 @@ function toggleFormFields() {
   if (cps) $('#committeeMunicipality').value = 'Hermosillo';
 }
 
+function committeeDocuments(committeeId) {
+  return adminDocuments.filter(doc => String(doc.committee_id || '') === String(committeeId || ''));
+}
+
+function committeeCoreDocument(committeeId, category) {
+  return committeeDocuments(committeeId).filter(doc => doc.category === category).sort((a,b) => String(b.created_at||'').localeCompare(String(a.created_at||'')))[0] || null;
+}
+
+function renderCommitteeCoreDocsStatus(committeeId = '') {
+  const wrap = $('#committeeCoreDocsStatus');
+  if (!wrap) return;
+  const item = (doc,label,icon) => doc ? `<a class="core-doc-pill ready" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener"><i class="fa-solid ${icon}"></i><span>${esc(label)}</span><b><i class="fa-solid fa-circle-check"></i> Cargado</b></a>` : `<div class="core-doc-pill pending"><i class="fa-solid ${icon}"></i><span>${esc(label)}</span><b>Pendiente</b></div>`;
+  wrap.innerHTML = item(committeeId ? committeeCoreDocument(committeeId,'Acta constitutiva') : null,'Acta constitutiva','fa-file-signature') + item(committeeId ? committeeCoreDocument(committeeId,'Lista de asistencia') : null,'Lista de asistencia','fa-list-check');
+}
+
+async function uploadCommitteeDocumentFile(committeeId, file, category, title, isPublic, replaceExisting = false) {
+  if (!file) return {ok:true,skipped:true};
+  if (file.size > 15*1024*1024) return {ok:false,error:`${file.name} supera 15 MB.`};
+  const existing = replaceExisting ? committeeCoreDocument(committeeId, category) : null;
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g,'-');
+  const storagePath = existing?.storage_path || `${committeeId}/${crypto.randomUUID()}-${safeName}`;
+  const upload = await db.storage.from('committee-documents').upload(storagePath,file,{cacheControl:'3600',upsert:Boolean(existing?.storage_path),contentType:file.type||undefined});
+  if (upload.error) { console.error(upload.error); return {ok:false,error:`No se pudo subir ${file.name}.`}; }
+  const payload={committee_id:committeeId,title,category,description:'',storage_path:storagePath,file_url:'',file_name:file.name,mime_type:file.type||'',file_size:file.size,public:isPublic};
+  const result = existing ? await db.from('documents').update(payload).eq('id',existing.id) : await db.from('documents').insert({...payload,created_by:currentSession.user.id});
+  if (result.error) { console.error(result.error); if(!existing) await db.storage.from('committee-documents').remove([storagePath]); return {ok:false,error:`No se pudo registrar ${file.name}.`}; }
+  return {ok:true};
+}
+
+async function saveCommitteeAttachedFiles(committeeId) {
+  const errors=[];
+  const actaExisting=committeeCoreDocument(committeeId,'Acta constitutiva');
+  const listExisting=committeeCoreDocument(committeeId,'Lista de asistencia');
+  const actaPublic=$('#committeeActaPublic')?.checked ?? true;
+  const listPublic=$('#committeeAttendancePublic')?.checked ?? false;
+  if (actaExisting && actaExisting.public !== actaPublic) { const {error}=await db.from('documents').update({public:actaPublic}).eq('id',actaExisting.id); if(error) errors.push('No se pudo actualizar la visibilidad del acta.'); }
+  if (listExisting && listExisting.public !== listPublic) { const {error}=await db.from('documents').update({public:listPublic}).eq('id',listExisting.id); if(error) errors.push('No se pudo actualizar la visibilidad de la lista.'); }
+  const acta=$('#committeeActaFile')?.files?.[0]||null;
+  const list=$('#committeeAttendanceFile')?.files?.[0]||null;
+  if (acta) { const r=await uploadCommitteeDocumentFile(committeeId,acta,'Acta constitutiva','Acta constitutiva',actaPublic,true); if(!r.ok) errors.push(r.error); }
+  if (list) { const r=await uploadCommitteeDocumentFile(committeeId,list,'Lista de asistencia','Lista de asistencia',listPublic,true); if(!r.ok) errors.push(r.error); }
+  const evidencePublic=$('#committeeEvidencePublic')?.checked ?? true;
+  for (const file of [...($('#committeeEvidenceFiles')?.files||[])]) { const isImage=String(file.type||'').startsWith('image/'); const r=await uploadCommitteeDocumentFile(committeeId,file,isImage?'Fotografía':'Evidencia',isImage?'Evidencia fotográfica':'Evidencia',evidencePublic,false); if(!r.ok) errors.push(r.error); }
+  return errors;
+}
+
 function newCommitteeForm() {
   $('#committeeForm').reset();
   $('#committeeId').value = '';
   $('#committeePublic').checked = true;
+  $('#committeeActaPublic').checked = true;
+  $('#committeeAttendancePublic').checked = false;
+  $('#committeeEvidencePublic').checked = true;
   $('#committeeStatus').value = 'Activo';
   $('#formTitle').textContent = 'Nuevo comité';
+  renderCommitteeCoreDocsStatus('');
   toggleFormFields();
   openLayer('#formModal');
 }
@@ -877,6 +1073,15 @@ function editCommittee(id) {
   $('#committeePublic').checked = x.public;
   $('#committeeLat').value = x.lat;
   $('#committeeLng').value = x.lng;
+  const actaDoc = committeeCoreDocument(x.id,'Acta constitutiva');
+  const listDoc = committeeCoreDocument(x.id,'Lista de asistencia');
+  $('#committeeActaPublic').checked = actaDoc ? actaDoc.public !== false : true;
+  $('#committeeAttendancePublic').checked = listDoc ? listDoc.public !== false : false;
+  $('#committeeEvidencePublic').checked = true;
+  $('#committeeActaFile').value = '';
+  $('#committeeAttendanceFile').value = '';
+  $('#committeeEvidenceFiles').value = '';
+  renderCommitteeCoreDocsStatus(x.id);
   toggleFormFields();
   openLayer('#formModal');
 }
@@ -901,11 +1106,15 @@ async function saveCommittee(event) {
   };
   const payload = toDbCommittee(obj);
   let result;
-  if (id) result = await db.from('committees').update(payload).eq('id', id);
-  else result = await db.from('committees').insert({ ...payload, created_by: currentSession.user.id });
+  let committeeId = id;
+  if (id) result = await db.from('committees').update(payload).eq('id', id).select('id').single();
+  else result = await db.from('committees').insert({ ...payload, created_by: currentSession.user.id }).select('id').single();
   if (result.error) { console.error(result.error); toast('No se pudo guardar el comité.', 'error'); return; }
+  committeeId = result.data?.id || committeeId;
+  const fileErrors = committeeId ? await saveCommitteeAttachedFiles(committeeId) : [];
   closeLayer('#formModal');
-  toast(id ? 'Comité actualizado.' : 'Comité creado.');
+  if (fileErrors.length) toast(`Comité guardado, pero ${fileErrors.length} archivo(s) no pudieron actualizarse.`, 'error');
+  else toast(id ? 'Comité y expediente actualizados.' : 'Comité y expediente creados.');
   await Promise.all([loadPublicData(), loadAdminData()]);
   setAdminTab('comites');
 }
@@ -921,52 +1130,18 @@ async function deleteCommittee(id) {
 async function saveDocument(event) {
   event.preventDefault();
   if (!db || !isStaff()) return;
-  const files = [...($('#documentFile').files || [])];
-  const committeeId = $('#documentCommittee').value;
-  if (!committeeId) { toast('Selecciona el comité al que pertenece el expediente.', 'error'); return; }
-  if (!files.length) return;
-  if (files.some(file => file.size > 15 * 1024 * 1024)) { toast('Uno de los archivos supera el límite de 15 MB.', 'error'); return; }
-  const baseTitle = $('#documentTitle').value.trim();
-  const category = $('#documentCategory').value;
-  const description = $('#documentDescription').value.trim();
-  const isPublic = $('#documentPublic').checked;
-  let uploaded = 0;
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]+/g, '-');
-    const path = `${committeeId}/${crypto.randomUUID()}-${safeName}`;
-    const upload = await db.storage.from('committee-documents').upload(path, file, { cacheControl: '3600', upsert: false, contentType: file.type || undefined });
-    if (upload.error) { console.error(upload.error); toast(`No se pudo subir ${file.name}.`, 'error'); continue; }
-    const title = files.length === 1 ? baseTitle : `${baseTitle} · ${i + 1}`;
-    const insert = await db.from('documents').insert({
-      title,
-      category,
-      committee_id: committeeId,
-      description,
-      storage_path: path,
-      file_url: '',
-      file_name: file.name,
-      mime_type: file.type || '',
-      file_size: file.size,
-      public: isPublic,
-      created_by: currentSession.user.id
-    });
-    if (insert.error) {
-      console.error(insert.error);
-      await db.storage.from('committee-documents').remove([path]);
-      toast(`No se pudo registrar ${file.name}.`, 'error');
-      continue;
-    }
-    uploaded++;
-  }
-  if (!uploaded) return;
-  $('#documentForm').reset();
-  $('#documentPublic').checked = true;
-  closeLayer('#documentModal');
-  toast(uploaded === 1 ? 'Archivo agregado al expediente.' : `${uploaded} archivos agregados al expediente.`);
-  await Promise.all([loadPublicData(), loadAdminData()]);
-  setAdminTab('documentos');
+  const file = $('#documentFile').files?.[0];
+  if (!file) return;
+  if (file.size > 15*1024*1024) { toast('El archivo supera el límite de 15 MB.','error'); return; }
+  const safeName=file.name.replace(/[^a-zA-Z0-9._-]+/g,'-');
+  const path=`library/${crypto.randomUUID()}-${safeName}`;
+  const upload=await db.storage.from('committee-documents').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||undefined});
+  if(upload.error){console.error(upload.error);toast('No se pudo subir el recurso.','error');return;}
+  const insert=await db.from('documents').insert({title:$('#documentTitle').value.trim(),category:$('#documentCategory').value,committee_id:null,description:$('#documentDescription').value.trim(),storage_path:path,file_url:'',file_name:file.name,mime_type:file.type||'',file_size:file.size,public:$('#documentPublic').checked,created_by:currentSession.user.id});
+  if(insert.error){console.error(insert.error);await db.storage.from('committee-documents').remove([path]);toast('No se pudo registrar el recurso.','error');return;}
+  $('#documentForm').reset(); $('#documentPublic').checked=true; closeLayer('#documentModal'); toast('Recurso agregado a la biblioteca.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('documentos');
 }
+
 async function deleteDocument(id) {
   if (!isAdmin() || !confirm('¿Eliminar este documento?')) return;
   const doc = adminDocuments.find(x => x.id === id);
@@ -982,8 +1157,11 @@ function newTrainingForm() {
   $('#trainingForm').reset();
   $('#trainingId').value = '';
   $('#trainingAttendees').value = '0';
+  $('#trainingSessions').value = '1';
   $('#trainingStatus').value = 'Programada';
   $('#trainingFormTitle').textContent = 'Nueva capacitación';
+  const message = $('#trainingDateMessage');
+  if (message) { message.hidden = true; message.textContent = ''; }
   openLayer('#trainingModal');
 }
 
@@ -994,11 +1172,15 @@ function editTraining(id) {
   $('#trainingId').value = item.id;
   $('#trainingTitle').value = item.title;
   $('#trainingCommittee').value = item.committee_id || '';
-  $('#trainingDate').value = item.training_date;
+  $('#trainingStartDate').value = item.start_date || item.training_date || '';
+  $('#trainingEndDate').value = item.end_date || item.training_date || item.start_date || '';
+  $('#trainingSessions').value = Math.max(1, Number(item.sessions || 1));
   $('#trainingLocation').value = item.location || '';
   $('#trainingAttendees').value = item.attendees || 0;
   $('#trainingStatus').value = item.status;
   $('#trainingNotes').value = item.notes || '';
+  const message = $('#trainingDateMessage');
+  if (message) { message.hidden = true; message.textContent = ''; }
   openLayer('#trainingModal');
 }
 
@@ -1006,10 +1188,28 @@ async function saveTraining(event) {
   event.preventDefault();
   if (!db || !isStaff()) return;
   const id = $('#trainingId').value;
+  const startDate = $('#trainingStartDate').value;
+  const endDate = $('#trainingEndDate').value;
+  const sessions = Math.max(1, Number($('#trainingSessions').value || 1));
+  const message = $('#trainingDateMessage');
+
+  if (!startDate || !endDate) {
+    if (message) { message.hidden = false; message.textContent = 'Indica la fecha de inicio y la fecha de término.'; }
+    return;
+  }
+  if (endDate < startDate) {
+    if (message) { message.hidden = false; message.textContent = 'La fecha de término no puede ser anterior a la fecha de inicio.'; }
+    return;
+  }
+  if (message) { message.hidden = true; message.textContent = ''; }
+
   const payload = {
     title: $('#trainingTitle').value.trim(),
     committee_id: $('#trainingCommittee').value || null,
-    training_date: $('#trainingDate').value,
+    training_date: startDate,
+    start_date: startDate,
+    end_date: endDate,
+    sessions,
     location: $('#trainingLocation').value.trim(),
     attendees: Number($('#trainingAttendees').value || 0),
     status: $('#trainingStatus').value,
@@ -1020,8 +1220,8 @@ async function saveTraining(event) {
   else res = await db.from('trainings').insert({ ...payload, created_by: currentSession.user.id });
   if (res.error) { console.error(res.error); toast('No se pudo guardar la capacitación.', 'error'); return; }
   closeLayer('#trainingModal');
-  toast('Capacitación guardada.');
-  await loadAdminData();
+  toast(sessions > 1 ? `Capacitación guardada · ${sessions} sesiones.` : 'Capacitación guardada.');
+  await Promise.all([loadPublicData(), loadAdminData()]);
   setAdminTab('capacitaciones');
 }
 
@@ -1216,6 +1416,7 @@ function bindUI() {
     nav.classList.toggle('open');
     $('.menu-toggle').setAttribute('aria-expanded', nav.classList.contains('open') ? 'true' : 'false');
   });
+  $('#showMoreResources')?.addEventListener('click', () => { resourceVisibleCount += 9; renderPublicResources(); });
   $('#mapFullscreenBtn')?.addEventListener('click', toggleMapFullscreen);
   document.addEventListener('fullscreenchange', syncMapFullscreenButton);
   document.addEventListener('webkitfullscreenchange', syncMapFullscreenButton);
@@ -1244,19 +1445,31 @@ function bindUI() {
     $$('.type-check').forEach(x => x.checked = true);
     renderMap();
   });
-  ['directorySearch','directoryType','directoryMunicipality','directoryColony'].forEach(id => $(`#${id}`)?.addEventListener('input', renderDirectory));
+  ['directorySearch','directoryType','directoryMunicipality','directoryColony'].forEach(id => $(`#${id}`)?.addEventListener('input', () => {
+    directoryVisibleCount = DIRECTORY_PAGE_SIZE;
+    renderDirectory();
+  }));
+
+  $('#directoryLoadMore')?.addEventListener('click', () => {
+    directoryVisibleCount += DIRECTORY_PAGE_SIZE;
+    renderDirectory();
+  });
+
   $('#clearFilters')?.addEventListener('click', () => {
     ['directorySearch','directoryType','directoryMunicipality','directoryColony'].forEach(id => $(`#${id}`).value = '');
+    directoryVisibleCount = DIRECTORY_PAGE_SIZE;
     renderDirectory();
   });
   $$('[data-view]').forEach(btn => btn.addEventListener('click', () => {
     $$('[data-view]').forEach(x => x.classList.remove('active'));
     btn.classList.add('active');
     viewMode = btn.dataset.view;
+    directoryVisibleCount = DIRECTORY_PAGE_SIZE;
     renderDirectory();
   }));
   $$('[data-type-jump]').forEach(btn => btn.addEventListener('click', () => {
     $('#directoryType').value = btn.dataset.typeJump;
+    directoryVisibleCount = DIRECTORY_PAGE_SIZE;
     renderDirectory();
     location.hash = 'directorio';
   }));
@@ -1267,6 +1480,7 @@ function bindUI() {
   $$('[data-close-form]').forEach(btn => btn.addEventListener('click', () => closeLayer('#formModal')));
   $$('[data-close-document]').forEach(btn => btn.addEventListener('click', () => closeLayer('#documentModal')));
   $$('[data-close-action]').forEach(btn => btn.addEventListener('click', () => closeLayer('#actionModal')));
+  $$('[data-close-management]').forEach(btn => btn.addEventListener('click', () => closeLayer('#managementModal')));
   $$('[data-close-training]').forEach(btn => btn.addEventListener('click', () => closeLayer('#trainingModal')));
   $$('[data-close-user]').forEach(btn => btn.addEventListener('click', () => closeLayer('#userModal')));
   $$('.admin-tabs button').forEach(btn => btn.addEventListener('click', () => setAdminTab(btn.dataset.adminTab)));
@@ -1281,6 +1495,10 @@ function bindUI() {
 
   $('#newCommittee')?.addEventListener('click', newCommitteeForm);
   $('#newAction')?.addEventListener('click', newActionForm);
+  $('#newManagement')?.addEventListener('click', newManagementForm);
+  $('#managementForm')?.addEventListener('submit', saveManagement);
+  $('#managementStatusFilter')?.addEventListener('change', renderManagementAdmin);
+  $('#managementSearch')?.addEventListener('input', renderManagementAdmin);
   $('#actionRecordType')?.addEventListener('change', toggleActionFields);
   $('#actionForm')?.addEventListener('submit', saveAction);
   $('#committeeType')?.addEventListener('change', toggleFormFields);
@@ -1306,6 +1524,10 @@ function bindUI() {
     if (del) { deleteCommittee(del.dataset.deleteId); return; }
     const delDoc = event.target.closest('[data-delete-document]');
     if (delDoc) { deleteDocument(delDoc.dataset.deleteDocument); return; }
+    const editManagementBtn = event.target.closest('[data-edit-management]');
+    if (editManagementBtn) { editManagement(editManagementBtn.dataset.editManagement); return; }
+    const delManagementBtn = event.target.closest('[data-delete-management]');
+    if (delManagementBtn) { deleteManagement(delManagementBtn.dataset.deleteManagement); return; }
     const editCommitmentBtn = event.target.closest('[data-edit-commitment]');
     if (editCommitmentBtn) { editCommitment(editCommitmentBtn.dataset.editCommitment); return; }
     const delCommitmentBtn = event.target.closest('[data-delete-commitment]');
@@ -1330,7 +1552,7 @@ function bindUI() {
   });
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') ['#detailModal','#loginModal','#passwordModal','#formModal','#documentModal','#actionModal','#trainingModal','#userModal','#adminDrawer'].forEach(closeLayer);
+    if (event.key === 'Escape') ['#detailModal','#loginModal','#passwordModal','#formModal','#documentModal','#managementModal','#actionModal','#trainingModal','#userModal','#adminDrawer'].forEach(closeLayer);
   });
 
   $$('[data-resource-category]').forEach(link => link.addEventListener('click', () => {
