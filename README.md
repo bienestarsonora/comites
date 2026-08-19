@@ -56,3 +56,7 @@ Los documentos ya cargados pueden alternarse entre Público y No público sin vo
 
 ### v23
 Los cambios Público/No público de archivos existentes se guardan de inmediato y se verifican contra Supabase. El botón Guardar comité ya no participa en ese flujo.
+
+
+### v25
+Buscador de comités en el panel administrativo y refresco en vivo del expediente público al abrir cada ficha.

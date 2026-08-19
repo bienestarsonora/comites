@@ -112,3 +112,11 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - Las acciones quedan en una fila propia debajo del documento.
 - En pantallas angostas, los controles se apilan correctamente.
 - Requiere ejecutar `SUPABASE-FIX-VISIBILIDAD-v24.sql` o el `supabase.sql` completo.
+
+## v25 — buscador admin + ficha pública en vivo
+- Se agregó buscador en Administración > Comités.
+- Busca por nombre, municipio, colonia, programa, tipo y estatus.
+- Puede combinarse con el filtro por tipo de comité.
+- Cada vez que se abre una ficha desde el mapa o directorio, la plataforma vuelve a consultar en Supabase los documentos públicos de ese comité.
+- Esto evita que un documento recién cambiado de No público a Público quede oculto por caché de la sesión.
+- No requiere cambios adicionales en Supabase si ya aplicaste el FIX de visibilidad de v24.

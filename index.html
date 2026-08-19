@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles-v24.css">
+  <link rel="stylesheet" href="styles-v25.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -175,7 +175,22 @@
 
     <div class="admin-panel" data-admin-panel="resumen"><div class="admin-title"><div><span>Resumen operativo</span><h2>Gestión institucional</h2></div><button class="btn btn-ghost" id="refreshAdmin"><i class="fa-solid fa-rotate"></i> Actualizar</button></div><div class="admin-kpis"><article><strong data-kpi="committees">0</strong><span>Comités registrados</span></article><article><strong data-impact-admin="requests">0</strong><span>Gestiones registradas</span></article><article><strong data-impact-admin="requestsCompletedPct">0%</strong><span>Gestiones concluidas</span></article></div><div class="admin-summary-grid"><article><i class="fa-solid fa-map-location-dot"></i><strong data-kpi="municipalities">0</strong><span>Municipios con CCS</span></article><article><i class="fa-solid fa-list-check"></i><strong data-impact-admin="inProgress">0</strong><span>Procesos en curso</span></article><article><i class="fa-solid fa-clock"></i><strong data-impact-admin="avgResponseDays">—</strong><span>Respuesta institucional promedio</span></article></div></div>
 
-    <div class="admin-panel" data-admin-panel="comites" hidden><div class="admin-title"><div><span>Registro y actualización</span><h2>Comités</h2></div><button class="btn btn-primary" id="newCommittee">Nuevo comité</button></div><div class="admin-filter-bar"><div class="admin-filter-control"><label for="adminCommitteeTypeFilter">Filtrar por tipo de comité</label><select id="adminCommitteeTypeFilter"><option value="">Todos los comités</option><option value="CCS">Contraloría Social</option><option value="CPS">Bienestar y Participación Ciudadana</option></select></div><div class="admin-type-legend"><span class="admin-type-tag ccs"><i></i>Contraloría Social</span><span class="admin-type-tag bpc"><i></i>Bienestar y Participación Ciudadana</span></div><div class="admin-filter-count" id="adminCommitteeFilterCount">0 comités</div></div><div class="admin-table-wrap"><table><thead><tr><th>Comité</th><th>Tipo</th><th>Territorio</th><th>Expediente</th><th>Estatus</th><th>Acciones</th></tr></thead><tbody id="adminRows"></tbody></table></div></div>
+    <div class="admin-panel" data-admin-panel="comites" hidden><div class="admin-title"><div><span>Registro y actualización</span><h2>Comités</h2></div><button class="btn btn-primary" id="newCommittee">Nuevo comité</button></div><div class="admin-filter-bar admin-committee-filters">
+  <div class="admin-filter-control">
+    <label for="adminCommitteeSearch">Buscar comité</label>
+    <div class="admin-search-input">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="adminCommitteeSearch" type="search" placeholder="Nombre, municipio, colonia o programa">
+      <button id="clearAdminCommitteeSearch" type="button" title="Limpiar búsqueda" aria-label="Limpiar búsqueda"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </div>
+  <div class="admin-filter-control">
+    <label for="adminCommitteeTypeFilter">Filtrar por tipo de comité</label>
+    <select id="adminCommitteeTypeFilter"><option value="">Todos los comités</option><option value="CCS">Contraloría Social</option><option value="CPS">Bienestar y Participación Ciudadana</option></select>
+  </div>
+  <div class="admin-type-legend"><span class="admin-type-tag ccs"><i></i>Contraloría Social</span><span class="admin-type-tag bpc"><i></i>Bienestar y Participación Ciudadana</span></div>
+  <div class="admin-filter-count" id="adminCommitteeFilterCount">0 comités</div>
+</div><div class="admin-table-wrap"><table><thead><tr><th>Comité</th><th>Tipo</th><th>Territorio</th><th>Expediente</th><th>Estatus</th><th>Acciones</th></tr></thead><tbody id="adminRows"></tbody></table></div></div>
 
     <div class="admin-panel" data-admin-panel="gestiones" hidden><div class="admin-title"><div><span>Atención y seguimiento</span><h2>Gestiones de los comités</h2><p class="panel-help">Registra cualquier tipo de solicitud o necesidad: capacitación, vinculación, servicio público, asesoría, infraestructura, apoyo, evento u otra. La categoría es abierta para no depender de un catálogo rígido.</p></div><button class="btn btn-primary" id="newManagement"><i class="fa-solid fa-plus"></i> Nueva gestión</button></div><div class="admin-filter-bar management-filter-bar"><div class="admin-filter-control"><label for="managementStatusFilter">Estatus</label><select id="managementStatusFilter"><option value="">Todos</option><option>Recibida</option><option>En gestión</option><option>Programada</option><option>En ejecución</option><option>Concluida</option><option>No procedente</option><option>Cancelada</option></select></div><div class="admin-filter-control"><label for="managementSearch">Buscar</label><input id="managementSearch" placeholder="Comité, categoría, título o responsable"></div><div class="admin-filter-count" id="managementCount">0 gestiones</div></div><div id="adminManagements" class="management-admin-list"></div></div>
 
@@ -211,7 +226,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js?v=20260819-v24"></script>
-  <script src="app-v24.js"></script>
+  <script src="supabase-config.js?v=20260819-v25"></script>
+  <script src="app-v25.js"></script>
 </body>
 </html>
