@@ -104,3 +104,11 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - Se agregan botones `Hacer todas públicas` y `Hacer todas no públicas` para evidencias adicionales de cada comité.
 - Los checkboxes del área de carga aplican únicamente a archivos NUEVOS.
 - Requiere ejecutar el `supabase.sql` de v23 porque incorpora dos RPC seguras.
+
+## v24 — corrección visual + persistencia de visibilidad
+- Corregido el error `column "updated_by" of relation "documents" does not exist`.
+- Las funciones de visibilidad ya no dependen de columnas inexistentes.
+- Los botones Público / Abrir / Eliminar ya no se sobreponen al nombre, fecha ni estatus del archivo.
+- Las acciones quedan en una fila propia debajo del documento.
+- En pantallas angostas, los controles se apilan correctamente.
+- Requiere ejecutar `SUPABASE-FIX-VISIBILIDAD-v24.sql` o el `supabase.sql` completo.
