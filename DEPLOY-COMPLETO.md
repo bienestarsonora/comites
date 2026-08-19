@@ -79,3 +79,19 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - Si se elimina Acta o Lista, el expediente vuelve a marcarse como incompleto.
 - Los capturistas pueden subir/editar, pero el borrado destructivo queda reservado al rol administrador.
 - No requiere cambios en Supabase si ya ejecutaste el SQL de v16/v17, porque las políticas de borrado ya existen.
+
+## v21 — borrado funcional de archivos del expediente
+- El botón Eliminar ya no depende del rol literal `admin`.
+- Aparece para cualquier usuario institucional con permiso operativo (`admin` o `capturista`).
+- Sólo aplica a archivos del expediente del comité: Acta, Lista, fotografías y evidencias.
+- Biblioteca general y otras eliminaciones sensibles conservan sus restricciones anteriores.
+- Supabase actualiza las políticas DELETE de `documents` y `storage.objects` para permitir esta corrección operativa a usuarios staff.
+- Debes ejecutar nuevamente el `supabase.sql` de v21.
+- No borra datos al instalarse.
+
+## v22 — visibilidad editable después de subir
+- Acta constitutiva y Lista de asistencia muestran un botón de estado `Público / No público`.
+- Fotografías y evidencias adicionales mantienen el mismo control individual.
+- El estado puede cambiarse después de haber subido el archivo; no es necesario reemplazarlo.
+- El checkbox del formulario sólo define el estado inicial de un archivo nuevo.
+- No requiere cambios en Supabase respecto de v21.

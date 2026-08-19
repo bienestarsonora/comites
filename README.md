@@ -44,3 +44,11 @@ La página principal carga `app-v19.js` y `styles-v19.css` para evitar caché de
 
 ### v20
 El panel de edición de cada comité permite al administrador eliminar archivos cargados por error, incluyendo documentos principales y evidencias.
+
+
+### v21
+El borrado de archivos asociados a fichas de comités está disponible para usuarios operativos autorizados (admin y capturista), con confirmación antes de eliminar.
+
+
+### v22
+Los documentos ya cargados pueden alternarse entre Público y No público sin volver a subirlos.
