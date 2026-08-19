@@ -36,3 +36,11 @@ La atención de los comités se modela mediante `committee_requests`, una estruc
 - La Biblioteca pública sólo muestra recursos generales sin committee_id.
 - El área pública de recursos muestra 9 elementos inicialmente y permite cargar 9 más sucesivamente.
 - El panel de comités muestra rápidamente si cada expediente ya tiene Acta y Lista.
+
+
+### Archivos activos v19
+La página principal carga `app-v19.js` y `styles-v19.css` para evitar caché de versiones anteriores.
+
+
+### v20
+El panel de edición de cada comité permite al administrador eliminar archivos cargados por error, incluyendo documentos principales y evidencias.

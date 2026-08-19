@@ -61,3 +61,21 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - Dentro de Editar comité se mantiene la separación visual: documentos principales y evidencias adicionales.
 - El encabezado del expediente muestra de forma prominente el total incluyendo todos los archivos.
 - No requiere cambios en Supabase.
+
+## v19 — cache limpio y conteo inequívoco
+- `index.html` carga `app-v19.js` y `styles-v19.css` como archivos físicos nuevos.
+- Esto evita que una pestaña o caché del navegador reutilice el JavaScript anterior.
+- La columna Expediente muestra el TOTAL REAL de archivos:
+  - Ejemplo: Acta + Lista + 1 adicional = `3 archivos totales`.
+- Debajo se explica la composición: `Acta + Lista + 1 adicional`.
+- No requiere cambios en Supabase.
+
+## v20 — eliminar archivos del expediente
+- Los administradores pueden eliminar Acta constitutiva, Lista de asistencia, fotografías y evidencias desde Editar comité.
+- Cada archivo muestra un botón rojo `Eliminar`.
+- Se solicita confirmación antes de borrar.
+- La eliminación quita el registro de `documents` y limpia el objeto en Storage.
+- El contador del expediente y los indicadores se actualizan inmediatamente.
+- Si se elimina Acta o Lista, el expediente vuelve a marcarse como incompleto.
+- Los capturistas pueden subir/editar, pero el borrado destructivo queda reservado al rol administrador.
+- No requiere cambios en Supabase si ya ejecutaste el SQL de v16/v17, porque las políticas de borrado ya existen.
