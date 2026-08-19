@@ -120,3 +120,24 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - Cada vez que se abre una ficha desde el mapa o directorio, la plataforma vuelve a consultar en Supabase los documentos públicos de ese comité.
 - Esto evita que un documento recién cambiado de No público a Público quede oculto por caché de la sesión.
 - No requiere cambios adicionales en Supabase si ya aplicaste el FIX de visibilidad de v24.
+
+## v26 — visibilidad que no se revierte + nuevo índice
+- Corregido el bug que hacía que `Guardar comité` pudiera volver a poner un Acta o Lista como No público después de haber cambiado su estado arriba.
+- Ahora la visibilidad de archivos EXISTENTES sólo se modifica con sus botones Público / No público.
+- Los checkboxes inferiores sólo afectan archivos NUEVOS o reemplazos.
+- Se conserva la consulta en vivo de documentos públicos al abrir la ficha.
+- Nuevo Índice de Fortalecimiento:
+  - Constitución: 45 puntos.
+  - Capacitación: 35 puntos.
+  - Seguimiento: 15 puntos.
+- Las ponderaciones solicitadas suman 95, por lo que esta versión muestra el índice sobre 95 puntos.
+- No requiere SQL nuevo si ya aplicaste el FIX v24.
+
+## v27 — Índice de Fortalecimiento sobre 100
+- Constitución: 45 puntos.
+- Capacitación: 35 puntos.
+- Seguimiento: 20 puntos.
+- Total: 100 puntos.
+- Seguimiento parcial: 10 puntos cuando existe al menos una acción, gestión o compromiso documentado.
+- Seguimiento completo: 20 puntos cuando existe gestión en curso/concluida o compromiso en proceso/cumplido.
+- No requiere cambios en Supabase.

@@ -60,3 +60,7 @@ Los cambios Público/No público de archivos existentes se guardan de inmediato 
 
 ### v25
 Buscador de comités en el panel administrativo y refresco en vivo del expediente público al abrir cada ficha.
+
+
+### v27
+El Índice de Fortalecimiento queda en 100 puntos: Constitución 45, Capacitación 35 y Seguimiento 20.
