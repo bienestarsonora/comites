@@ -95,3 +95,12 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - El estado puede cambiarse después de haber subido el archivo; no es necesario reemplazarlo.
 - El checkbox del formulario sólo define el estado inicial de un archivo nuevo.
 - No requiere cambios en Supabase respecto de v21.
+
+## v23 — visibilidad persistente
+- Corregido el flujo que podía hacer pensar que “Guardar comité” cambiaba la visibilidad de evidencias ya existentes.
+- La visibilidad de archivos existentes ahora se guarda INMEDIATAMENTE al pulsar Público / No público.
+- El frontend verifica la respuesta de Supabase antes de mostrar el cambio como exitoso.
+- Acta, Lista y evidencias adicionales pueden alternarse individualmente.
+- Se agregan botones `Hacer todas públicas` y `Hacer todas no públicas` para evidencias adicionales de cada comité.
+- Los checkboxes del área de carga aplican únicamente a archivos NUEVOS.
+- Requiere ejecutar el `supabase.sql` de v23 porque incorpora dos RPC seguras.

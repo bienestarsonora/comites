@@ -52,3 +52,7 @@ El borrado de archivos asociados a fichas de comités está disponible para usua
 
 ### v22
 Los documentos ya cargados pueden alternarse entre Público y No público sin volver a subirlos.
+
+
+### v23
+Los cambios Público/No público de archivos existentes se guardan de inmediato y se verifican contra Supabase. El botón Guardar comité ya no participa en ese flujo.
