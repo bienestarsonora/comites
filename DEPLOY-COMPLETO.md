@@ -35,3 +35,12 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - El contador indica cuántos se muestran del total filtrado.
 - Al cambiar búsqueda o filtros, el listado vuelve automáticamente a los primeros 9 resultados.
 - La vista compacta conserva todos los resultados para consulta tabular.
+
+
+## v16 — expedientes corregidos
+- `Expedientes completos` se calcula con Acta constitutiva + Lista de asistencia, aunque la lista sea privada.
+- Se agrega la función segura `get_committee_file_status()`; no expone archivos privados ni sus nombres.
+- Al editar un comité, el panel muestra nombre de archivo, fecha, visibilidad y enlace para Acta y Lista.
+- También muestra todas las fotografías y evidencias adicionales ya cargadas.
+- La tabla de comités indica Acta, Lista y cantidad de fotografías/evidencias existentes.
+- Para instalar esta versión hay que ejecutar nuevamente el `supabase.sql` completo.

@@ -364,3 +364,159 @@ body.map-fullscreen-open{overflow:hidden}
   background:var(--sand);
   border-color:rgba(111,18,56,.18);
 }
+
+
+/* v16 · Expediente administrativo visible y verificable */
+.admin-file-status{align-items:center}
+.admin-file-status small{
+  display:block!important;
+  width:100%;
+  margin-top:2px!important;
+  padding-left:1px;
+  color:var(--muted)!important;
+  font-size:9px!important;
+  font-weight:700;
+}
+.core-doc-status{
+  display:block;
+  margin-bottom:16px;
+}
+.core-doc-empty{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 14px;
+  border:1px dashed var(--line);
+  border-radius:14px;
+  background:var(--cream);
+}
+.core-doc-empty>i{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#fff;
+  color:var(--wine);
+}
+.core-doc-empty strong,.core-doc-empty span{display:block}
+.core-doc-empty span{font-size:11px;color:var(--muted)}
+.core-existing-title{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:end;
+  margin-bottom:10px;
+}
+.core-existing-title strong{font-size:12px}
+.core-existing-title span{max-width:390px;text-align:right;font-size:10px;color:var(--muted)}
+.core-existing-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.core-existing-card{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  min-height:74px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:15px;
+}
+.core-existing-card.ready{background:#f3faf5;border-color:#d3eadb}
+.core-existing-card.pending{background:#f8f5f6;color:#81737a}
+.core-existing-icon{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#fff;
+  color:var(--wine);
+  border:1px solid var(--line);
+}
+.core-existing-copy{min-width:0}
+.core-existing-copy span,.core-existing-copy strong,.core-existing-copy small{display:block}
+.core-existing-copy span{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+.core-existing-copy strong{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+}
+.core-existing-copy small{font-size:9px;color:var(--muted);margin-top:2px}
+.core-existing-open{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:7px 9px;
+  border-radius:9px;
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--wine);
+  font-size:9px;
+  font-weight:800;
+}
+.existing-evidence-section{
+  margin-top:10px;
+  padding:12px;
+  border-radius:14px;
+  background:#fff;
+  border:1px solid var(--line);
+}
+.existing-evidence-section.empty{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--muted);
+  font-size:10px;
+}
+.existing-evidence-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  margin-bottom:8px;
+}
+.existing-evidence-head strong{font-size:11px}
+.existing-evidence-head span{
+  padding:3px 7px;
+  border-radius:999px;
+  background:var(--sand);
+  color:var(--wine);
+  font-size:9px;
+  font-weight:800;
+}
+.existing-evidence-list{display:grid;gap:6px}
+.existing-evidence-item{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  padding:8px 9px;
+  border-radius:10px;
+  background:var(--cream);
+  border:1px solid transparent;
+}
+.existing-evidence-item:hover{border-color:var(--line);background:#fff}
+.existing-evidence-item>i:first-child{color:var(--wine)}
+.existing-evidence-item>div{min-width:0}
+.existing-evidence-item strong,.existing-evidence-item small{display:block}
+.existing-evidence-item strong{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10px;
+}
+.existing-evidence-item small{font-size:9px;color:var(--muted)}
+.existing-evidence-item>i:last-child{font-size:9px;color:var(--muted)}
+
+@media(max-width:680px){
+  .core-existing-title{align-items:flex-start;flex-direction:column}
+  .core-existing-title span{text-align:left}
+  .core-existing-grid{grid-template-columns:1fr}
+  .core-existing-card{grid-template-columns:auto minmax(0,1fr)}
+  .core-existing-open{grid-column:2;width:max-content}
+}

@@ -41,6 +41,7 @@ let db = null;
 let committees = [];
 let adminCommittees = [];
 let publicDocuments = [];
+let publicFileStatus = [];
 let resourceVisibleCount = 9;
 let adminDocuments = [];
 let trainings = [];
@@ -187,7 +188,11 @@ function isImageDocument(doc) {
   return String(doc?.mime_type || '').startsWith('image/') || doc?.category === 'Fotografía';
 }
 
-function impactStats(sourceCommittees = committees, sourceManagements = publicManagements, sourceEvents = publicEvents, sourceCommitments = publicCommitments, sourceDocuments = publicDocuments) {
+function fileStatusForCommittee(committeeId) {
+  return publicFileStatus.find(row => String(row.committee_id || '') === String(committeeId || '')) || null;
+}
+
+function impactStats(sourceCommittees = committees, sourceManagements = publicManagements, sourceEvents = publicEvents, sourceCommitments = publicCommitments) {
   const active = sourceCommittees.filter(x => x.status === 'Activo').length;
   const requests = sourceManagements.length;
   const concluded = sourceManagements.filter(x => x.status === 'Concluida');
@@ -199,11 +204,16 @@ function impactStats(sourceCommittees = committees, sourceManagements = publicMa
   const inProgress = sourceManagements.filter(x => ['En gestión','Programada','En ejecución'].includes(x.status)).length;
   const completedCommitments = sourceCommitments.filter(x => x.status === 'Cumplido');
   const commitmentsCompletedPct = sourceCommitments.length ? Math.round(completedCommitments.length / sourceCommitments.length * 100) : 0;
+
+  // La integridad del expediente se calcula por existencia del acta + lista,
+  // aunque alguno de esos archivos sea privado. La privacidad controla quién
+  // puede abrir el archivo, no si el expediente existe.
   const completeFiles = sourceCommittees.filter(c => {
-    const docs = sourceDocuments.filter(d => String(d.committee_id||'') === String(c.id));
-    return docs.some(d => d.category === 'Acta constitutiva') && docs.some(d => d.category === 'Lista de asistencia');
+    const status = fileStatusForCommittee(c.id);
+    return Boolean(status?.has_acta && status?.has_attendance);
   }).length;
   const completeFilesPct = sourceCommittees.length ? Math.round(completeFiles / sourceCommittees.length * 100) : 0;
+
   return { active, requests, requestsCompletedPct, avgResponseDays, inProgress, events: sourceEvents.length, commitmentsCompletedPct, completeFilesPct };
 }
 
@@ -214,8 +224,9 @@ function committeeStrengthScore(committee) {
   const managementsFor = publicManagements.filter(r => String(r.committee_id||'') === id);
   const eventsFor = publicEvents.filter(e => String(e.committee_id||'') === id);
   const commitmentsFor = publicCommitments.filter(c => String(c.committee_id||'') === id);
-  const hasActa = docs.some(d => d.category === 'Acta constitutiva');
-  const hasAttendance = docs.some(d => d.category === 'Lista de asistencia');
+  const fileStatus = fileStatusForCommittee(committee.id);
+  const hasActa = Boolean(fileStatus?.has_acta);
+  const hasAttendance = Boolean(fileStatus?.has_attendance);
   const hasEvidence = docs.some(isImageDocument) || docs.some(d => d.category === 'Evidencia');
   const recentActivity = eventsFor.length > 0;
   const followup = commitmentsFor.length ? (commitmentsFor.some(c => ['Cumplido','En proceso'].includes(c.status)) ? 15 : 8) : 0;
@@ -264,6 +275,7 @@ async function loadPublicData() {
   if (!db) {
     committees = structuredClone(FALLBACK_COMMITTEES);
     publicDocuments = [];
+    publicFileStatus = [];
     publicTrainings = [];
     publicEvents = [];
     publicCommitments = [];
@@ -275,17 +287,20 @@ async function loadPublicData() {
   }
 
   try {
-    const [committeeRes, documentRes, contentRes] = await Promise.all([
+    const [committeeRes, documentRes, contentRes, fileStatusRes] = await Promise.all([
       db.from('committees').select('*').eq('public', true).order('integration_date', { ascending: true }),
       db.from('documents').select('*').eq('public', true).order('created_at', { ascending: false }),
-      db.from('site_content').select('key,value')
+      db.from('site_content').select('key,value'),
+      db.rpc('get_committee_file_status')
     ]);
     if (committeeRes.error) throw committeeRes.error;
     if (documentRes.error) throw documentRes.error;
     if (contentRes.error) throw contentRes.error;
+    if (fileStatusRes.error) throw fileStatusRes.error;
 
     committees = committeeRes.data.map(normalizeCommittee);
     publicDocuments = await hydrateDocumentUrls(documentRes.data || []);
+    publicFileStatus = fileStatusRes.data || [];
     const [trainingRows, eventRows, commitmentRows, managementRows] = await Promise.all([
       optionalData(db.from('trainings').select('*').eq('public', true).order('training_date', { ascending: false }), 'capacitaciones públicas'),
       optionalData(db.from('committee_events').select('*').eq('public', true).order('event_date', { ascending: false }), 'bitácora pública'),
@@ -304,6 +319,7 @@ async function loadPublicData() {
     console.error(error);
     committees = structuredClone(FALLBACK_COMMITTEES);
     publicDocuments = [];
+    publicFileStatus = [];
     publicTrainings = [];
     publicEvents = [];
     publicCommitments = [];
@@ -776,7 +792,18 @@ function renderCommitteeAdmin() {
     const docs = adminDocuments.filter(d => String(d.committee_id || '') === String(committeeId));
     const acta = docs.some(d => d.category === 'Acta constitutiva');
     const list = docs.some(d => d.category === 'Lista de asistencia');
-    return `<div class="admin-file-status"><span class="${acta?'ok':'missing'}"><i class="fa-solid ${acta?'fa-circle-check':'fa-circle-minus'}"></i> Acta</span><span class="${list?'ok':'missing'}"><i class="fa-solid ${list?'fa-circle-check':'fa-circle-minus'}"></i> Lista</span></div>`;
+    const extras = docs.filter(d => !['Acta constitutiva','Lista de asistencia'].includes(d.category));
+    const photos = extras.filter(isImageDocument).length;
+    const other = Math.max(0, extras.length - photos);
+    const extraText = [
+      photos ? `${photos} foto${photos === 1 ? '' : 's'}` : '',
+      other ? `${other} evidencia${other === 1 ? '' : 's'}` : ''
+    ].filter(Boolean).join(' · ');
+    return `<div class="admin-file-status">
+      <span class="${acta?'ok':'missing'}"><i class="fa-solid ${acta?'fa-circle-check':'fa-circle-minus'}"></i> Acta</span>
+      <span class="${list?'ok':'missing'}"><i class="fa-solid ${list?'fa-circle-check':'fa-circle-minus'}"></i> Lista</span>
+      ${extraText ? `<small>${esc(extraText)}</small>` : '<small>Sin evidencias adicionales</small>'}
+    </div>`;
   };
   rows.innerHTML = filtered.length ? filtered.map(x => `<tr><td><strong>${esc(x.name)}</strong>${x.public ? '' : '<small class="private-label">Privado</small>'}</td><td>${committeeTypeTag(x.type)}</td><td>${esc(x.type === 'CCS' ? x.municipality : x.colony)}</td><td>${expediente(x.id)}</td><td>${esc(x.status)}</td><td><button class="action-btn" data-edit-id="${esc(x.id)}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-id="${esc(x.id)}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="6">No hay comités que coincidan con el filtro seleccionado.</td></tr>';
 }
@@ -1007,8 +1034,57 @@ function committeeCoreDocument(committeeId, category) {
 function renderCommitteeCoreDocsStatus(committeeId = '') {
   const wrap = $('#committeeCoreDocsStatus');
   if (!wrap) return;
-  const item = (doc,label,icon) => doc ? `<a class="core-doc-pill ready" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener"><i class="fa-solid ${icon}"></i><span>${esc(label)}</span><b><i class="fa-solid fa-circle-check"></i> Cargado</b></a>` : `<div class="core-doc-pill pending"><i class="fa-solid ${icon}"></i><span>${esc(label)}</span><b>Pendiente</b></div>`;
-  wrap.innerHTML = item(committeeId ? committeeCoreDocument(committeeId,'Acta constitutiva') : null,'Acta constitutiva','fa-file-signature') + item(committeeId ? committeeCoreDocument(committeeId,'Lista de asistencia') : null,'Lista de asistencia','fa-list-check');
+
+  if (!committeeId) {
+    wrap.innerHTML = `<div class="core-doc-empty"><i class="fa-solid fa-folder-plus"></i><div><strong>Nuevo expediente</strong><span>Los documentos que selecciones se asociarán a este comité al guardar.</span></div></div>`;
+    return;
+  }
+
+  const docs = committeeDocuments(committeeId);
+  const acta = committeeCoreDocument(committeeId,'Acta constitutiva');
+  const attendance = committeeCoreDocument(committeeId,'Lista de asistencia');
+  const extras = docs
+    .filter(doc => !['Acta constitutiva','Lista de asistencia'].includes(doc.category))
+    .sort((a,b) => String(b.created_at||'').localeCompare(String(a.created_at||'')));
+
+  const fileName = doc => doc?.file_name || doc?.title || 'Archivo registrado';
+  const dateText = doc => doc?.created_at ? new Date(doc.created_at).toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric'}) : '';
+  const visibility = doc => doc?.public ? 'Público' : 'Interno';
+
+  const coreCard = (doc,label,icon) => doc
+    ? `<article class="core-existing-card ready">
+        <div class="core-existing-icon"><i class="fa-solid ${icon}"></i></div>
+        <div class="core-existing-copy">
+          <span>${esc(label)}</span>
+          <strong title="${esc(fileName(doc))}">${esc(fileName(doc))}</strong>
+          <small>${esc(dateText(doc))}${dateText(doc) ? ' · ' : ''}${esc(visibility(doc))}</small>
+        </div>
+        <a class="core-existing-open" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir</a>
+      </article>`
+    : `<article class="core-existing-card pending">
+        <div class="core-existing-icon"><i class="fa-solid ${icon}"></i></div>
+        <div class="core-existing-copy"><span>${esc(label)}</span><strong>No cargado</strong><small>Pendiente de integrar</small></div>
+      </article>`;
+
+  const extrasHtml = extras.length
+    ? `<div class="existing-evidence-section">
+        <div class="existing-evidence-head"><strong>Fotografías y evidencias ya cargadas</strong><span>${extras.length} archivo${extras.length === 1 ? '' : 's'}</span></div>
+        <div class="existing-evidence-list">
+          ${extras.map(doc => `
+            <a class="existing-evidence-item" href="${esc(doc._url || doc.file_url || '#')}" target="_blank" rel="noopener">
+              <i class="fa-solid ${isImageDocument(doc) ? 'fa-image' : 'fa-file-lines'}"></i>
+              <div><strong title="${esc(fileName(doc))}">${esc(fileName(doc))}</strong><small>${esc(doc.category || 'Evidencia')} · ${esc(dateText(doc))} · ${esc(visibility(doc))}</small></div>
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>`).join('')}
+        </div>
+      </div>`
+    : `<div class="existing-evidence-section empty"><i class="fa-regular fa-images"></i><span>No hay fotografías ni evidencias adicionales cargadas.</span></div>`;
+
+  wrap.innerHTML = `
+    <div class="core-existing-title"><strong>Archivos actualmente registrados</strong><span>Así sabes exactamente qué contiene este expediente antes de reemplazar o agregar archivos.</span></div>
+    <div class="core-existing-grid">${coreCard(acta,'Acta constitutiva','fa-file-signature')}${coreCard(attendance,'Lista de asistencia','fa-list-check')}</div>
+    ${extrasHtml}
+  `;
 }
 
 async function uploadCommitteeDocumentFile(committeeId, file, category, title, isPublic, replaceExisting = false) {
