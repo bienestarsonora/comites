@@ -793,16 +793,13 @@ function renderCommitteeAdmin() {
     const acta = docs.some(d => d.category === 'Acta constitutiva');
     const list = docs.some(d => d.category === 'Lista de asistencia');
     const extras = docs.filter(d => !['Acta constitutiva','Lista de asistencia'].includes(d.category));
-    const photos = extras.filter(isImageDocument).length;
-    const other = Math.max(0, extras.length - photos);
-    const extraText = [
-      photos ? `${photos} foto${photos === 1 ? '' : 's'}` : '',
-      other ? `${other} evidencia${other === 1 ? '' : 's'}` : ''
-    ].filter(Boolean).join(' · ');
+    const total = docs.length;
+    const extraCount = extras.length;
+
     return `<div class="admin-file-status">
       <span class="${acta?'ok':'missing'}"><i class="fa-solid ${acta?'fa-circle-check':'fa-circle-minus'}"></i> Acta</span>
       <span class="${list?'ok':'missing'}"><i class="fa-solid ${list?'fa-circle-check':'fa-circle-minus'}"></i> Lista</span>
-      ${extraText ? `<small>${esc(extraText)}</small>` : '<small>Sin evidencias adicionales</small>'}
+      <small class="file-total"><b>${total}</b> ${total === 1 ? 'archivo' : 'archivos'} en expediente${extraCount ? ` · ${extraCount} adicional${extraCount === 1 ? '' : 'es'}` : ''}</small>
     </div>`;
   };
   rows.innerHTML = filtered.length ? filtered.map(x => `<tr><td><strong>${esc(x.name)}</strong>${x.public ? '' : '<small class="private-label">Privado</small>'}</td><td>${committeeTypeTag(x.type)}</td><td>${esc(x.type === 'CCS' ? x.municipality : x.colony)}</td><td>${expediente(x.id)}</td><td>${esc(x.status)}</td><td><button class="action-btn" data-edit-id="${esc(x.id)}" aria-label="Editar"><i class="fa-solid fa-pen"></i></button>${isAdmin() ? `<button class="action-btn danger" data-delete-id="${esc(x.id)}" aria-label="Eliminar"><i class="fa-solid fa-trash"></i></button>` : ''}</td></tr>`).join('') : '<tr><td colspan="6">No hay comités que coincidan con el filtro seleccionado.</td></tr>';
@@ -1069,8 +1066,8 @@ function renderCommitteeCoreDocsStatus(committeeId = '') {
   const extrasHtml = extras.length
     ? `<div class="existing-evidence-section">
         <div class="existing-evidence-head">
-          <div><strong>Fotografías y evidencias adicionales</strong><small>No incluye el acta ni la lista de asistencia.</small></div>
-          <span>${extras.length} evidencia${extras.length === 1 ? '' : 's'} adicional${extras.length === 1 ? '' : 'es'}</span>
+          <div><strong>Fotografías y evidencias adicionales</strong><small>Estos son archivos adicionales. El acta y la lista ya están contabilizadas arriba dentro del total del expediente.</small></div>
+          <span>${extras.length} adicional${extras.length === 1 ? '' : 'es'}</span>
         </div>
         <div class="existing-evidence-list">
           ${extras.map(doc => `
@@ -1094,8 +1091,8 @@ function renderCommitteeCoreDocsStatus(committeeId = '') {
 
   wrap.innerHTML = `
     <div class="core-existing-title">
-      <div><strong>Archivos actualmente registrados</strong><span>${docs.length} archivo${docs.length === 1 ? '' : 's'} en este expediente</span></div>
-      <span>Los documentos principales se muestran por separado de las evidencias adicionales.</span>
+      <div><strong>Archivos actualmente registrados</strong><span class="expedient-total"><b>${docs.length}</b> ${docs.length === 1 ? 'archivo registrado' : 'archivos registrados'} en total</span></div>
+      <span>El total incluye Acta constitutiva + Lista de asistencia + fotografías/evidencias adicionales.</span>
     </div>
     <div class="core-existing-grid">${coreCard(acta,'Acta constitutiva','fa-file-signature')}${coreCard(attendance,'Lista de asistencia','fa-list-check')}</div>
     ${extrasHtml}

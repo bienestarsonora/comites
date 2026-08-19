@@ -621,3 +621,22 @@ body.map-fullscreen-open{overflow:hidden}
   .existing-evidence-actions{grid-column:2;justify-content:flex-start}
   .selected-evidence-head{align-items:flex-start;flex-direction:column}
 }
+
+/* v18 · conteo total del expediente */
+.admin-file-status .file-total{
+  margin-top:4px!important;
+  color:var(--ink)!important;
+}
+.admin-file-status .file-total b{
+  color:var(--wine);
+  font-size:11px;
+}
+.expedient-total{
+  margin-top:3px!important;
+  color:var(--ink)!important;
+}
+.expedient-total b{
+  color:var(--wine);
+  font-size:15px;
+  margin-right:2px;
+}

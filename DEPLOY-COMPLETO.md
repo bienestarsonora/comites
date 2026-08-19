@@ -53,3 +53,11 @@ Después de subir esta versión completa a GitHub Pages, haz Ctrl + Shift + R. L
 - Las nuevas evidencias son públicas por default.
 - Cada evidencia ya cargada puede cambiarse individualmente entre Pública y No pública desde Editar comité.
 - No requiere cambios en Supabase respecto de v16.
+
+## v18 — conteo total del expediente
+- El panel de comités ya no muestra solo el número de evidencias adicionales.
+- Muestra el total real de archivos asociados al comité.
+- Ejemplo: Acta + Lista + 1 evidencia = `3 archivos en expediente`.
+- Dentro de Editar comité se mantiene la separación visual: documentos principales y evidencias adicionales.
+- El encabezado del expediente muestra de forma prominente el total incluyendo todos los archivos.
+- No requiere cambios en Supabase.
