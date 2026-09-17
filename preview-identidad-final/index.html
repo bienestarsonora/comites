@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vista previa final · Comités</title>
+<style>
+html,body{margin:0;height:100%;background:#eee;font-family:Arial,sans-serif}.bar{min-height:44px;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;padding:0 12px;text-align:center}.bar strong{margin-right:6px}.wrap{height:calc(100% - 44px)}iframe{width:100%;height:100%;border:0;background:#fff}
+</style>
+</head>
+<body>
+<div class="bar"><strong>VISTA PREVIA FINAL:</strong> pasada fina de homologación de Comités. El sitio público original permanece sin cambios.</div>
+<div class="wrap"><iframe id="site" src="../" title="Vista previa final de Comités"></iframe></div>
+<script>
+const frame=document.getElementById('site');
+frame.addEventListener('load',()=>{
+  try{
+    const d=frame.contentDocument;
+    if(!d) return;
+
+    const css=d.createElement('link');
+    css.id='preview-identidad-final-css';
+    css.rel='stylesheet';
+    css.href='preview-identidad-final/styles.css?v=20260917-final';
+    d.head.appendChild(css);
+
+    let theme=d.querySelector('meta[name="theme-color"]');
+    if(!theme){theme=d.createElement('meta');theme.name='theme-color';d.head.appendChild(theme)}
+    theme.setAttribute('content','#410123');
+
+    if(!d.querySelector('link[rel="icon"]')){
+      const fav=d.createElement('link');fav.rel='icon';fav.href='assets/logo-bienestar.png';d.head.appendChild(fav);
+    }
+    d.title='Vista previa institucional · '+d.title;
+
+    if(!d.getElementById('govBreadcrumbPreview')){
+      const header=d.querySelector('.site-header');
+      if(header){
+        const bc=d.createElement('nav');
+        bc.id='govBreadcrumbPreview';
+        bc.setAttribute('aria-label','Ruta de navegación');
+        bc.innerHTML='<div style="width:min(1180px,calc(100% - 40px));margin:auto"><span>Inicio</span> &nbsp;/&nbsp; <span>Secretaría de Bienestar</span> &nbsp;/&nbsp; <strong aria-current="page">Comités</strong></div>';
+        header.insertAdjacentElement('afterend',bc);
+      }
+    }
+
+    const classifyAction=(el)=>{
+      const text=(el.textContent||'').trim().toLowerCase();
+      if(/nuevo|nueva|agregar|añadir|subir recurso|subir documento/.test(text)) el.classList.add('gov-action-add');
+      if(/eliminar|borrar|cancelar/.test(text)) el.classList.add('gov-action-delete');
+      if(/editar|modificar/.test(text)) el.classList.add('gov-action-edit');
+      if(/visualizar|ver ficha|ver detalle/.test(text)) el.classList.add('gov-action-view');
+      if(/siguiente|continuar/.test(text)) el.classList.add('gov-action-next');
+      if(/regresar|volver|anterior/.test(text)) el.classList.add('gov-action-back');
+    };
+    d.querySelectorAll('button,.btn').forEach(classifyAction);
+
+    const observer=new MutationObserver((mutations)=>{
+      mutations.forEach(m=>m.addedNodes.forEach(node=>{
+        if(node.nodeType!==1)return;
+        if(node.matches?.('button,.btn')) classifyAction(node);
+        node.querySelectorAll?.('button,.btn').forEach(classifyAction);
+      }));
+    });
+    observer.observe(d.body,{childList:true,subtree:true});
+
+    const oldExtra=d.querySelector('.gov-preview-footer'); if(oldExtra) oldExtra.remove();
+    if(!d.querySelector('.gov-official-footer')){
+      const footerBottom=d.querySelector('.footer-bottom');
+      const footerContainer=footerBottom?.parentElement || d.querySelector('footer .container');
+      if(footerContainer){
+        const extra=d.createElement('div');
+        extra.className='gov-official-footer';
+        extra.innerHTML='<div><strong>Secretaría de Bienestar</strong><span>Micrositio institucional de Comités de Contraloría Social, Bienestar y Participación Ciudadana.</span><div class="gov-official-note">Datos de contacto institucional por vincular en la etapa de publicación oficial.</div></div><div><strong>Información institucional</strong><span>Política de Uso y Privacidad · Denuncia Ciudadana · Contacto</span><div class="gov-official-note">Enlaces definitivos sujetos a la publicación institucional.</div></div><div><strong>Atención ciudadana</strong><span class="gov-911">911</span><div>Emergencias</div></div>';
+        footerContainer.appendChild(extra);
+      }
+    }
+  }catch(e){console.error(e)}
+});
+</script>
+</body>
+</html>
