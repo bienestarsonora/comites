@@ -16,3 +16,144 @@ footer{background:var(--gov-1)!important;color:#fff!important;padding-top:46px!i
 @media(max-width:900px){.site-header:before{text-align:center;padding:7px 16px}.nav-wrap{height:70px}.hero{padding-top:46px}.section{padding:52px 0}.gov-official-footer{grid-template-columns:1fr}.admin-tabs{overflow:auto;flex-wrap:nowrap}.admin-table-wrap{-webkit-overflow-scrolling:touch}.filters{flex-wrap:wrap}.filters>*{min-width:180px}}
 @media(max-width:600px){.site-header:before{font-size:11px}.brand-copy strong{font-size:12px}h1,.hero h1{font-size:1.75rem}h2{font-size:1.5rem}h3{font-size:1.35rem}.section{padding:44px 0}.hero-actions{flex-direction:column;align-items:stretch}.hero-actions .btn{width:100%}.metric-grid{gap:10px}.admin-table-wrap th,.admin-table-wrap td{padding:10px}.gov-official-footer{gap:16px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.reveal{opacity:1!important;transform:none!important}}
+
+
+/* ===== Revisión dedicada del panel administrativo · Lineamientos institucionales ===== */
+
+/* Acceso administrativo */
+#loginModal .login-card{width:min(520px,calc(100% - 28px));padding:32px 34px 30px;border-top:6px solid var(--gov-1)!important;background:#fff!important}
+#loginModal .login-brand{display:flex;align-items:center;gap:12px;padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--gov-border)}
+#loginModal .login-brand img{max-height:48px;width:auto}
+#loginModal h2{margin:7px 0 8px;font-size:1.8rem!important;color:var(--gov-1)}
+#loginModal p{margin-top:0;color:var(--gov-muted);font-size:.95rem}
+#loginModal form{display:grid;gap:16px}
+#loginModal form label{display:grid;gap:6px;font-size:.9rem}
+#loginModal form .btn{width:100%;margin-top:4px}
+#loginModal .login-secondary{margin-top:18px;padding-top:16px;border-top:1px solid #e2e2e2;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+#loginModal .text-button{border:0;background:transparent;color:var(--gov-view);padding:7px 0;text-decoration:underline;cursor:pointer;font-weight:500}
+#loginModal .login-hint{color:var(--gov-muted);font-size:.75rem;max-width:240px}
+
+/* Contenedor administrativo */
+.admin-drawer{z-index:5000!important}
+.admin-drawer .admin-backdrop{background:rgba(0,0,0,.45)!important;backdrop-filter:none!important}
+.admin-drawer aside{width:min(1120px,97vw)!important;padding:0 28px 30px!important;background:#f4f4f4!important;border-radius:0!important;border-left:1px solid #bbb;box-shadow:-8px 0 24px rgba(0,0,0,.16)}
+.admin-head{position:sticky;top:0;z-index:12;margin:0 -28px;padding:14px 28px!important;background:#fff;border-top:6px solid var(--gov-1);border-bottom:1px solid var(--gov-border)!important;align-items:center}
+.admin-brand .brand-logo{max-height:46px}
+.admin-brand .brand-copy strong{font-size:.95rem;color:var(--gov-1)}
+.admin-brand .brand-copy small{font-size:.75rem;color:var(--gov-muted)}
+.admin-head-actions{display:flex;align-items:center;gap:8px}
+.admin-close,.modal-close{width:42px;height:42px;display:grid;place-items:center;border:1px solid transparent!important;border-radius:4px!important;background:transparent!important;color:var(--gov-text);font-size:25px!important;line-height:1;cursor:pointer}
+.admin-close:hover,.modal-close:hover{background:#f2f2f2!important;border-color:var(--gov-border)!important}
+.admin-close:focus-visible,.modal-close:focus-visible{outline:3px solid var(--gov-2)!important;outline-offset:2px!important}
+
+/* Navegación del sistema */
+.admin-tabs{position:sticky;top:81px;z-index:11;margin:0 -28px 24px!important;padding:12px 28px;background:#fff;border-bottom:1px solid var(--gov-border);gap:4px!important}
+.admin-tabs button{min-height:40px;padding:9px 13px!important;border-radius:3px!important;border:1px solid transparent!important;background:#fff!important;color:var(--gov-text)!important;font-size:.82rem;font-weight:500!important;white-space:nowrap}
+.admin-tabs button:hover{background:#f2f2f2!important;border-color:#ddd!important;color:var(--gov-1)!important}
+.admin-tabs .active{background:var(--gov-1)!important;border-color:var(--gov-1)!important;color:#fff!important;font-weight:600!important}
+.admin-note.secure-note{display:flex;align-items:center;gap:8px;margin:0 0 22px;padding:11px 13px!important;background:#eef5f2!important;border:1px solid #bed5cb;color:#285f52;font-size:.78rem}
+.admin-note.secure-note i{color:var(--gov-add)}
+
+/* Jerarquía y secciones */
+.admin-panel{padding-bottom:20px}
+.admin-title{align-items:flex-end!important;gap:18px;margin:0 0 18px}
+.admin-title>div>span{display:block;font-size:.73rem!important;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gov-2)!important}
+.admin-title h2{margin:3px 0 0!important;font-size:1.8rem!important;color:var(--gov-1);letter-spacing:0!important}
+.admin-title .panel-help{margin:8px 0 0;max-width:760px}
+.panel-help{padding:11px 13px!important;background:#fff!important;border:1px solid var(--gov-border)!important;border-left:4px solid var(--gov-2)!important;color:var(--gov-muted)!important;font-size:.78rem;line-height:1.45}
+.subpanel-head h3{font-size:1.15rem!important;color:var(--gov-1)}
+.admin-kpis,.admin-summary-grid{gap:12px!important}
+.admin-kpis article,.admin-summary-grid article{background:#fff!important;border:1px solid var(--gov-border)!important;padding:18px!important}
+.admin-kpis strong,.admin-summary-grid strong{font-family:'Montserrat',Arial,sans-serif;color:var(--gov-1)!important}
+.admin-kpis span,.admin-summary-grid span{color:var(--gov-muted);font-size:.78rem}
+
+/* Filtros */
+.admin-filter-bar{background:#fff!important;border:1px solid var(--gov-border)!important;border-radius:5px!important;padding:15px!important;gap:12px!important;margin:14px 0 16px}
+.admin-filter-control{display:grid;gap:5px}
+.admin-filter-control label{margin:0!important;font-size:.76rem!important;font-weight:600!important;color:var(--gov-text)!important}
+.admin-filter-count{align-self:end;min-height:40px;display:flex;align-items:center;padding:0 11px;border:1px solid #ddd;background:#f7f7f7;border-radius:4px;color:var(--gov-muted);font-size:.75rem;font-weight:600}
+.admin-search-input input{min-height:40px!important;border-radius:4px!important}
+.admin-search-input button{width:34px!important;height:34px!important;border-radius:3px!important}
+.admin-type-tag{border-radius:3px!important;font-size:.72rem!important}
+.admin-type-legend{align-self:end;min-height:40px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* Tablas de administración */
+.admin-table-wrap{margin-top:14px!important;border-radius:4px!important;box-shadow:none!important}
+.admin-table-wrap table{min-width:720px}
+.admin-table-wrap caption.gov-table-caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.admin-table-wrap th{position:sticky;top:0;z-index:2;padding:11px 12px!important;background:#e9e9e9!important;color:#3d3d3d!important;border-bottom:2px solid #bbb!important;font-size:.73rem!important;text-transform:none;letter-spacing:0}
+.admin-table-wrap td{padding:11px 12px!important;font-size:.76rem!important;background:#fff}
+.admin-table-wrap tbody tr:nth-child(even) td{background:#fafafa}
+.admin-table-wrap tbody tr:hover td{background:#f3f3f3}
+.admin-table-wrap td small{display:block;margin-top:3px;color:var(--gov-muted);font-size:.68rem}
+.admin-table-wrap select,.admin-table-wrap input:not([type=checkbox]){min-width:130px;min-height:36px!important;font-size:.78rem!important;padding:7px 9px!important}
+.admin-table-wrap input[type=checkbox]{width:18px;height:18px;min-height:0;accent-color:var(--gov-2)}
+
+/* Acciones administrativas, incluidas las que sólo muestran ícono */
+.action-btn,.core-existing-open,.core-visibility-btn,.core-existing-delete,.evidence-visibility-btn,.evidence-open-btn,.evidence-delete-btn,.evidence-batch-btn{border-radius:4px!important;box-shadow:none!important;min-height:36px!important}
+.action-btn{min-width:36px;padding:7px 9px!important;border:1px solid var(--gov-border)!important;background:#fff!important;color:var(--gov-text)!important}
+.action-btn:hover{background:#f0f0f0!important}
+.action-btn.gov-icon-edit,[data-edit-committee],[data-edit-training],[data-edit-event],[data-edit-commitment],[data-edit-management]{background:var(--gov-4)!important;border-color:#b9df86!important;color:#26321c!important}
+.action-btn.danger,.action-btn.gov-icon-delete,[data-delete-committee],[data-delete-training],[data-delete-event],[data-delete-commitment],[data-delete-management],[data-delete-document],[data-delete-request]{background:var(--gov-delete)!important;border-color:var(--gov-delete)!important;color:#fff!important}
+.action-btn.gov-icon-view,[data-view-committee],[data-view-management]{background:var(--gov-view)!important;border-color:var(--gov-view)!important;color:#fff!important}
+[data-save-user]{min-height:36px!important;background:var(--gov-2)!important;border-color:var(--gov-2)!important;color:#fff!important}
+#newCommittee,#newManagement,#newAction,#newDocument,#newTraining,#newUser{background:var(--gov-add)!important;border-color:var(--gov-add)!important;color:#fff!important}
+
+/* Formularios y modales */
+.modal-card.form-card,.management-form-card,.action-form-card{width:min(760px,calc(100% - 28px))!important;padding:30px!important;border-top:6px solid var(--gov-1)!important;background:#fff!important}
+.modal-card.form-card>h2,.management-form-card>h2,.action-form-card>h2{color:var(--gov-1);margin:5px 42px 18px 0!important;font-size:1.65rem!important}
+.form-card form,.management-form-card form,.action-form-card form,.settings-form{gap:14px!important}
+.form-card label,.management-form-card label,.action-form-card label,.settings-form label{display:grid;gap:5px;font-size:.78rem!important;font-weight:600!important;color:var(--gov-text)}
+.form-grid{gap:12px!important}
+.field-help,.form-card label small,.settings-form small{font-size:.7rem!important;color:var(--gov-muted)!important;font-weight:400!important}
+.form-actions{position:sticky;bottom:-30px;z-index:5;margin:14px -30px -30px;padding:14px 30px!important;background:#fff;border-top:1px solid var(--gov-border)!important}
+.form-actions .btn{min-width:130px}
+.checkbox-label,.inline-check{display:flex!important;align-items:center!important;gap:8px!important}
+.checkbox-label input,.inline-check input{width:18px!important;height:18px!important;min-height:0!important;accent-color:var(--gov-2)}
+.settings-form fieldset,.committee-core-files{padding:18px!important;margin:0 0 14px!important;border:1px solid var(--gov-border)!important;border-radius:4px!important}
+.settings-form legend{font-family:'Montserrat',Arial,sans-serif;font-weight:600;color:var(--gov-1);padding:0 7px}
+.file-upload-field{border-radius:4px!important;border:1px dashed #aaa!important;background:#fafafa!important}
+.file-upload-field input[type=file]{border:1px solid var(--gov-border)!important;background:#fff!important}
+
+/* Expediente */
+.core-existing-card,.existing-evidence-section,.existing-evidence-item,.core-doc-empty{border-radius:4px!important}
+.core-existing-card.ready{background:#f5faf6!important;border-color:#bcd8c5!important}
+.core-existing-card.pending{background:#f7f7f7!important}
+.core-existing-icon{border-radius:4px!important}
+.core-visibility-btn.public,.evidence-visibility-btn.public,.evidence-batch-btn{background:#eef5f2!important;border-color:#bed5cb!important;color:#285f52!important}
+.core-visibility-btn.private,.evidence-visibility-btn.private,.evidence-batch-btn.subtle{background:#f2f2f2!important;color:#555!important;border-color:#ccc!important}
+.core-existing-open,.evidence-open-btn{background:var(--gov-view)!important;border-color:var(--gov-view)!important;color:#fff!important}
+.core-existing-delete,.evidence-delete-btn{background:var(--gov-delete)!important;border-color:var(--gov-delete)!important;color:#fff!important}
+
+/* Listas administrativas */
+.action-admin-grid>section,.management-admin-card,.admin-action-card,.admin-event-card,.admin-card{border-radius:4px!important;border:1px solid var(--gov-border)!important;box-shadow:none!important}
+.management-admin-card,.admin-action-card,.admin-event-card,.admin-card{background:#fff!important}
+.management-category,.status-chip,.training-session-badge{border-radius:3px!important}
+.status-chip{padding:5px 7px!important;font-size:.68rem!important}
+.management-metrics span,.management-dates span{border-radius:4px!important;background:#f4f4f4!important}
+
+/* Estado deshabilitado consistente */
+button:disabled,.btn:disabled,input:disabled,select:disabled,textarea:disabled{opacity:1!important;cursor:not-allowed!important;background:#e5e5e5!important;border-color:#ccc!important;color:#777!important}
+
+/* Lectura en pantallas reducidas */
+@media(max-width:900px){
+  .admin-drawer aside{width:100vw!important;padding:0 18px 24px!important}
+  .admin-head{margin:0 -18px;padding:12px 18px!important}
+  .admin-tabs{top:77px;margin:0 -18px 20px!important;padding:10px 18px!important;-webkit-overflow-scrolling:touch}
+  .admin-title{align-items:flex-start!important;flex-direction:column}
+  .admin-title>.btn{width:100%}
+  .admin-filter-bar{grid-template-columns:1fr!important}
+  .admin-type-legend,.admin-filter-count{align-self:stretch}
+}
+@media(max-width:600px){
+  #loginModal .login-card{padding:26px 20px}
+  #loginModal .login-secondary{align-items:flex-start;flex-direction:column}
+  .admin-head .admin-brand .brand-copy small{display:none}
+  .admin-head-actions .btn span{display:none}
+  .admin-tabs{top:74px}
+  .admin-kpis,.admin-summary-grid{grid-template-columns:1fr!important}
+  .form-grid{grid-template-columns:1fr!important}
+  .modal-card.form-card,.management-form-card,.action-form-card{padding:24px 18px!important}
+  .form-actions{bottom:-24px;margin:12px -18px -24px;padding:12px 18px!important;flex-direction:column-reverse}
+  .form-actions .btn{width:100%}
+}
