@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Plataforma de Comités de Contraloría Social, Bienestar y Participación Ciudadana de la Secretaría de Bienestar del Estado de Sonora.">
-  <meta name="theme-color" content="#6f1238">
+  <meta name="theme-color" content="#410123">
   <title>Comités de Contraloría Social, Bienestar y Participación Ciudadana | Bienestar Sonora</title>
+  <link rel="icon" href="assets/logo-bienestar.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles-v27.css">
+  <link rel="stylesheet" href="styles-institucional.css?v=20260918">
 </head>
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -30,6 +32,10 @@
       </nav>
     </div>
   </header>
+  <nav id="govBreadcrumb" aria-label="Ruta de navegación">
+    <div class="container"><span>Inicio</span> &nbsp;/&nbsp; <span>Secretaría de Bienestar</span> &nbsp;/&nbsp; <strong aria-current="page">Comités</strong></div>
+  </nav>
+
 
   <div id="connectionBanner" class="connection-banner" hidden></div>
 
@@ -165,7 +171,26 @@
     <section class="section participate" id="participa"><div class="container participate-card reveal"><div><span class="section-kicker light">Participación y contacto</span><h2 data-content="participation.title">¿Formas parte de un comité?</h2><p data-content="participation.subtitle">Solicita orientación, capacitación o apoyo para fortalecer las actividades de tu comité.</p><ul><li><i class="fa-solid fa-check"></i> Solicitar capacitación</li><li><i class="fa-solid fa-check"></i> Reportar una actividad</li><li><i class="fa-solid fa-check"></i> Proponer una mejora</li></ul></div><form id="contactForm"><label>Nombre<input id="contactName" maxlength="120" required></label><label>Tipo de comité<select id="contactCommitteeType" required><option value="">Selecciona</option><option>Contraloría Social</option><option>Bienestar y Participación Ciudadana</option></select></label><label>¿Cómo podemos ayudarte?<input id="contactRequestType" list="contactRequestSuggestions" maxlength="180" required placeholder="Describe brevemente el tipo de solicitud"><datalist id="contactRequestSuggestions"><option value="Capacitación"><option value="Asesoría"><option value="Vinculación"><option value="Servicio público"><option value="Infraestructura"><option value="Apoyo o beneficio"><option value="Actividad comunitaria"><option value="Orientación"><option value="Propuesta de mejora"><option value="Otra solicitud o gestión"></datalist><small>Puedes escribir cualquier tipo de solicitud.</small></label><label>Mensaje<textarea id="contactMessage" rows="4" maxlength="3000" required></textarea></label><button class="btn btn-light" type="submit">Enviar solicitud</button><small>No incluyas datos personales sensibles.</small></form></div></section>
   </main>
 
-  <footer><div class="container footer-grid"><div><a class="brand footer-brand institutional-brand" href="#inicio"><img src="assets/logo-bienestar.png" alt="Secretaría de Bienestar" class="brand-logo footer-logo"><span class="brand-divider" aria-hidden="true"></span><span class="brand-copy"><strong>Comités de Contraloría Social, Bienestar y Participación Ciudadana</strong><small>Secretaría de Bienestar · Sonora</small></span></a><p>Plataforma institucional para transparentar, fortalecer y visibilizar los Comités de Contraloría Social, Bienestar y Participación Ciudadana.</p></div><div><h4>Plataforma</h4><a href="#mapa">Mapa territorial</a><a href="#directorio">Directorio</a><a href="#herramientas">Herramientas</a></div><div><h4>Institucional</h4><a href="#resultados">Datos e indicadores</a><a href="#participa">Participación</a><button class="footer-link" data-open-admin>Administración</button></div></div><div class="container footer-bottom">© 2026 · Secretaría de Bienestar del Estado de Sonora <span>Plataforma de participación ciudadana</span></div></footer>
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <a class="brand footer-brand institutional-brand" href="#inicio">
+          <img src="assets/logo-bienestar.png" alt="Secretaría de Bienestar" class="brand-logo footer-logo">
+          <span class="brand-divider" aria-hidden="true"></span>
+          <span class="brand-copy"><strong>Comités de Contraloría Social, Bienestar y Participación Ciudadana</strong><small>Secretaría de Bienestar · Sonora</small></span>
+        </a>
+        <p>Plataforma institucional para transparentar, fortalecer y visibilizar los Comités de Contraloría Social, Bienestar y Participación Ciudadana.</p>
+      </div>
+      <div><h4>Plataforma</h4><a href="#mapa">Mapa territorial</a><a href="#directorio">Directorio</a><a href="#herramientas">Herramientas</a></div>
+      <div><h4>Institucional</h4><a href="#resultados">Datos e indicadores</a><a href="#participa">Participación</a><button class="footer-link" data-open-admin>Administración</button></div>
+    </div>
+    <div class="container gov-official-footer">
+      <div><strong>Secretaría de Bienestar</strong><span>Micrositio institucional de Comités de Contraloría Social, Bienestar y Participación Ciudadana.</span></div>
+      <div><strong>Información institucional</strong><span>Política de Uso y Privacidad · Denuncia Ciudadana · Contacto</span><div class="gov-official-note">Enlaces institucionales por vincular en la etapa de publicación oficial.</div></div>
+      <div><strong>Atención ciudadana</strong><span class="gov-911">911</span><div>Emergencias</div></div>
+    </div>
+    <div class="container footer-bottom">© 2026 · Secretaría de Bienestar del Estado de Sonora <span>Plataforma de participación ciudadana</span></div>
+  </footer>
 
   <div class="modal" id="detailModal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><article class="modal-card"><button class="modal-close" data-close-modal aria-label="Cerrar">×</button><div id="detailContent"></div></article></div>
 
@@ -228,5 +253,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js?v=20260819-v27"></script>
   <script src="app-v27.js"></script>
+  <script src="institutional-ui.js?v=20260918"></script>
 </body>
 </html>
