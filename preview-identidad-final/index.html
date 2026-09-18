@@ -9,7 +9,7 @@ html,body{margin:0;height:100%;background:#eee;font-family:Arial,sans-serif}.bar
 </style>
 </head>
 <body>
-<div class="bar"><strong>VISTA PREVIA FINAL:</strong> pasada fina de homologación de Comités. El sitio público original permanece sin cambios.</div>
+<div class="bar"><strong>VISTA PREVIA FINAL:</strong> homologación pública + panel administrativo conforme a lineamientos. El sitio público original permanece sin cambios.</div>
 <div class="wrap"><iframe id="site" src="../" title="Vista previa final de Comités"></iframe></div>
 <script>
 const frame=document.getElementById('site');
@@ -21,7 +21,7 @@ frame.addEventListener('load',()=>{
     const css=d.createElement('link');
     css.id='preview-identidad-final-css';
     css.rel='stylesheet';
-    css.href='preview-identidad-final/styles.css?v=20260917-final';
+    css.href='preview-identidad-final/styles.css?v=20260918-admin';
     d.head.appendChild(css);
 
     let theme=d.querySelector('meta[name="theme-color"]');
@@ -46,20 +46,48 @@ frame.addEventListener('load',()=>{
 
     const classifyAction=(el)=>{
       const text=(el.textContent||'').trim().toLowerCase();
-      if(/nuevo|nueva|agregar|añadir|subir recurso|subir documento/.test(text)) el.classList.add('gov-action-add');
-      if(/eliminar|borrar|cancelar/.test(text)) el.classList.add('gov-action-delete');
-      if(/editar|modificar/.test(text)) el.classList.add('gov-action-edit');
-      if(/visualizar|ver ficha|ver detalle/.test(text)) el.classList.add('gov-action-view');
-      if(/siguiente|continuar/.test(text)) el.classList.add('gov-action-next');
-      if(/regresar|volver|anterior/.test(text)) el.classList.add('gov-action-back');
+      const attrs=[...el.attributes].map(a=>a.name+' '+a.value).join(' ').toLowerCase();
+      const hint=(el.getAttribute('title')||el.getAttribute('aria-label')||'').toLowerCase();
+      const all=text+' '+attrs+' '+hint;
+      if(/nuevo|nueva|agregar|añadir|subir recurso|subir documento|newcommittee|newmanagement|newaction|newdocument|newtraining|newuser/.test(all)) el.classList.add('gov-action-add');
+      if(/eliminar|borrar|delete|cancelar/.test(all)) {el.classList.add('gov-action-delete'); if(!text) el.classList.add('gov-icon-delete');}
+      if(/editar|modificar|edit/.test(all)) {el.classList.add('gov-action-edit'); if(!text) el.classList.add('gov-icon-edit');}
+      if(/visualizar|ver ficha|ver detalle|view/.test(all)) {el.classList.add('gov-action-view'); if(!text) el.classList.add('gov-icon-view');}
+      if(/siguiente|continuar/.test(all)) el.classList.add('gov-action-next');
+      if(/regresar|volver|anterior/.test(all)) el.classList.add('gov-action-back');
+
+      if(!el.getAttribute('aria-label') && !text){
+        if(el.classList.contains('gov-icon-delete')) el.setAttribute('aria-label','Eliminar registro');
+        else if(el.classList.contains('gov-icon-edit')) el.setAttribute('aria-label','Editar registro');
+        else if(el.classList.contains('gov-icon-view')) el.setAttribute('aria-label','Visualizar registro');
+      }
+    };
+
+    const enhanceAdmin=()=>{
+      d.querySelectorAll('.admin-table-wrap table').forEach((table,i)=>{
+        if(!table.querySelector('caption')){
+          const caption=d.createElement('caption');
+          caption.className='gov-table-caption';
+          const panel=table.closest('.admin-panel');
+          const title=panel?.querySelector('h2')?.textContent?.trim()||'Registros administrativos';
+          caption.textContent=title;
+          table.prepend(caption);
+        }
+      });
+      d.querySelectorAll('.admin-drawer input,.admin-drawer select,.admin-drawer textarea,.modal.form-card input,.modal.form-card select,.modal.form-card textarea').forEach(field=>{
+        if(field.required) field.setAttribute('aria-required','true');
+      });
+      d.querySelectorAll('.admin-drawer button,.modal.form-card button,#loginModal button').forEach(classifyAction);
     };
     d.querySelectorAll('button,.btn').forEach(classifyAction);
+    enhanceAdmin();
 
     const observer=new MutationObserver((mutations)=>{
       mutations.forEach(m=>m.addedNodes.forEach(node=>{
         if(node.nodeType!==1)return;
         if(node.matches?.('button,.btn')) classifyAction(node);
         node.querySelectorAll?.('button,.btn').forEach(classifyAction);
+        if(node.matches?.('.admin-panel,.modal,.admin-table-wrap') || node.querySelector?.('.admin-table-wrap,.form-card')) enhanceAdmin();
       }));
     });
     observer.observe(d.body,{childList:true,subtree:true});
