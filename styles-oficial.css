@@ -1,0 +1,270 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap');
+
+/*
+  Homologación visual — Gobierno del Estado de Sonora
+  Basada en los Lineamientos de Identidad Oficial para Sitios Web y Software.
+  Esta hoja funciona como capa de presentación y no modifica lógica, datos, mapas ni Supabase.
+*/
+
+:root{
+  --gov-primary:#410123;
+  --gov-secondary:#960E53;
+  --gov-accent:#B94645;
+  --gov-highlight:#DCF7B7;
+  --gov-text:#333333;
+  --gov-muted:#666666;
+  --gov-border:#d6d6d6;
+  --gov-surface:#ffffff;
+  --gov-soft:#f7f7f7;
+  --gov-focus:#960E53;
+  --wine:var(--gov-primary);
+  --magenta:var(--gov-secondary);
+  --plum:var(--gov-primary);
+  --sand:#f5f1f3;
+  --cream:#fafafa;
+  --ink:var(--gov-text);
+  --muted:var(--gov-muted);
+  --line:var(--gov-border);
+  --white:#ffffff;
+  --shadow:0 6px 18px rgba(0,0,0,.08);
+  --radius:8px;
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'Roboto',Arial,sans-serif;
+  color:var(--gov-text);
+  background:#fff;
+  line-height:1.55;
+}
+
+h1,h2,h3,h4,h5,h6,
+.brand-copy strong,
+.metric-grid strong,
+.floating-stat strong,
+.impact-kpi-grid strong,
+.method-score-grid b{
+  font-family:'Montserrat',Arial,sans-serif;
+  color:inherit;
+}
+
+h1,.hero h1{font-size:2rem;line-height:1.4;letter-spacing:0;margin-top:1rem;margin-bottom:1rem}
+h2{font-size:1.8rem;line-height:1.4;letter-spacing:0}
+h3{font-size:1.6rem;line-height:1.4;letter-spacing:0}
+h4{font-size:1.4rem;line-height:1.4}
+h5{font-size:1.2rem;line-height:1.4}
+
+p,li,label,input,select,textarea,button,a,small{font-family:'Roboto',Arial,sans-serif}
+
+a{color:var(--gov-secondary)}
+a:hover{text-decoration:underline;color:var(--gov-primary)}
+
+/* Accesibilidad y navegación por teclado */
+:focus-visible{
+  outline:3px solid var(--gov-focus)!important;
+  outline-offset:3px!important;
+}
+.skip-link:focus{
+  left:16px;
+  top:16px;
+  z-index:99999;
+  background:#fff;
+  color:var(--gov-primary);
+  border:2px solid var(--gov-primary);
+  border-radius:4px;
+  box-shadow:var(--shadow);
+}
+
+/* Encabezado institucional */
+.site-header{
+  background:#fff;
+  border-bottom:1px solid var(--gov-border);
+  backdrop-filter:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.site-header::before{
+  content:'Gobierno del Estado de Sonora · Secretaría de Bienestar';
+  display:block;
+  background:var(--gov-primary);
+  color:#fff;
+  font:500 12px/1.2 'Roboto',Arial,sans-serif;
+  padding:7px max(20px,calc((100vw - 1180px)/2));
+  text-align:right;
+  letter-spacing:.01em;
+}
+.nav-wrap{height:76px}
+.brand{gap:14px;color:var(--gov-primary)}
+.brand-logo{max-height:52px;width:auto}
+.brand-divider{background:var(--gov-border)!important}
+.brand-copy strong{font-size:13px;line-height:1.35;color:var(--gov-primary)}
+.brand-copy small{font-size:11px;color:var(--gov-muted)}
+.main-nav{gap:18px;font-size:13px}
+.main-nav a{color:var(--gov-text);font-weight:500;padding:8px 2px;border-bottom:2px solid transparent}
+.main-nav a:hover{color:var(--gov-secondary);text-decoration:none;border-bottom-color:var(--gov-secondary)}
+.menu-toggle{color:var(--gov-primary)}
+
+/* Botones alineados a componentes institucionales / Bootstrap */
+.btn{
+  border-radius:6px;
+  min-height:40px;
+  padding:9px 16px;
+  font-weight:500;
+  letter-spacing:0;
+  box-shadow:none;
+  transform:none!important;
+  transition:background-color .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease;
+}
+.btn-primary{
+  background:var(--gov-primary);
+  color:#fff;
+  border:1px solid var(--gov-primary);
+  box-shadow:none;
+}
+.btn-primary:hover{background:#2f0119;border-color:#2f0119;color:#fff;text-decoration:none}
+.btn-dark{background:var(--gov-primary);color:#fff;border:1px solid var(--gov-primary)}
+.btn-dark:hover{background:#2f0119;color:#fff;text-decoration:none}
+.btn-ghost{
+  background:#fff;
+  color:var(--gov-primary);
+  border:1px solid var(--gov-primary);
+}
+.btn-ghost:hover{background:#f5eef2;color:var(--gov-primary);text-decoration:none}
+.btn-light{background:#fff;color:var(--gov-primary);border:1px solid #fff}
+.btn-light:hover{background:#f2f2f2;color:var(--gov-primary);text-decoration:none}
+.btn-sm{min-height:34px;padding:6px 12px}
+
+/* Jerarquía editorial */
+.section{padding:72px 0}
+.section-sm{padding:20px 0}
+.eyebrow,.section-kicker{
+  color:var(--gov-secondary);
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.08em;
+}
+.hero{padding-top:72px;background:#fff}
+.hero p{font-size:1.05rem;color:var(--gov-muted)}
+.hero-actions{margin:26px 0}
+.trust-row{font-size:.85rem;color:var(--gov-muted)}
+
+/* Se elimina el exceso de decoración para acercarse a la interfaz institucional */
+.orbit{border-color:rgba(65,1,35,.10)}
+.sonora-card{
+  border-radius:10px;
+  border:1px solid var(--gov-border);
+  background:#fff;
+  box-shadow:var(--shadow);
+}
+.mini-map{border-radius:8px;background:#f4f0f2}
+.mini-map:before{background:var(--gov-primary)}
+.pulse.ccs{background:var(--gov-secondary)}
+.pulse.cps{background:var(--gov-accent)}
+.floating-stat{
+  border-radius:8px;
+  border:1px solid var(--gov-border);
+  box-shadow:var(--shadow);
+}
+.floating-stat i,.stat-a strong{color:var(--gov-primary)}
+
+/* Tarjetas, indicadores y paneles */
+.metric-grid article,
+.type-card,.tool-card,.feature-card,.chart-card,
+.map-panel,.map-frame,.committee-card,
+.method-card,.open-data-card,
+.impact-kpi-grid article,
+.admin-kpis article,.admin-summary-grid article{
+  border-radius:8px;
+  border-color:var(--gov-border);
+  box-shadow:none;
+}
+.metric-grid article{background:#fff}
+.metric-icon,.type-icon{border-radius:6px;background:#f5eef2;color:var(--gov-primary)}
+.metric-grid strong{color:var(--gov-primary)}
+.type-card:after{display:none}
+.type-card>span,.tool-card>span{color:var(--gov-secondary)}
+.type-cps .type-icon{color:var(--gov-accent)}
+.map-section{background:#f7f7f7}
+.territorial-reading{background:var(--gov-primary);border-radius:8px}
+.ccs-dot{background:var(--gov-secondary)}
+.cps-dot{background:var(--gov-accent)}
+.directory-grid .committee-card:hover{transform:none;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.type-badge{border-radius:4px;background:#f5e8ee;color:var(--gov-primary)}
+.type-badge.cps{background:#f6e9e8;color:#7e2d2e}
+.live-badge{border-radius:4px}
+
+/* Formularios */
+input,select,textarea{
+  border:1px solid #999;
+  border-radius:4px;
+  background:#fff;
+  color:var(--gov-text);
+  padding:10px 12px;
+}
+input:hover,select:hover,textarea:hover{border-color:#666}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--gov-secondary);
+  box-shadow:0 0 0 3px rgba(150,14,83,.14);
+  outline:0;
+}
+label{font-weight:500;color:var(--gov-text)}
+::placeholder{color:#777;opacity:1}
+
+/* Herramientas: conserva separación visual pero usa identidad oficial */
+.tools-section{background:var(--gov-primary);color:#fff}
+.tools-section h2,.tools-section h3,.tools-section a{color:#fff}
+.tools-section .section-kicker{color:var(--gov-highlight)}
+.tools-section .tool-card{background:#570b34;border-color:#7b3155}
+.tools-section .tool-card p{color:#f0e7ec}
+.tools-section .tool-icon{background:#fff;color:var(--gov-primary)}
+.resource-panel{border-radius:8px}
+
+/* Datos abiertos, metodología y participación */
+.open-data-card{background:#fff;border:1px solid var(--gov-border)}
+.open-data-section{background:#f7f7f7}
+.method-score-grid b{color:var(--gov-primary)}
+.participate-card{
+  border-radius:8px;
+  background:var(--gov-primary);
+  box-shadow:none;
+}
+.participate-card h2,.participate-card p,.participate-card li,.participate-card label{color:#fff}
+
+/* Modales y administración: se homologa visualmente sin cambiar comportamiento */
+.modal-card,.admin-drawer aside{border-radius:8px}
+.admin-tabs button{border-radius:4px}
+.admin-tabs .active{background:var(--gov-primary);color:#fff}
+.admin-note{border-radius:4px}
+.admin-table-wrap table{border-collapse:collapse}
+.admin-table-wrap th{font-family:'Montserrat',Arial,sans-serif;color:var(--gov-primary)}
+.admin-table-wrap th,.admin-table-wrap td{border-bottom:1px solid var(--gov-border)}
+
+/* Pie institucional */
+footer{
+  background:var(--gov-primary);
+  color:#fff;
+  padding-top:56px;
+}
+footer .brand-copy strong,footer .brand-copy small,footer h4{color:#fff}
+footer p{color:#efe6eb!important}
+footer a,footer .footer-link{color:#fff!important}
+footer a:hover,footer .footer-link:hover{text-decoration:underline;color:var(--gov-highlight)!important}
+.footer-bottom{border-top-color:rgba(255,255,255,.22);color:#efe6eb}
+
+/* Adaptación móvil */
+@media (max-width:900px){
+  .site-header::before{text-align:center;padding:7px 16px}
+  .nav-wrap{height:70px}
+  .hero{padding-top:48px}
+  h1,.hero h1{font-size:1.9rem}
+  h2{font-size:1.65rem}
+  h3{font-size:1.4rem}
+  .section{padding:56px 0}
+}
+
+@media (max-width:600px){
+  .site-header::before{font-size:11px}
+  .brand-copy strong{font-size:12px}
+  h1,.hero h1{font-size:1.75rem}
+  h2{font-size:1.5rem}
+  .btn{width:auto;min-height:42px}
+}
