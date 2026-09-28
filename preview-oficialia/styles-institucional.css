@@ -230,8 +230,8 @@ body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
 .site-header{
   background-color:var(--gov-2)!important;
   background-image:
-    url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/pattern-white.svg'),
-    url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/bk-header.svg')!important;
+    url('../assets/pattern-white.svg'),
+    url('../assets/bk-header.svg')!important;
   background-repeat:repeat,no-repeat!important;
   background-position:center,center right!important;
   background-size:auto,cover!important;
@@ -262,7 +262,7 @@ body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
   position:absolute;
   inset:0;
   z-index:0;
-  background-image:url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/bk-header.svg');
+  background-image:url('../assets/bk-header.svg');
   background-repeat:no-repeat;
   background-position:top left;
   background-size:cover;
@@ -275,7 +275,7 @@ body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
   position:absolute;
   inset:0;
   z-index:0;
-  background-image:url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/pattern-white.svg');
+  background-image:url('../assets/pattern-white.svg');
   background-repeat:repeat;
   background-position:center;
   opacity:.10;
