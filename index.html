@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Plataforma de Comités de Contraloría Social, Bienestar y Participación Ciudadana de la Secretaría de Bienestar del Estado de Sonora.">
   <meta name="theme-color" content="#410123">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com data:; img-src 'self' data: blob: https://unpkg.com https://*.tile.openstreetmap.org https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;">
   <title>Comités de Contraloría Social, Bienestar y Participación Ciudadana | Bienestar Sonora</title>
   <link rel="icon" href="assets/logo-bienestar.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,6 +19,10 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="gov-topbar" role="banner" aria-label="Gobierno del Estado de Sonora">
+    <div class="container gov-topbar-inner">Gobierno del Estado de Sonora</div>
+  </div>
 
   <header class="site-header" id="inicio">
     <div class="container nav-wrap">
@@ -36,6 +42,15 @@
     <div class="container"><span>Inicio</span> &nbsp;/&nbsp; <span>Secretaría de Bienestar</span> &nbsp;/&nbsp; <strong aria-current="page">Comités</strong></div>
   </nav>
 
+  <div class="accessibility-toolbar" aria-label="Herramientas de accesibilidad">
+    <div class="container accessibility-toolbar-inner">
+      <span>Accesibilidad</span>
+      <button type="button" data-text-size="decrease" aria-label="Disminuir tamaño de texto">A−</button>
+      <button type="button" data-text-size="reset" aria-label="Restablecer tamaño de texto">A</button>
+      <button type="button" data-text-size="increase" aria-label="Aumentar tamaño de texto">A+</button>
+      <button type="button" data-high-contrast aria-pressed="false"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i> Alto contraste</button>
+    </div>
+  </div>
 
   <div id="connectionBanner" class="connection-banner" hidden></div>
 
@@ -185,8 +200,17 @@
       <div><h4>Institucional</h4><a href="#resultados">Datos e indicadores</a><a href="#participa">Participación</a><button class="footer-link" data-open-admin>Administración</button></div>
     </div>
     <div class="container gov-official-footer">
-      <div><strong>Secretaría de Bienestar</strong><span>Micrositio institucional de Comités de Contraloría Social, Bienestar y Participación Ciudadana.</span></div>
-      <div><strong>Información institucional</strong><span>Política de Uso y Privacidad · Denuncia Ciudadana · Contacto</span><div class="gov-official-note">Enlaces institucionales por vincular en la etapa de publicación oficial.</div></div>
+      <div>
+        <strong>Secretaría de Bienestar</strong>
+        <span>La Gran Plaza, Int. 207, Paseo Río Sonora Norte 76, Hermosillo, Sonora.</span>
+        <span>Tel. +52 (662) 108 3737</span>
+        <a href="mailto:bienestar@sonora.gob.mx">bienestar@sonora.gob.mx</a>
+      </div>
+      <div><strong>Información institucional</strong>
+        <a href="https://www.sonora.gob.mx/gobierno/politicas-de-uso-y-privacidad" target="_blank" rel="noopener noreferrer">Política de Uso y Privacidad</a>
+        <a href="https://denunciapp.sonora.gob.mx/" target="_blank" rel="noopener noreferrer">Denuncia Ciudadana</a>
+        <a href="https://bienestar.sonora.gob.mx/index.php/contacto" target="_blank" rel="noopener noreferrer">Contacto</a>
+      </div>
       <div><strong>Atención ciudadana</strong><span class="gov-911">911</span><div>Emergencias</div></div>
     </div>
     <div class="container footer-bottom">© 2026 · Secretaría de Bienestar del Estado de Sonora <span>Plataforma de participación ciudadana</span></div>
