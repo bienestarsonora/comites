@@ -2,7 +2,7 @@
 :root{--gov-1:#410123;--gov-2:#960E53;--gov-3:#B94645;--gov-4:#DCF7B7;--gov-add:#237469;--gov-view:#217ABF;--gov-delete:#9B2F3E;--gov-text:#333333;--gov-muted:#666666;--gov-disabled:#999999;--gov-border:#CCCCCC;--gov-bg:#F2F2F2;--wine:#410123;--magenta:#960E53;--plum:#410123;--purple:#B94645;--sand:#f4eef1;--cream:#fff;--ink:#333333;--muted:#666666;--line:#CCCCCC;--white:#fff;--shadow:0 3px 12px rgba(0,0,0,.08);--radius:6px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'Roboto',Arial,sans-serif;font-size:16px;line-height:1.4;color:var(--gov-text);background:#fff}p,li,label,input,select,textarea,button,a,small{font-family:'Roboto',Arial,sans-serif}h1,h2,h3,h4,h5,h6,.brand-copy strong,.metric-grid strong,.impact-kpi-grid strong,.method-score-grid b{font-family:'Montserrat',Arial,sans-serif;letter-spacing:0;line-height:1.4}h1,.hero h1{font-size:2rem;font-weight:800}h2{font-size:1.8rem;font-weight:700}h3{font-size:1.6rem;font-weight:700}h4{font-size:1.4rem;font-weight:600}h5{font-size:1.2rem;font-weight:500}a{color:var(--gov-view)}main a:not(.btn):hover{text-decoration:underline;color:#17629d}.section{padding:64px 0}.section-sm{padding:18px 0}
 :focus-visible{outline:3px solid var(--gov-2)!important;outline-offset:3px!important}.skip-link:focus{left:16px;top:16px;z-index:99999;background:#fff;color:var(--gov-1);border:2px solid var(--gov-1);border-radius:4px;padding:10px 14px}
-.site-header{background:#fff!important;backdrop-filter:none!important;border-bottom:1px solid var(--gov-border);box-shadow:0 2px 7px rgba(0,0,0,.05)}.site-header:before{content:'Gobierno del Estado de Sonora';display:block;background:var(--gov-1);color:#fff;padding:7px max(20px,calc((100vw - 1180px)/2));text-align:right;font-size:12px;font-weight:500}.nav-wrap{height:76px}.brand-logo{max-height:52px;width:auto}.brand-copy strong{color:var(--gov-1);font-size:13px}.brand-copy small{color:var(--gov-muted);font-size:11px}.brand-divider{background:var(--gov-border)!important}.main-nav{gap:18px;font-size:13px}.main-nav a{color:var(--gov-text);font-weight:500;padding:10px 0;border-bottom:2px solid transparent}.main-nav a:hover{color:var(--gov-2);border-bottom-color:var(--gov-2);text-decoration:none}.menu-toggle{color:var(--gov-1)}
+.gov-topbar{background:var(--gov-1);color:#fff;font-size:12px;font-weight:600}.gov-topbar-inner{padding:7px 0;text-align:right}.site-header{background:#fff!important;backdrop-filter:none!important;border-bottom:1px solid var(--gov-border);box-shadow:0 2px 7px rgba(0,0,0,.05)}.site-header:before{display:none!important;content:none!important}.nav-wrap{height:76px}.brand-logo{max-height:52px;width:auto}.brand-copy strong{color:var(--gov-1);font-size:13px}.brand-copy small{color:var(--gov-muted);font-size:11px}.brand-divider{background:var(--gov-border)!important}.main-nav{gap:18px;font-size:13px}.main-nav a{color:var(--gov-text);font-weight:500;padding:10px 0;border-bottom:2px solid transparent}.main-nav a:hover{color:var(--gov-2);border-bottom-color:var(--gov-2);text-decoration:none}.menu-toggle{color:var(--gov-1)}
 .btn{border-radius:5px;padding:10px 16px;min-height:40px;font-weight:500;box-shadow:none!important;transform:none!important;transition:background-color .15s,border-color .15s,color .15s}.btn-primary{background:var(--gov-2)!important;color:#fff!important;border:1px solid var(--gov-2)!important}.btn-primary:hover{background:#7c0c45!important;border-color:#7c0c45!important;text-decoration:none}.btn-dark{background:var(--gov-text)!important;color:#fff!important;border:1px solid var(--gov-text)!important}.btn-ghost{background:#fff!important;color:var(--gov-2)!important;border:1px solid var(--gov-2)!important}.btn-ghost:hover{background:#f7eef3!important;text-decoration:none}.btn-light{background:#fff!important;color:var(--gov-1)!important;border:1px solid #fff!important}.btn-sm{min-height:34px;padding:7px 12px}.gov-action-add{background:var(--gov-add)!important;border-color:var(--gov-add)!important;color:#fff!important}.gov-action-add:hover{background:#1b5e55!important;border-color:#1b5e55!important}.gov-action-delete{background:var(--gov-delete)!important;border-color:var(--gov-delete)!important;color:#fff!important}.gov-action-delete:hover{background:#7d2632!important;border-color:#7d2632!important}.gov-action-edit{background:var(--gov-4)!important;border-color:var(--gov-4)!important;color:#222!important}.gov-action-view{background:var(--gov-view)!important;border-color:var(--gov-view)!important;color:#fff!important}.gov-action-next{background:var(--gov-text)!important;border-color:var(--gov-text)!important;color:#fff!important}.gov-action-back{background:var(--gov-disabled)!important;border-color:var(--gov-disabled)!important;color:#fff!important}
 .hero{padding-top:60px;background:#fff}.hero p{font-size:1rem;color:var(--gov-muted)}.eyebrow,.section-kicker{color:var(--gov-2);font-size:.75rem;font-weight:700;letter-spacing:.08em}.orbit{border-color:rgba(65,1,35,.10)}.sonora-card{border-radius:8px!important;background:#fff!important;border:1px solid var(--gov-border)!important;box-shadow:var(--shadow)!important}.mini-map{border-radius:6px!important;background:#f5f1f3!important}.mini-map:before{background:var(--gov-1)!important}.pulse.ccs{background:var(--gov-2)!important}.pulse.cps{background:var(--gov-3)!important}.floating-stat{border-radius:6px!important;border:1px solid var(--gov-border)!important;box-shadow:var(--shadow)!important}.stat-a strong,.stat-b i{color:var(--gov-1)!important}
 .metric-grid article,.type-card,.tool-card,.feature-card,.chart-card,.map-panel,.map-frame,.committee-card,.method-card,.open-data-card,.impact-kpi-grid article,.admin-kpis article,.admin-summary-grid article{border-radius:6px!important;border-color:var(--gov-border)!important;box-shadow:none!important}.metric-icon,.type-icon{border-radius:5px!important;background:#f5eef2!important;color:var(--gov-1)!important}.metric-grid strong{color:var(--gov-1)}.type-card:after{display:none}.type-card>span,.tool-card>span{color:var(--gov-2)}.type-cps .type-icon{color:var(--gov-3)!important}.map-section,.open-data-section{background:var(--gov-bg)!important}.territorial-reading{background:var(--gov-1)!important;border-radius:6px!important}.ccs-dot{background:var(--gov-2)!important}.cps-dot{background:var(--gov-3)!important}.type-badge{border-radius:4px!important;background:#f5e8ee!important;color:var(--gov-1)!important}.type-badge.cps{background:#f8eaea!important;color:#7f3433!important}
@@ -157,3 +157,46 @@ button:disabled,.btn:disabled,input:disabled,select:disabled,textarea:disabled{o
   .form-actions{bottom:-24px;margin:12px -18px -24px;padding:12px 18px!important;flex-direction:column-reverse}
   .form-actions .btn{width:100%}
 }
+
+
+/* ===== Accesibilidad institucional ===== */
+.accessibility-toolbar{background:#fff;border-bottom:1px solid var(--gov-border)}
+.accessibility-toolbar-inner{min-height:42px;display:flex;justify-content:flex-end;align-items:center;gap:7px}
+.accessibility-toolbar-inner>span{font-size:.78rem;color:var(--gov-muted);font-weight:600;margin-right:4px}
+.accessibility-toolbar button{min-width:38px;min-height:34px;padding:6px 9px;border:1px solid var(--gov-border);border-radius:4px;background:#fff;color:var(--gov-text);font:600 .8rem 'Roboto',Arial,sans-serif;cursor:pointer}
+.accessibility-toolbar button:hover{background:#f2f2f2;border-color:#999}
+.accessibility-toolbar button[aria-pressed="true"]{background:var(--gov-1);border-color:var(--gov-1);color:#fff}
+html[data-text-scale="small"]{font-size:93.75%}
+html[data-text-scale="large"]{font-size:112.5%}
+body.high-contrast{background:#000!important;color:#fff!important}
+body.high-contrast .site-header,
+body.high-contrast .accessibility-toolbar,
+body.high-contrast .metric-grid article,
+body.high-contrast .type-card,
+body.high-contrast .map-panel,
+body.high-contrast .map-frame,
+body.high-contrast .committee-card,
+body.high-contrast .chart-card,
+body.high-contrast .method-card,
+body.high-contrast .open-data-card,
+body.high-contrast .participate-card form,
+body.high-contrast .modal-card,
+body.high-contrast .admin-drawer aside,
+body.high-contrast .admin-panel,
+body.high-contrast .admin-table-wrap,
+body.high-contrast .admin-table-wrap td{background:#000!important;color:#fff!important}
+body.high-contrast h1,body.high-contrast h2,body.high-contrast h3,body.high-contrast h4,
+body.high-contrast p,body.high-contrast span,body.high-contrast label,body.high-contrast strong,
+body.high-contrast .brand-copy strong,body.high-contrast .brand-copy small{color:#fff!important}
+body.high-contrast a{color:#ffeb3b!important;text-decoration:underline}
+body.high-contrast input,body.high-contrast select,body.high-contrast textarea{background:#000!important;color:#fff!important;border-color:#fff!important}
+body.high-contrast .btn,body.high-contrast button{box-shadow:none!important}
+body.high-contrast .btn-primary,body.high-contrast .gov-action-add,body.high-contrast .gov-action-view{background:#ffeb3b!important;border-color:#ffeb3b!important;color:#000!important}
+body.high-contrast .btn-ghost,body.high-contrast .accessibility-toolbar button{background:#000!important;border-color:#fff!important;color:#fff!important}
+body.high-contrast .accessibility-toolbar button[aria-pressed="true"]{background:#fff!important;color:#000!important}
+body.high-contrast #govBreadcrumb,body.high-contrast .gov-topbar,body.high-contrast footer{background:#000!important;border-color:#fff!important}
+body.high-contrast .tools-section{background:#000!important}
+body.high-contrast .admin-table-wrap th{background:#222!important;color:#fff!important}
+body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
+
+@media(max-width:900px){.gov-topbar-inner{text-align:center;padding:7px 0}.accessibility-toolbar-inner{justify-content:center;flex-wrap:wrap;padding:6px 0}}
