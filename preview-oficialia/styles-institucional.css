@@ -248,3 +248,46 @@ body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
     background-size:auto,cover!important;
   }
 }
+
+
+/* Sahuaros del encabezado institucional */
+.site-header{
+  position:relative!important;
+  overflow:hidden!important;
+  background-color:var(--gov-2)!important;
+  background-image:none!important;
+}
+.site-header::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background-image:url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/bk-header.svg');
+  background-repeat:no-repeat;
+  background-position:top left;
+  background-size:cover;
+  filter:grayscale(100%);
+  opacity:.30;
+  pointer-events:none;
+}
+.site-header::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background-image:url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/pattern-white.svg');
+  background-repeat:repeat;
+  background-position:center;
+  opacity:.10;
+  pointer-events:none;
+}
+.site-header .nav-wrap{
+  position:relative;
+  z-index:2;
+}
+@media(max-width:900px){
+  .site-header::before{
+    background-position:center;
+    opacity:.24;
+  }
+}
