@@ -220,3 +220,31 @@ body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
 #govBreadcrumb{background:#fff!important;border-bottom:1px solid var(--gov-border)!important}
 #govBreadcrumb>div{color:var(--gov-text)!important}
 #govBreadcrumb strong{color:var(--gov-2)!important;border-bottom:2px solid var(--gov-2);padding-bottom:6px}
+
+
+/* ===== Encabezado alineado al portal oficial de Bienestar Sonora =====
+   Recursos institucionales observados en bienestar.sonora.gob.mx:
+   - bk-header.svg
+   - pattern-white.svg
+*/
+.site-header{
+  background-color:var(--gov-2)!important;
+  background-image:
+    url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/pattern-white.svg'),
+    url('https://bienestar.sonora.gob.mx/templates/shaper_helixultimate/images/bk-header.svg')!important;
+  background-repeat:repeat,no-repeat!important;
+  background-position:center,center right!important;
+  background-size:auto,cover!important;
+}
+.site-header .nav-wrap{
+  background:transparent!important;
+}
+.site-header .brand-logo{
+  filter:brightness(0) invert(1)!important;
+}
+@media(max-width:900px){
+  .site-header{
+    background-position:center,center!important;
+    background-size:auto,cover!important;
+  }
+}
