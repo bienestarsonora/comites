@@ -698,3 +698,15 @@ body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
   .section-nav-inner{height:auto!important;min-height:auto!important}
   #govBreadcrumb .breadcrumb-inner{height:auto!important;min-height:42px!important;flex-wrap:wrap!important;padding:8px 0!important}
 }
+
+
+/* Centrado de navegación institucional */
+.site-header .global-nav{
+  flex:1 1 auto!important;
+  justify-content:center!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+.section-nav-inner{
+  justify-content:center!important;
+}
