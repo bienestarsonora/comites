@@ -584,3 +584,28 @@ body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
   }
   .section-nav a,.section-nav .section-admin{white-space:nowrap!important}
 }
+
+
+/* Corrección de tinte del paisaje institucional */
+.site-header{
+  background:#960E53!important;
+}
+.site-header::before{
+  background-image:url('../assets/bk-header.svg')!important;
+  background-repeat:no-repeat!important;
+  background-position:top left!important;
+  background-size:cover!important;
+  filter:grayscale(100%)!important;
+  opacity:.34!important;
+  mix-blend-mode:multiply!important;
+}
+.site-header::after{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+  background:linear-gradient(rgba(150,14,83,.22),rgba(150,14,83,.34))!important;
+  pointer-events:none!important;
+}
+.site-header .nav-wrap{z-index:2!important}
