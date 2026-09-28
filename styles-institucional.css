@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Roboto:wght@400;500;700&display=swap');
-:root{--gov-1:#410123;--gov-2:#960E53;--gov-3:#B94645;--gov-4:#DCF7B7;--gov-add:#237469;--gov-view:#217ABF;--gov-delete:#9B2F3E;--gov-text:#333333;--gov-muted:#666666;--gov-disabled:#999999;--gov-border:#CCCCCC;--gov-bg:#F2F2F2;--wine:#410123;--magenta:#960E53;--plum:#410123;--purple:#B94645;--sand:#f4eef1;--cream:#fff;--ink:#333333;--muted:#666666;--line:#CCCCCC;--white:#fff;--shadow:0 3px 12px rgba(0,0,0,.08);--radius:6px}
+:root{--gov-1:#410324;--gov-2:#960E53;--gov-3:#DC7F37;--gov-4:#DCF7B7;--gov-add:#237469;--gov-view:#217ABF;--gov-delete:#9B2F3E;--gov-text:#333333;--gov-muted:#666666;--gov-disabled:#999999;--gov-border:#CCCCCC;--gov-bg:#F2F2F2;--wine:#410324;--magenta:#960E53;--plum:#410324;--purple:#DC7F37;--sand:#f4eef1;--cream:#fff;--ink:#333333;--muted:#666666;--line:#CCCCCC;--white:#fff;--shadow:0 3px 12px rgba(0,0,0,.08);--radius:6px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'Roboto',Arial,sans-serif;font-size:16px;line-height:1.4;color:var(--gov-text);background:#fff}p,li,label,input,select,textarea,button,a,small{font-family:'Roboto',Arial,sans-serif}h1,h2,h3,h4,h5,h6,.brand-copy strong,.metric-grid strong,.impact-kpi-grid strong,.method-score-grid b{font-family:'Montserrat',Arial,sans-serif;letter-spacing:0;line-height:1.4}h1,.hero h1{font-size:2rem;font-weight:800}h2{font-size:1.8rem;font-weight:700}h3{font-size:1.6rem;font-weight:700}h4{font-size:1.4rem;font-weight:600}h5{font-size:1.2rem;font-weight:500}a{color:var(--gov-view)}main a:not(.btn):hover{text-decoration:underline;color:#17629d}.section{padding:64px 0}.section-sm{padding:18px 0}
 :focus-visible{outline:3px solid var(--gov-2)!important;outline-offset:3px!important}.skip-link:focus{left:16px;top:16px;z-index:99999;background:#fff;color:var(--gov-1);border:2px solid var(--gov-1);border-radius:4px;padding:10px 14px}
 .gov-topbar{background:var(--gov-1);color:#fff;font-size:12px;font-weight:600}.gov-topbar-inner{padding:7px 0;text-align:right}.site-header{background:#fff!important;backdrop-filter:none!important;border-bottom:1px solid var(--gov-border);box-shadow:0 2px 7px rgba(0,0,0,.05)}.site-header:before{display:none!important;content:none!important}.nav-wrap{height:76px}.brand-logo{max-height:52px;width:auto}.brand-copy strong{color:var(--gov-1);font-size:13px}.brand-copy small{color:var(--gov-muted);font-size:11px}.brand-divider{background:var(--gov-border)!important}.main-nav{gap:18px;font-size:13px}.main-nav a{color:var(--gov-text);font-weight:500;padding:10px 0;border-bottom:2px solid transparent}.main-nav a:hover{color:var(--gov-2);border-bottom-color:var(--gov-2);text-decoration:none}.menu-toggle{color:var(--gov-1)}
@@ -200,3 +200,23 @@ body.high-contrast .admin-table-wrap th{background:#222!important;color:#fff!imp
 body.high-contrast :focus-visible{outline-color:#ffeb3b!important}
 
 @media(max-width:900px){.gov-topbar-inner{text-align:center;padding:7px 0}.accessibility-toolbar-inner{justify-content:center;flex-wrap:wrap;padding:6px 0}}
+
+/* ===== Ajustes literales conforme a Reglas de Identidad 2025 ===== */
+:root{
+  --gov-1:#410324;
+  --gov-2:#960E53;
+  --gov-3:#DC7F37;
+  --gov-delete:#9B2F3E;
+  --gov-view:#217ABF;
+  --gov-add:#237469;
+}
+.site-header{background:var(--gov-2)!important;border-bottom:1px solid rgba(255,255,255,.35)!important}
+.site-header .brand-copy strong,.site-header .brand-copy small,.site-header .main-nav a,.site-header .menu-toggle{color:#fff!important}
+.site-header .brand-divider{background:rgba(255,255,255,.55)!important}
+.site-header .brand-logo{filter:brightness(0) invert(1)}
+.main-nav a{text-transform:uppercase;font-family:'Montserrat',Arial,sans-serif!important;font-weight:400!important;letter-spacing:.02em}
+.main-nav a:hover,.main-nav a:focus-visible{color:#fff!important;border-bottom-color:#fff!important}
+.main-nav .btn{font-family:'Montserrat',Arial,sans-serif!important;text-transform:uppercase}
+#govBreadcrumb{background:#fff!important;border-bottom:1px solid var(--gov-border)!important}
+#govBreadcrumb>div{color:var(--gov-text)!important}
+#govBreadcrumb strong{color:var(--gov-2)!important;border-bottom:2px solid var(--gov-2);padding-bottom:6px}
