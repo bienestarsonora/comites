@@ -1936,7 +1936,7 @@ async function saveContent(event) {
 
 async function submitContact(event) {
   event.preventDefault();
-  if (!db) { toast('El formulario estará disponible al completar la conexión con Supabase.', 'error'); return; }
+  if (!db) { toast('El formulario estará disponible cuando se restablezca la conexión institucional.', 'error'); return; }
   const payload = {
     name: $('#contactName').value.trim(),
     committee_type: $('#contactCommitteeType').value,
@@ -1986,7 +1986,7 @@ async function registerAccount() {
   const { error } = await db.auth.signUp({ email, password });
   message.hidden = false;
   if (error) message.textContent = `No fue posible crear la cuenta: ${error.message}`;
-  else message.textContent = 'Cuenta registrada. Revisa tu correo si Supabase solicita confirmación. Un administrador debe asignarte permisos.';
+  else message.textContent = 'Cuenta registrada. Revisa tu correo para completar la confirmación si es necesaria. Un administrador debe asignarte permisos.';
 }
 
 async function forgotPassword() {
