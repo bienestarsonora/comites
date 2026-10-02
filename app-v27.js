@@ -305,14 +305,17 @@ async function loadPublicData() {
       db.from('site_content').select('key,value'),
       db.rpc('get_committee_file_status')
     ]);
-    if (committeeRes.error) throw committeeRes.error;
-    if (documentRes.error) throw documentRes.error;
-    if (contentRes.error) throw contentRes.error;
-    if (fileStatusRes.error) throw fileStatusRes.error;
 
-    committees = committeeRes.data.map(normalizeCommittee);
-    publicDocuments = await hydrateDocumentUrls(documentRes.data || []);
-    publicFileStatus = fileStatusRes.data || [];
+    // Sólo la consulta principal de comités debe decidir si el sitio entra en modo local.
+    if (committeeRes.error) throw committeeRes.error;
+
+    if (documentRes.error) console.warn('Documentos públicos:', documentRes.error.message);
+    if (contentRes.error) console.warn('Contenido público:', contentRes.error.message);
+    if (fileStatusRes.error) console.warn('Estado de expedientes:', fileStatusRes.error.message);
+
+    committees = (committeeRes.data || []).map(normalizeCommittee);
+    publicDocuments = documentRes.error ? [] : await hydrateDocumentUrls(documentRes.data || []);
+    publicFileStatus = fileStatusRes.error ? [] : (fileStatusRes.data || []);
     const [trainingRows, eventRows, commitmentRows, managementRows] = await Promise.all([
       optionalData(db.from('trainings').select('*').eq('public', true).order('training_date', { ascending: false }), 'capacitaciones públicas'),
       optionalData(db.from('committee_events').select('*').eq('public', true).order('event_date', { ascending: false }), 'bitácora pública'),
@@ -324,7 +327,9 @@ async function loadPublicData() {
     publicCommitments = commitmentRows;
     publicManagements = managementRows;
     siteContent = structuredClone(DEFAULT_CONTENT);
-    (contentRes.data || []).forEach(row => { if (row.key && row.value) siteContent[row.key] = row.value; });
+    if (!contentRes.error) {
+      (contentRes.data || []).forEach(row => { if (row.key && row.value) siteContent[row.key] = row.value; });
+    }
     setConnectionBanner('');
     refreshPublic();
   } catch (error) {
