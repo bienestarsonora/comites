@@ -819,7 +819,6 @@ function renderImpactDashboard() {
 
   const values = {
     active: stats.active,
-    requests: stats.requests,
     members,
     municipalities,
     colonies,
