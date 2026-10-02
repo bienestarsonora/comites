@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="../styles-v27.css">
   <link rel="stylesheet" href="styles-institucional.css?v=20260928">
-  <link rel="stylesheet" href="homologacion-final.css?v=20261002-7">
+  <link rel="stylesheet" href="homologacion-v28.css?v=20261002">
 </head>
 <body class="public-site-page">
   <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -227,6 +227,24 @@
           <div class="card-head"><h3>Integrantes de comités conformados por mes</h3><i class="fa-solid fa-user-plus"></i></div>
           <div class="chart-viewport"><canvas id="membersByMonthChart"></canvas></div>
         </article>
+        <article class="chart-card ccs-demographic-card reveal" id="ccsGenderPanel">
+          <div class="card-head ccs-demographic-head">
+            <div>
+              <h3>Composición por sexo de integrantes de CCS</h3>
+              <small>Comités de Contraloría Social · padrón validado</small>
+            </div>
+            <i class="fa-solid fa-venus-mars"></i>
+          </div>
+          <div class="ccs-demographic-layout">
+            <div class="ccs-demographic-chart"><canvas id="ccsGenderChart" role="img" aria-label="Distribución de mujeres y hombres integrantes de los Comités de Contraloría Social"></canvas></div>
+            <div class="ccs-demographic-summary">
+              <div class="ccs-demographic-total"><span>Universo validado</span><strong data-ccs-demographic="total">—</strong><small><span data-ccs-demographic="committees">—</span> CCS</small></div>
+              <div class="ccs-demographic-stat"><span class="ccs-sex-dot women"></span><span>Mujeres</span><strong data-ccs-demographic="women">—</strong><small data-ccs-demographic="womenPct">—</small></div>
+              <div class="ccs-demographic-stat"><span class="ccs-sex-dot men"></span><span>Hombres</span><strong data-ccs-demographic="men">—</strong><small data-ccs-demographic="menPct">—</small></div>
+              <p class="ccs-demographic-source"><i class="fa-solid fa-circle-check"></i> <strong>Fuente:</strong> <span id="ccsDemographicSource">Control institucional de CCS</span><br><strong>Fecha de corte:</strong> <span data-ccs-demographic="cutoff">—</span> · Control: mujeres + hombres = total; 0 registros sin clasificación y 0 con doble marca H/M.</p>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -363,7 +381,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js?v=20260819-v27"></script>
-  <script src="../app-v27.js?v=20261002-13"></script>
+  <script src="app-oficialia-v28.js?v=20261002"></script>
   <script src="institutional-ui.js?v=20260928"></script>
   <script src="hero-countup.js?v=20261002-3"></script>
   <!-- hero-countup-bust: 2026-10-02T17:49 -->
