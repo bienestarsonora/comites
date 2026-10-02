@@ -664,7 +664,7 @@ async function showDetail(id) {
 }
 
 function charts() {
-  const required = ['#committeeGrowthChart','#committeeSizeChart','#programChart'];
+  const required = ['#committeeGrowthChart','#committeeSizeChart','#membersByMonthChart'];
   if (required.some(selector => !$(selector))) return;
   if (typeof Chart === 'undefined') {
     console.error('Chart.js no está disponible.');
@@ -674,10 +674,13 @@ function charts() {
   [typeChart, territoryChart, requestStatusChart, requestTrendChart].forEach(chart => chart?.destroy());
 
   const monthly = new Map();
+  const monthlyMembers = new Map();
+
   committees.forEach(c => {
     const key = String(c.date || '').slice(0,7);
     if (!/^\d{4}-\d{2}$/.test(key)) return;
     monthly.set(key, (monthly.get(key) || 0) + 1);
+    monthlyMembers.set(key, (monthlyMembers.get(key) || 0) + Number(c.members || 0));
   });
 
   const keys = [...monthly.keys()].sort();
@@ -699,8 +702,10 @@ function charts() {
       datasets:[{
         label:'Comités acumulados',
         data:cumulativeValues,
-        borderColor:'#960E53',
+        borderColor:'#410324',
         backgroundColor:'rgba(150,14,83,.08)',
+        pointBackgroundColor:'#960E53',
+        pointBorderColor:'#960E53',
         tension:.35,
         fill:true,
         pointRadius:3,
@@ -739,6 +744,7 @@ function charts() {
         label:'Comités',
         data:sizeValues,
         backgroundColor:'#960E53',
+        hoverBackgroundColor:'#410324',
         borderRadius:8,
         borderSkipped:false
       }]
@@ -755,34 +761,26 @@ function charts() {
     }
   });
 
-  const programCounts = new Map();
-  committees
-    .filter(c => c.type === 'CCS' && String(c.program || '').trim())
-    .forEach(c => {
-      const program = String(c.program).trim();
-      programCounts.set(program, (programCounts.get(program) || 0) + 1);
-    });
-  const programRows = [...programCounts.entries()].sort((a,b)=>b[1]-a[1]);
-
-  territoryChart = new Chart($('#programChart'), {
-    type:'doughnut',
+  territoryChart = new Chart($('#membersByMonthChart'), {
+    type:'bar',
     data:{
-      labels:programRows.map(([program])=>program),
+      labels:keys.map(monthLabel),
       datasets:[{
-        data:programRows.map(([,count])=>count),
-        backgroundColor:['#960E53','#410324','#947043'],
-        borderWidth:0
+        label:'Personas incorporadas',
+        data:keys.map(key=>monthlyMembers.get(key) || 0),
+        backgroundColor:'#947043',
+        hoverBackgroundColor:'#410324',
+        borderRadius:8,
+        borderSkipped:false
       }]
     },
     options:{
       responsive:true,
       maintainAspectRatio:false,
-      cutout:'68%',
-      plugins:{
-        legend:{
-          position:'bottom',
-          labels:{usePointStyle:true,padding:16}
-        }
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true,ticks:{precision:0},grid:{color:'#eee4e8'}},
+        x:{grid:{display:false}}
       }
     }
   });
