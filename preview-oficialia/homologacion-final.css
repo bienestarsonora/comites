@@ -1,0 +1,411 @@
+/* Homologación visual final con portal oficial de Bienestar.
+   Aislado para la preview de Oficialía Mayor. */
+
+html body.public-site-page header.site-header{
+  position:relative!important;
+  z-index:1099!important;
+  display:block!important;
+  width:100%!important;
+  height:92px!important;
+  min-height:92px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:0!important;
+  box-shadow:none!important;
+  background-color:#960E53!important;
+  background-image:
+    linear-gradient(rgba(150,14,83,.65),rgba(150,14,83,.65)),
+    linear-gradient(#960E53,#960E53),
+    url('../assets/bk-header.svg')!important;
+  background-position:center,center,top left!important;
+  background-size:cover,cover,cover!important;
+  background-repeat:no-repeat,no-repeat,no-repeat!important;
+  background-blend-mode:normal,multiply,normal!important;
+}
+html body.public-site-page header.site-header::before,
+html body.public-site-page header.site-header::after,
+html body.public-site-page header.site-header .title-image,
+html body.public-site-page header.site-header .header-shell::before,
+html body.public-site-page header.site-header .header-shell::after{
+  display:none!important;content:none!important;background:none!important;
+}
+html body.public-site-page header.site-header .header-shell{
+  box-sizing:border-box!important;
+  position:relative!important;
+  z-index:2!important;
+  width:100%!important;
+  max-width:1320px!important;
+  height:92px!important;
+  min-height:92px!important;
+  margin:0 auto!important;
+  padding:0 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+html body.public-site-page header.site-header .brand{
+  display:inline-flex!important;
+  align-items:center!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  height:71px!important;
+  margin:0!important;
+  padding:0!important;
+  position:static!important;
+}
+html body.public-site-page header.site-header .brand img{
+  display:block!important;
+  position:relative!important;
+  left:5px!important;
+  top:0!important;
+  width:auto!important;
+  height:71px!important;
+  max-width:none!important;
+  max-height:71px!important;
+  margin:0!important;
+  padding:0!important;
+  object-fit:contain!important;
+  filter:invert(83%) sepia(71%) saturate(2%) hue-rotate(13deg) brightness(200%) contrast(100%)!important;
+}
+html body.public-site-page header.site-header #primaryNav{
+  position:static!important;
+  flex:1 1 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  height:92px!important;
+  margin:0!important;
+  padding:0!important;
+  transform:translateX(-4px)!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html body.public-site-page header.site-header #primaryNav > a,
+html body.public-site-page header.site-header #primaryNav > .gov-menu-item > .gov-menu-trigger{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:76px!important;
+  margin:0!important;
+  padding-left:11.5px!important;
+  padding-right:11.5px!important;
+  color:#fff!important;
+  background:transparent!important;
+  border:0!important;
+  font-family:"Montserrat",sans-serif!important;
+  font-size:.8rem!important;
+  font-weight:700!important;
+  line-height:1!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+}
+html body.public-site-page header.site-header #primaryNav > .gov-menu-item{
+  position:relative!important;
+  height:76px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+html body.public-site-page header.site-header #primaryNav > .gov-menu-item > .gov-menu-trigger i{
+  margin-left:7px!important;
+  font-size:.75rem!important;
+  color:#fff!important;
+  transition:transform .2s ease!important;
+}
+html body.public-site-page header.site-header .gov-dropdown{
+  position:absolute!important;
+  top:calc(100% - 2px)!important;
+  left:0!important;
+  z-index:1200!important;
+  min-width:17rem!important;
+  padding:.75rem!important;
+  margin:0!important;
+  display:block!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  transform:translateY(10px)!important;
+  pointer-events:none!important;
+  background:#fff!important;
+  border-radius:.35rem!important;
+  box-shadow:0 1.25rem 2.5rem rgba(0,0,0,.14),0 .25rem .75rem rgba(0,0,0,.08)!important;
+  transition:opacity .22s ease,transform .22s ease,visibility .22s ease!important;
+}
+html body.public-site-page header.site-header .gov-dropdown a{
+  display:flex!important;
+  align-items:center!important;
+  min-height:48px!important;
+  padding:.55rem .95rem!important;
+  margin:0!important;
+  color:#3b3b3b!important;
+  background:transparent!important;
+  border:1px solid transparent!important;
+  border-radius:.35rem!important;
+  font-family:"Montserrat",sans-serif!important;
+  font-size:.8rem!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+  white-space:normal!important;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease!important;
+}
+html body.public-site-page header.site-header .gov-dropdown a:hover,
+html body.public-site-page header.site-header .gov-dropdown a:focus-visible{
+  background:rgba(148,112,67,.10)!important;
+  border-color:rgba(148,112,67,.25)!important;
+  color:#000!important;
+}
+html body.public-site-page header.site-header .gov-menu-item:hover > .gov-dropdown,
+html body.public-site-page header.site-header .gov-menu-item:focus-within > .gov-dropdown{
+  visibility:visible!important;opacity:1!important;transform:translateY(0)!important;pointer-events:auto!important;
+}
+html body.public-site-page header.site-header .gov-menu-item:hover > .gov-menu-trigger i,
+html body.public-site-page header.site-header .gov-menu-item:focus-within > .gov-menu-trigger i{
+  transform:rotate(180deg)!important;
+}
+
+/* Navegación secundaria del micrositio */
+html body.public-site-page .section-nav{
+  background:#fff!important;
+  border-bottom:1px solid #e8e8e8!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.04)!important;
+}
+html body.public-site-page .section-nav-inner{
+  width:100%!important;
+  max-width:1320px!important;
+  margin:0 auto!important;
+  min-height:96px!important;
+  height:96px!important;
+  padding:0 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html body.public-site-page .section-nav a,
+html body.public-site-page .section-nav button{
+  min-height:48px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 15px!important;
+  margin:0 2px!important;
+  border:1px solid transparent!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:#383838!important;
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+  cursor:pointer!important;
+}
+html body.public-site-page .section-nav a.active{
+  background:#f4efe9!important;border-color:#d9cbbc!important;color:#222!important;
+}
+html body.public-site-page .section-nav a:hover,
+html body.public-site-page .section-nav a:focus-visible,
+html body.public-site-page .section-nav button:hover,
+html body.public-site-page .section-nav button:focus-visible{
+  background:#f7f7f7!important;color:#222!important;
+}
+html body.public-site-page .section-nav .section-admin{
+  margin-left:8px!important;border-color:#960E53!important;color:#960E53!important;
+}
+
+/* Breadcrumb oficial */
+html body.public-site-page nav.gov-breadcrumb{
+  display:block!important;
+  min-height:40px!important;
+  height:40px!important;
+  margin:0!important;
+  padding:0!important;
+  background:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #ececec!important;
+  box-shadow:none!important;
+}
+html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:1320px!important;
+  height:40px!important;
+  min-height:40px!important;
+  margin:0 auto!important;
+  padding:0 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:0!important;
+  list-style:none!important;
+  font-family:Roboto,Arial,sans-serif!important;
+  font-size:.8rem!important;
+  font-weight:400!important;
+  color:#000!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item{
+  display:flex!important;align-items:center!important;margin:0!important;padding:0!important;color:#000!important;white-space:nowrap!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item + .breadcrumb-item{padding-left:.5rem!important}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item + .breadcrumb-item::before{
+  content:"/"!important;display:block!important;padding-right:.5rem!important;color:rgba(0,0,0,.65)!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item a,
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item.active{
+  color:#000!important;font-size:.8rem!important;font-weight:400!important;text-decoration:none!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-home a{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;width:1.25em!important;color:#000!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-home i{
+  color:#000!important;font-family:"Font Awesome 6 Free"!important;font-size:13px!important;font-weight:900!important;line-height:1!important;
+}
+
+/* Footer oficial */
+html body.public-site-page footer.official-footer{
+  margin:0!important;padding:0!important;background:#fff!important;color:#111!important;font-family:'Roboto',Arial,sans-serif!important;border:0!important;
+}
+html body.public-site-page footer.official-footer .official-footer-top{
+  background:#fff!important;color:#111!important;min-height:255px!important;padding:0!important;display:flex!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-footer-top-inner{
+  width:calc(100% - 160px)!important;max-width:1288px!important;margin:0 auto!important;padding:0!important;
+  display:grid!important;grid-template-columns:1fr 1.05fr!important;gap:64px!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-contact{
+  border-left:4px solid #111!important;padding-left:10px!important;color:#111!important;font-size:14px!important;line-height:1.5!important;
+}
+html body.public-site-page footer.official-footer .official-contact strong{
+  display:block!important;margin-bottom:8px!important;font-size:17px!important;font-weight:700!important;color:#111!important;
+}
+html body.public-site-page footer.official-footer .official-contact p{margin:2px 0!important;color:#111!important}
+html body.public-site-page footer.official-footer .official-links{text-align:center!important;font-size:14px!important;color:#111!important}
+html body.public-site-page footer.official-footer .official-social-text{
+  display:flex!important;justify-content:center!important;align-items:center!important;gap:6px!important;margin-bottom:14px!important;font-size:16px!important;
+}
+html body.public-site-page footer.official-footer .official-social-text .social-link{
+  display:inline-flex!important;align-items:center!important;gap:6px!important;color:#111!important;text-decoration:none!important;width:auto!important;padding:0!important;
+}
+html body.public-site-page footer.official-footer .official-social-text .social-brand{
+  width:25px!important;height:25px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;color:#9b7642!important;font-size:24px!important;line-height:1!important;
+}
+html body.public-site-page footer.official-footer .official-links nav{
+  display:flex!important;justify-content:center!important;flex-wrap:wrap!important;gap:10px 36px!important;margin-bottom:8px!important;
+}
+html body.public-site-page footer.official-footer .official-links nav a{
+  display:inline!important;width:auto!important;padding:0!important;color:#111!important;font-weight:700!important;text-decoration:none!important;
+}
+html body.public-site-page footer.official-footer .official-links p{margin:0!important;color:#111!important;font-size:14px!important;line-height:1.5!important}
+html body.public-site-page footer.official-footer .official-footer-bottom{
+  min-height:220px!important;background:#5A002B!important;color:#fff!important;padding:0!important;display:flex!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-footer-bottom-inner{
+  width:calc(100% - 160px)!important;max-width:1288px!important;margin:0 auto!important;padding:0!important;
+  display:grid!important;grid-template-columns:1.05fr 1.65fr 1.05fr .82fr!important;gap:34px!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-sonora-brand img{
+  display:block!important;width:185px!important;max-width:100%!important;height:auto!important;
+}
+html body.public-site-page footer.official-footer .official-pattern{
+  display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;
+}
+html body.public-site-page footer.official-footer .official-pattern img{
+  display:block!important;width:370px!important;max-width:100%!important;height:auto!important;opacity:1!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons{
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:14px!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row{
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:30px!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row a{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;width:38px!important;height:38px!important;
+  padding:0!important;margin:0!important;color:#fff!important;text-decoration:none!important;background:transparent!important;border:0!important;
+  line-height:64px!important;transition:.3s all ease-in-out!important;transform-origin:50% 50%!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row a:hover{
+  transform:scale(1.2)!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row a i{
+  font-size:31px!important;line-height:1!important;color:#fff!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row .x-official{
+  display:inline-block!important;font-family:Arial,Helvetica,sans-serif!important;font-size:31px!important;font-weight:700!important;line-height:1!important;color:#fff!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons strong{font-size:18px!important;color:#fff!important}
+html body.public-site-page footer.official-footer .official-911{
+  display:flex!important;justify-content:flex-end!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-911 img{
+  display:block!important;width:165px!important;max-width:100%!important;height:auto!important;
+}
+
+@media (max-width:1399.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:1140px!important}
+}
+@media (max-width:1199.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:960px!important}
+}
+@media (max-width:991.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:720px!important}
+  html body.public-site-page header.site-header #primaryNav{
+    position:absolute!important;top:92px!important;left:0!important;right:0!important;height:auto!important;
+    display:none!important;flex-direction:column!important;align-items:stretch!important;transform:none!important;
+    padding:12px 18px!important;background:#fff!important;box-shadow:0 8px 18px rgba(0,0,0,.12)!important;
+  }
+  html body.public-site-page header.site-header #primaryNav.open{display:flex!important}
+  html body.public-site-page header.site-header #primaryNav > a,
+  html body.public-site-page header.site-header #primaryNav > .gov-menu-item > .gov-menu-trigger{
+    width:100%!important;height:auto!important;min-height:48px!important;justify-content:flex-start!important;color:#333!important;
+  }
+  html body.public-site-page header.site-header #primaryNav > .gov-menu-item{height:auto!important;display:block!important}
+  html body.public-site-page header.site-header .gov-dropdown{
+    position:static!important;min-width:0!important;box-shadow:none!important;transform:none!important;
+  }
+  html body.public-site-page .menu-toggle{display:grid!important;color:#fff!important;z-index:4!important}
+}
+@media (max-width:767.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:540px!important}
+}
+@media (max-width:575.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:100%!important}
+  html body.public-site-page header.site-header .brand,
+  html body.public-site-page header.site-header .brand img{height:3.5rem!important;max-height:3.5rem!important}
+}
+@media(max-width:900px){
+  html body.public-site-page .section-nav-inner{
+    height:auto!important;min-height:auto!important;justify-content:flex-start!important;overflow-x:auto!important;padding:12px 15px!important;
+  }
+  html body.public-site-page .section-nav a,
+  html body.public-site-page .section-nav button{white-space:nowrap!important}
+  html body.public-site-page footer.official-footer .official-footer-top,
+  html body.public-site-page footer.official-footer .official-footer-bottom{padding:36px 0!important}
+  html body.public-site-page footer.official-footer .official-footer-top-inner,
+  html body.public-site-page footer.official-footer .official-footer-bottom-inner{
+    width:calc(100% - 36px)!important;grid-template-columns:1fr!important;gap:28px!important;
+  }
+  html body.public-site-page footer.official-footer .official-links{text-align:left!important}
+  html body.public-site-page footer.official-footer .official-social-text,
+  html body.public-site-page footer.official-footer .official-links nav{justify-content:flex-start!important}
+  html body.public-site-page footer.official-footer .official-pattern{display:none!important}
+  html body.public-site-page footer.official-footer .official-social-icons{align-items:flex-start!important}
+  html body.public-site-page footer.official-footer .official-911{justify-content:flex-start!important}
+}
