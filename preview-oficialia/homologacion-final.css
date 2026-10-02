@@ -902,3 +902,50 @@ html body.public-site-page .public-value-card a:hover{
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* Gráficas públicas: dimensiones estables y acotadas */
+html body.public-site-page .impact-chart-grid{
+  align-items:stretch!important;
+}
+html body.public-site-page .impact-chart-grid .chart-card{
+  min-height:0!important;
+  height:360px!important;
+  padding:24px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+html body.public-site-page .impact-chart-grid .card-head{
+  flex:0 0 auto!important;
+  min-height:42px!important;
+  margin-bottom:12px!important;
+}
+html body.public-site-page .impact-chart-grid .card-head h3{
+  margin:0!important;
+  font-size:1.15rem!important;
+  line-height:1.25!important;
+}
+html body.public-site-page .impact-chart-grid .chart-viewport{
+  position:relative!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:270px!important;
+  width:100%!important;
+  overflow:hidden!important;
+}
+html body.public-site-page .impact-chart-grid .chart-viewport canvas{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:270px!important;
+}
+@media(max-width:900px){
+  html body.public-site-page .impact-chart-grid .chart-card{
+    height:340px!important;
+  }
+  html body.public-site-page .impact-chart-grid .chart-viewport{
+    height:250px!important;
+  }
+}
