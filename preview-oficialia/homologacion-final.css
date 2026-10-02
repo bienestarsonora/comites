@@ -409,3 +409,66 @@ html body.public-site-page footer.official-footer .official-911 img{
   html body.public-site-page footer.official-footer .official-social-icons{align-items:flex-start!important}
   html body.public-site-page footer.official-footer .official-911{justify-content:flex-start!important}
 }
+
+
+/* Ajuste visual: Herramientas y aprendizaje en fondo blanco */
+html body.public-site-page .tools-section{
+  background:#fff!important;
+  color:#222!important;
+}
+html body.public-site-page .tools-section .split-heading h2{
+  color:#222!important;
+}
+html body.public-site-page .tools-section .split-heading p{
+  color:#555!important;
+}
+html body.public-site-page .tools-section .section-kicker,
+html body.public-site-page .tools-section .tool-card > span{
+  color:#960E53!important;
+}
+html body.public-site-page .tools-section .tool-card{
+  background:#fff!important;
+  border:1px solid #e2e2e2!important;
+  box-shadow:none!important;
+}
+html body.public-site-page .tools-section .tool-card h3{
+  color:#222!important;
+}
+html body.public-site-page .tools-section .tool-card p{
+  color:#555!important;
+}
+html body.public-site-page .tools-section .tool-card a{
+  color:#960E53!important;
+}
+html body.public-site-page .tools-section .tool-card a:hover{
+  color:#410324!important;
+}
+html body.public-site-page .tools-section .tool-icon{
+  background:#f6f1f3!important;
+  color:#410324!important;
+}
+html body.public-site-page .tools-section .resource-panel{
+  background:#fff!important;
+  color:#222!important;
+  border:1px solid #e2e2e2!important;
+  box-shadow:none!important;
+}
+html body.public-site-page .tools-section .resource-panel h3,
+html body.public-site-page .tools-section .resource-panel #resourceCount{
+  color:#222!important;
+}
+html body.public-site-page .tools-section .resource-panel .section-kicker{
+  color:#960E53!important;
+}
+html body.public-site-page .tools-section .resource-empty,
+html body.public-site-page .tools-section .resource-shown-count{
+  color:#666!important;
+}
+
+/* El atributo hidden siempre manda: evita mostrar "Mostrar más" sin recursos */
+html body.public-site-page #showMoreResources[hidden]{
+  display:none!important;
+}
+html body.public-site-page .resource-more-wrap:has(#showMoreResources[hidden]) #resourceShownCount:empty{
+  display:none!important;
+}
