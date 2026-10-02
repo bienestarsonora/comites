@@ -1,38 +1,21 @@
 (() => {
   'use strict';
 
-  const el = document.querySelector('[data-hero-kpi="committees"].hero-summary-number');
-  if (!el) return;
-
   const duration = 2600;
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
   const format = (n) => Math.round(n).toLocaleString('es-MX');
 
-  const parseValue = (text) => {
-    const n = Number(String(text || '').replace(/[^0-9.-]/g, ''));
-    return Number.isFinite(n) ? n : null;
-  };
+  function startCountUp() {
+    const el = document.querySelector('.hero-summary-number[data-hero-kpi="committees"]');
+    if (!el || el.dataset.countupDone === 'true' || el.dataset.countupRunning === 'true') return false;
 
-  const state = {
-    finalValue: null,
-    animated: false,
-    animating: false,
-    visible: false
-  };
+    const target = Number(String(el.textContent || '').replace(/[^0-9.-]/g, ''));
+    if (!Number.isFinite(target) || target <= 0) return false;
 
-  const animate = () => {
-    if (
-      state.animated ||
-      state.animating ||
-      !state.visible ||
-      state.finalValue === null ||
-      state.finalValue <= 0
-    ) return;
-
-    state.animating = true;
-    const target = state.finalValue;
-    const start = performance.now();
+    el.dataset.countupRunning = 'true';
     el.textContent = '0';
+
+    const start = performance.now();
 
     const frame = (now) => {
       const progress = Math.min((now - start) / duration, 1);
@@ -42,35 +25,23 @@
         requestAnimationFrame(frame);
       } else {
         el.textContent = format(target);
-        state.animating = false;
-        state.animated = true;
+        el.dataset.countupRunning = 'false';
+        el.dataset.countupDone = 'true';
       }
     };
 
     requestAnimationFrame(frame);
-  };
+    return true;
+  }
 
-  const capture = () => {
-    if (state.animated || state.animating) return;
-    const value = parseValue(el.textContent);
+  // Supabase escribe el total después de cargar la página.
+  // Revisamos hasta encontrar un valor real y entonces animamos una sola vez.
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts += 1;
+    if (startCountUp() || attempts >= 120) clearInterval(timer);
+  }, 100);
 
-    if (value !== null && value > 0) {
-      state.finalValue = value;
-      animate();
-    }
-  };
-
-  const io = new IntersectionObserver((entries) => {
-    state.visible = entries[0].isIntersecting;
-    if (state.visible) {
-      capture();
-      animate();
-    }
-  }, { threshold: 0.35 });
-
-  const mo = new MutationObserver(capture);
-
-  io.observe(el);
-  mo.observe(el, { childList: true, characterData: true, subtree: true });
-  capture();
+  document.addEventListener('DOMContentLoaded', startCountUp);
+  window.addEventListener('load', startCountUp);
 })();
