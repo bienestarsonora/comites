@@ -294,9 +294,11 @@ async function loadPublicData() {
     publicManagements = [];
     siteContent = structuredClone(DEFAULT_CONTENT);
     setConnectionBanner('La plataforma está en modo local hasta completar la conexión de Supabase.', 'warning');
-    refreshPublic();
+    try { refreshPublic(); } catch (error) { console.error('Render local:', error); }
     return;
   }
+
+  let loadedFromSupabase = false;
 
   try {
     const [committeeRes, documentRes, contentRes, fileStatusRes] = await Promise.all([
@@ -306,42 +308,68 @@ async function loadPublicData() {
       db.rpc('get_committee_file_status')
     ]);
 
-    // Sólo la consulta principal de comités debe decidir si el sitio entra en modo local.
     if (committeeRes.error) throw committeeRes.error;
 
-    if (documentRes.error) console.warn('Documentos públicos:', documentRes.error.message);
-    if (contentRes.error) console.warn('Contenido público:', contentRes.error.message);
-    if (fileStatusRes.error) console.warn('Estado de expedientes:', fileStatusRes.error.message);
-
     committees = (committeeRes.data || []).map(normalizeCommittee);
-    publicDocuments = documentRes.error ? [] : await hydrateDocumentUrls(documentRes.data || []);
-    publicFileStatus = fileStatusRes.error ? [] : (fileStatusRes.data || []);
+
+    if (documentRes.error) {
+      console.warn('Documentos públicos:', documentRes.error.message);
+      publicDocuments = [];
+    } else {
+      publicDocuments = await hydrateDocumentUrls(documentRes.data || []);
+    }
+
+    if (fileStatusRes.error) {
+      console.warn('Estado de expedientes:', fileStatusRes.error.message);
+      publicFileStatus = [];
+    } else {
+      publicFileStatus = fileStatusRes.data || [];
+    }
+
     const [trainingRows, eventRows, commitmentRows, managementRows] = await Promise.all([
       optionalData(db.from('trainings').select('*').eq('public', true).order('training_date', { ascending: false }), 'capacitaciones públicas'),
       optionalData(db.from('committee_events').select('*').eq('public', true).order('event_date', { ascending: false }), 'bitácora pública'),
       optionalData(db.from('commitments').select('*').eq('public', true).order('commitment_date', { ascending: false }), 'compromisos públicos'),
       optionalData(db.from('committee_requests').select('*').eq('public', true).order('request_date', { ascending: false }), 'gestiones públicas')
     ]);
+
     publicTrainings = trainingRows;
     publicEvents = eventRows;
     publicCommitments = commitmentRows;
     publicManagements = managementRows;
+
     siteContent = structuredClone(DEFAULT_CONTENT);
     if (!contentRes.error) {
-      (contentRes.data || []).forEach(row => { if (row.key && row.value) siteContent[row.key] = row.value; });
+      (contentRes.data || []).forEach(row => {
+        if (row.key && row.value) siteContent[row.key] = row.value;
+      });
+    } else {
+      console.warn('Contenido público:', contentRes.error.message);
     }
+
+    loadedFromSupabase = true;
     setConnectionBanner('');
-    refreshPublic();
   } catch (error) {
-    console.error(error);
+    console.error('Carga principal Supabase:', error);
     committees = structuredClone(FALLBACK_COMMITTEES);
     publicDocuments = [];
     publicFileStatus = [];
     publicTrainings = [];
     publicEvents = [];
     publicCommitments = [];
+    publicManagements = [];
+    siteContent = structuredClone(DEFAULT_CONTENT);
     setConnectionBanner('No fue posible consultar la base de datos. Se muestra una copia local temporal.', 'error');
+  }
+
+  try {
     refreshPublic();
+  } catch (error) {
+    console.error('Render público:', error);
+    // Si los datos sí llegaron de Supabase, no falsear el estado de conexión por un error visual.
+    if (loadedFromSupabase) {
+      setConnectionBanner('Los datos están conectados, pero un componente visual no pudo actualizarse correctamente.', 'warning');
+    }
   }
 }
 
