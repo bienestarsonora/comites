@@ -664,49 +664,10 @@ async function showDetail(id) {
 }
 
 function charts() {
-  if (!$('#typeChart') || !$('#territoryChart') || !$('#committeeGrowthChart') || !$('#membersByTypeChart')) return;
+  const required = ['#committeeGrowthChart','#membersMunicipalityChart','#statusChart','#monthlyCreatedChart'];
+  if (required.some(selector => !$(selector))) return;
 
   [typeChart, territoryChart, requestStatusChart, requestTrendChart].forEach(chart => chart?.destroy());
-
-  const ccs = committees.filter(x => x.type === 'CCS');
-  const cps = committees.filter(x => x.type === 'CPS');
-
-  typeChart = new Chart($('#typeChart'), {
-    type: 'bar',
-    data: {
-      labels: ['Contraloría Social','Bienestar y Participación Ciudadana'],
-      datasets: [{ data: [ccs.length,cps.length], backgroundColor: ['#a72861','#6e3f72'], borderRadius: 10, borderSkipped: false }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#eee4e8' } }, x: { grid: { display: false } } }
-    }
-  });
-
-  const municipalities = new Set(ccs.map(x => x.municipality).filter(Boolean)).size;
-  const colonies = new Set(cps.map(x => x.colony).filter(Boolean)).size;
-  territoryChart = new Chart($('#territoryChart'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Municipios con Contraloría Social','Colonias con Bienestar y Participación Ciudadana'],
-      datasets: [{ data: [municipalities,colonies], backgroundColor: ['#a72861','#6e3f72'], borderWidth: 0 }]
-    },
-    options: { cutout: '68%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } } } }
-  });
-
-  const membersCCS = ccs.reduce((sum,x)=>sum+Number(x.members||0),0);
-  const membersCPS = cps.reduce((sum,x)=>sum+Number(x.members||0),0);
-  requestStatusChart = new Chart($('#membersByTypeChart'), {
-    type: 'bar',
-    data: {
-      labels: ['Contraloría Social','Bienestar y Participación Ciudadana'],
-      datasets: [{ data: [membersCCS,membersCPS], backgroundColor: ['#a72861','#6e3f72'], borderRadius: 10, borderSkipped: false }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#eee4e8' } }, x: { grid: { display: false } } }
-    }
-  });
 
   const monthly = new Map();
   committees.forEach(c => {
@@ -714,34 +675,127 @@ function charts() {
     if (!/^\d{4}-\d{2}$/.test(key)) return;
     monthly.set(key, (monthly.get(key) || 0) + 1);
   });
+
   const keys = [...monthly.keys()].sort();
-  let cumulative = 0;
-  const growth = keys.map(key => {
-    cumulative += monthly.get(key);
+  const monthLabel = key => {
     const [y,m] = key.split('-').map(Number);
-    return {
-      label: new Date(y,m-1,1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}),
-      value: cumulative
-    };
+    return new Date(y,m-1,1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'});
+  };
+
+  let cumulative = 0;
+  const cumulativeValues = keys.map(key => {
+    cumulative += monthly.get(key);
+    return cumulative;
   });
 
   requestTrendChart = new Chart($('#committeeGrowthChart'), {
     type: 'line',
     data: {
-      labels: growth.map(x=>x.label),
+      labels: keys.map(monthLabel),
       datasets: [{
         label:'Comités acumulados',
-        data:growth.map(x=>x.value),
+        data:cumulativeValues,
         borderColor:'#6f1238',
         backgroundColor:'rgba(111,18,56,.08)',
         tension:.35,
         fill:true,
-        pointRadius:3
+        pointRadius:3,
+        pointHoverRadius:5
       }]
     },
     options: {
-      plugins: { legend: { display:false } },
-      scales:{ y:{ beginAtZero:true, ticks:{precision:0}, grid:{color:'#eee4e8'} }, x:{grid:{display:false}} }
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true,ticks:{precision:0},grid:{color:'#eee4e8'}},
+        x:{grid:{display:false}}
+      }
+    }
+  });
+
+  const membersByMunicipality = new Map();
+  committees
+    .filter(c => c.type === 'CCS' && c.municipality)
+    .forEach(c => {
+      membersByMunicipality.set(
+        c.municipality,
+        (membersByMunicipality.get(c.municipality) || 0) + Number(c.members || 0)
+      );
+    });
+
+  const municipalityRows = [...membersByMunicipality.entries()]
+    .sort((a,b) => b[1]-a[1]);
+
+  requestStatusChart = new Chart($('#membersMunicipalityChart'), {
+    type:'bar',
+    data:{
+      labels:municipalityRows.map(([name])=>name),
+      datasets:[{
+        label:'Personas integrantes',
+        data:municipalityRows.map(([,value])=>value),
+        backgroundColor:'#a72861',
+        borderRadius:8,
+        borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{beginAtZero:true,ticks:{precision:0},grid:{color:'#eee4e8'}},
+        y:{grid:{display:false}}
+      }
+    }
+  });
+
+  const statusOrder = ['Activo','En seguimiento','Inactivo'];
+  const statusValues = statusOrder.map(status => committees.filter(c => c.status === status).length);
+  const statusLabels = statusOrder.filter((_,i)=>statusValues[i] > 0);
+  const statusData = statusValues.filter(value=>value > 0);
+
+  territoryChart = new Chart($('#statusChart'), {
+    type:'doughnut',
+    data:{
+      labels:statusLabels,
+      datasets:[{
+        data:statusData,
+        backgroundColor:['#a72861','#d8893b','#6e3f72'],
+        borderWidth:0
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      cutout:'68%',
+      plugins:{
+        legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}
+      }
+    }
+  });
+
+  typeChart = new Chart($('#monthlyCreatedChart'), {
+    type:'bar',
+    data:{
+      labels:keys.map(monthLabel),
+      datasets:[{
+        label:'Comités conformados',
+        data:keys.map(key=>monthly.get(key)),
+        backgroundColor:'#6e3f72',
+        borderRadius:8,
+        borderSkipped:false
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        y:{beginAtZero:true,ticks:{precision:0},grid:{color:'#eee4e8'}},
+        x:{grid:{display:false}}
+      }
     }
   });
 }
