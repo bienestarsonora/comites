@@ -196,23 +196,57 @@
       </div>
     </section>
 
-    <section class="section dashboard" id="resultados">
-      <div class="container section-head reveal"><div><span class="section-kicker">Impacto y rendición de cuentas</span><h2>La participación se convierte en resultados verificables.</h2><p>Indicadores calculados con los registros reales de comités, gestiones, acciones, compromisos y expedientes. El tiempo de respuesta mide únicamente la primera respuesta institucional; la duración de una intervención se reporta por separado.</p></div><span class="live-badge"><i class="fa-solid fa-database"></i> Datos en línea</span></div>
-      <div class="container impact-kpi-grid" id="impactKpis">
-        <article><span>Comités activos</span><strong data-impact="active">0</strong><small>Con estatus activo</small></article>
-        <article><span>Gestiones registradas</span><strong data-impact="requests">0</strong><small>Solicitudes y necesidades con seguimiento</small></article>
-        <article><span>Gestiones concluidas</span><strong data-impact="requestsCompletedPct">0%</strong><small>Del total de gestiones registradas</small></article>
-        <article><span>Respuesta institucional</span><strong data-impact="avgResponseDays">—</strong><small>Promedio de solicitud a primera respuesta</small></article>
-        <article><span>Procesos en curso</span><strong data-impact="inProgress">0</strong><small>En gestión, programados o en ejecución</small></article>
-        <article><span>Compromisos cumplidos</span><strong data-impact="commitmentsCompletedPct">0%</strong><small>Del total de compromisos registrados</small></article>
-        <article><span>Acciones de seguimiento</span><strong data-impact="events">0</strong><small>Bitácora pública registrada</small></article>
-        <article><span>Expedientes completos</span><strong data-impact="completeFilesPct">0%</strong><small>Acta constitutiva + lista de asistencia</small></article>
+    <section class="section dashboard public-value-section" id="resultados">
+      <div class="container section-head reveal">
+        <div>
+          <span class="section-kicker">Valor público y transparencia</span>
+          <h2>Información útil para conocer dónde están, quiénes participan y qué puede consultarse.</h2>
+          <p>La numeralia describe el alcance y la información registrada en la plataforma. No califica el desempeño de otras áreas ni establece tiempos de respuesta institucional.</p>
+        </div>
+        <span class="live-badge"><i class="fa-solid fa-database"></i> Datos en línea</span>
       </div>
-      <div class="container impact-chart-grid">
-        <article class="chart-card reveal"><div class="card-head"><h3>Gestiones por estatus</h3><i class="fa-solid fa-gauge-high"></i></div><canvas id="requestStatusChart" height="230"></canvas></article>
-        <article class="chart-card reveal"><div class="card-head"><h3>Gestiones concluidas por mes</h3><i class="fa-solid fa-arrow-trend-up"></i></div><canvas id="requestTrendChart" height="230"></canvas></article>
-        <article class="chart-card reveal"><div class="card-head"><h3>Comités por tipo</h3><i class="fa-solid fa-chart-column"></i></div><canvas id="typeChart" height="230"></canvas></article>
-        <article class="chart-card reveal"><div class="card-head"><h3>Distribución territorial</h3><i class="fa-solid fa-chart-pie"></i></div><canvas id="territoryChart" height="230"></canvas></article>
+
+      <div class="container impact-kpi-grid public-kpi-grid" id="impactKpis">
+        <article><span>Comités activos</span><strong data-impact="active">0</strong><small>Con registro público activo</small></article>
+        <article><span>Gestiones registradas</span><strong data-impact="requests">0</strong><small>Solicitudes y necesidades documentadas</small></article>
+        <article><span>Personas integrantes</span><strong data-impact="members">0</strong><small>Integrantes registrados en comités públicos</small></article>
+        <article><span>Municipios con presencia</span><strong data-impact="municipalities">0</strong><small>Municipios con Contraloría Social</small></article>
+        <article><span>Colonias con presencia</span><strong data-impact="colonies">0</strong><small>Colonias con Bienestar y Participación Ciudadana</small></article>
+        <article><span>Capacitaciones registradas</span><strong data-impact="trainings">0</strong><small>Procesos formativos visibles en la plataforma</small></article>
+        <article><span>Expedientes integrados</span><strong data-impact="completeFiles">0</strong><small>Con acta constitutiva y lista de asistencia</small></article>
+        <article><span>Recursos públicos</span><strong data-impact="resources">0</strong><small>Guías, formatos y documentos de consulta</small></article>
+      </div>
+
+      <div class="container public-value-grid">
+        <article class="public-value-card reveal">
+          <span class="public-value-icon"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i></span>
+          <div>
+            <span class="section-kicker">Cobertura territorial</span>
+            <h3>Ubica la participación en el territorio.</h3>
+            <p>Consulta en el mapa los comités registrados por municipio o colonia y accede a su ficha pública.</p>
+            <a href="#mapa">Explorar mapa <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </article>
+
+        <article class="public-value-card reveal">
+          <span class="public-value-icon"><i class="fa-solid fa-folder-open" aria-hidden="true"></i></span>
+          <div>
+            <span class="section-kicker">Información verificable</span>
+            <h3>Consulta expedientes y recursos disponibles.</h3>
+            <p>La plataforma concentra documentos y evidencia pública para facilitar la consulta y la trazabilidad.</p>
+            <a href="#directorio">Consultar comités <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </article>
+
+        <article class="public-value-card reveal">
+          <span class="public-value-icon"><i class="fa-solid fa-people-group" aria-hidden="true"></i></span>
+          <div>
+            <span class="section-kicker">Participación organizada</span>
+            <h3>Conoce cómo se articula la ciudadanía.</h3>
+            <p>Distingue los dos mecanismos de participación, su alcance y las herramientas disponibles para fortalecerlos.</p>
+            <a href="#tipos">Conocer los comités <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </article>
       </div>
     </section>
 
