@@ -1,0 +1,996 @@
+/* Homologación visual final con portal oficial de Bienestar.
+   Aislado para la preview de Oficialía Mayor. */
+
+html body.public-site-page header.site-header{
+  position:relative!important;
+  z-index:1099!important;
+  display:block!important;
+  width:100%!important;
+  height:92px!important;
+  min-height:92px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  border:0!important;
+  box-shadow:none!important;
+  background-color:#960E53!important;
+  background-image:
+    linear-gradient(rgba(150,14,83,.65),rgba(150,14,83,.65)),
+    linear-gradient(#960E53,#960E53),
+    url('../assets/bk-header.svg')!important;
+  background-position:center,center,top left!important;
+  background-size:cover,cover,cover!important;
+  background-repeat:no-repeat,no-repeat,no-repeat!important;
+  background-blend-mode:normal,multiply,normal!important;
+}
+html body.public-site-page header.site-header::before,
+html body.public-site-page header.site-header::after,
+html body.public-site-page header.site-header .title-image,
+html body.public-site-page header.site-header .header-shell::before,
+html body.public-site-page header.site-header .header-shell::after{
+  display:none!important;content:none!important;background:none!important;
+}
+html body.public-site-page header.site-header .header-shell{
+  box-sizing:border-box!important;
+  position:relative!important;
+  z-index:2!important;
+  width:100%!important;
+  max-width:1320px!important;
+  height:92px!important;
+  min-height:92px!important;
+  margin:0 auto!important;
+  padding:0 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+html body.public-site-page header.site-header .brand{
+  display:inline-flex!important;
+  align-items:center!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  height:71px!important;
+  margin:0!important;
+  padding:0!important;
+  position:static!important;
+}
+html body.public-site-page header.site-header .brand img{
+  display:block!important;
+  position:relative!important;
+  left:5px!important;
+  top:0!important;
+  width:auto!important;
+  height:71px!important;
+  max-width:none!important;
+  max-height:71px!important;
+  margin:0!important;
+  padding:0!important;
+  object-fit:contain!important;
+  filter:invert(83%) sepia(71%) saturate(2%) hue-rotate(13deg) brightness(200%) contrast(100%)!important;
+}
+html body.public-site-page header.site-header #primaryNav{
+  position:static!important;
+  flex:1 1 auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  height:92px!important;
+  margin:0!important;
+  padding:0!important;
+  transform:translateX(-4px)!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html body.public-site-page header.site-header #primaryNav > a,
+html body.public-site-page header.site-header #primaryNav > .gov-menu-item > .gov-menu-trigger{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:76px!important;
+  margin:0!important;
+  padding-left:11.5px!important;
+  padding-right:11.5px!important;
+  color:#fff!important;
+  background:transparent!important;
+  border:0!important;
+  font-family:"Montserrat",sans-serif!important;
+  font-size:.8rem!important;
+  font-weight:700!important;
+  line-height:1!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+}
+html body.public-site-page header.site-header #primaryNav > .gov-menu-item{
+  position:relative!important;
+  height:76px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+html body.public-site-page header.site-header #primaryNav > .gov-menu-item > .gov-menu-trigger i{
+  margin-left:7px!important;
+  font-size:.75rem!important;
+  color:#fff!important;
+  transition:transform .2s ease!important;
+}
+html body.public-site-page header.site-header .gov-dropdown{
+  position:absolute!important;
+  top:calc(100% - 2px)!important;
+  left:0!important;
+  z-index:1200!important;
+  min-width:17rem!important;
+  padding:.75rem!important;
+  margin:0!important;
+  display:block!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  transform:translateY(10px)!important;
+  pointer-events:none!important;
+  background:#fff!important;
+  border-radius:.35rem!important;
+  box-shadow:0 1.25rem 2.5rem rgba(0,0,0,.14),0 .25rem .75rem rgba(0,0,0,.08)!important;
+  transition:opacity .22s ease,transform .22s ease,visibility .22s ease!important;
+}
+html body.public-site-page header.site-header .gov-dropdown a{
+  display:flex!important;
+  align-items:center!important;
+  min-height:48px!important;
+  padding:.55rem .95rem!important;
+  margin:0!important;
+  color:#3b3b3b!important;
+  background:transparent!important;
+  border:1px solid transparent!important;
+  border-radius:.35rem!important;
+  font-family:"Montserrat",sans-serif!important;
+  font-size:.8rem!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+  white-space:normal!important;
+  transition:background-color .16s ease,border-color .16s ease,color .16s ease!important;
+}
+html body.public-site-page header.site-header .gov-dropdown a:hover,
+html body.public-site-page header.site-header .gov-dropdown a:focus-visible{
+  background:rgba(148,112,67,.10)!important;
+  border-color:rgba(148,112,67,.25)!important;
+  color:#000!important;
+}
+html body.public-site-page header.site-header .gov-menu-item:hover > .gov-dropdown,
+html body.public-site-page header.site-header .gov-menu-item:focus-within > .gov-dropdown{
+  visibility:visible!important;opacity:1!important;transform:translateY(0)!important;pointer-events:auto!important;
+}
+html body.public-site-page header.site-header .gov-menu-item:hover > .gov-menu-trigger i,
+html body.public-site-page header.site-header .gov-menu-item:focus-within > .gov-menu-trigger i{
+  transform:rotate(180deg)!important;
+}
+
+/* Navegación secundaria del micrositio */
+html body.public-site-page .section-nav{
+  background:#fff!important;
+  border-bottom:1px solid #e8e8e8!important;
+  box-shadow:0 2px 8px rgba(0,0,0,.04)!important;
+}
+html body.public-site-page .section-nav-inner{
+  width:100%!important;
+  max-width:1320px!important;
+  margin:0 auto!important;
+  min-height:96px!important;
+  height:96px!important;
+  padding:0 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html body.public-site-page .section-nav a,
+html body.public-site-page .section-nav button{
+  min-height:48px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 15px!important;
+  margin:0 2px!important;
+  border:1px solid transparent!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:#383838!important;
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+  cursor:pointer!important;
+}
+html body.public-site-page .section-nav a.active{
+  background:#f4efe9!important;border-color:#d9cbbc!important;color:#222!important;
+}
+html body.public-site-page .section-nav a:hover,
+html body.public-site-page .section-nav a:focus-visible,
+html body.public-site-page .section-nav button:hover,
+html body.public-site-page .section-nav button:focus-visible{
+  background:#f7f7f7!important;color:#222!important;
+}
+html body.public-site-page .section-nav .section-admin{
+  margin-left:8px!important;border-color:#960E53!important;color:#960E53!important;
+}
+
+/* Breadcrumb oficial */
+html body.public-site-page nav.gov-breadcrumb{
+  display:block!important;
+  min-height:40px!important;
+  height:40px!important;
+  margin:0!important;
+  padding:0!important;
+  background:#fff!important;
+  border:0!important;
+  border-bottom:1px solid #ececec!important;
+  box-shadow:none!important;
+}
+html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:1320px!important;
+  height:40px!important;
+  min-height:40px!important;
+  margin:0 auto!important;
+  padding:0 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:0!important;
+  list-style:none!important;
+  font-family:Roboto,Arial,sans-serif!important;
+  font-size:.8rem!important;
+  font-weight:400!important;
+  color:#000!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item{
+  display:flex!important;align-items:center!important;margin:0!important;padding:0!important;color:#000!important;white-space:nowrap!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item + .breadcrumb-item{padding-left:.5rem!important}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item + .breadcrumb-item::before{
+  content:"/"!important;display:block!important;padding-right:.5rem!important;color:rgba(0,0,0,.65)!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item a,
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-item.active{
+  color:#000!important;font-size:.8rem!important;font-weight:400!important;text-decoration:none!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-home a{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;width:1.25em!important;color:#000!important;
+}
+html body.public-site-page nav.gov-breadcrumb .breadcrumb-home i{
+  color:#000!important;font-family:"Font Awesome 6 Free"!important;font-size:13px!important;font-weight:900!important;line-height:1!important;
+}
+
+/* Footer oficial */
+html body.public-site-page footer.official-footer{
+  margin:0!important;padding:0!important;background:#fff!important;color:#111!important;font-family:'Roboto',Arial,sans-serif!important;border:0!important;
+}
+html body.public-site-page footer.official-footer .official-footer-top{
+  background:#fff!important;color:#111!important;min-height:255px!important;padding:0!important;display:flex!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-footer-top-inner{
+  width:calc(100% - 160px)!important;max-width:1288px!important;margin:0 auto!important;padding:0!important;
+  display:grid!important;grid-template-columns:1fr 1.05fr!important;gap:64px!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-contact{
+  border-left:4px solid #111!important;padding-left:10px!important;color:#111!important;font-size:14px!important;line-height:1.5!important;
+}
+html body.public-site-page footer.official-footer .official-contact strong{
+  display:block!important;margin-bottom:8px!important;font-size:17px!important;font-weight:700!important;color:#111!important;
+}
+html body.public-site-page footer.official-footer .official-contact p{margin:2px 0!important;color:#111!important}
+html body.public-site-page footer.official-footer .official-links{text-align:center!important;font-size:14px!important;color:#111!important}
+html body.public-site-page footer.official-footer .official-social-text{
+  display:flex!important;justify-content:center!important;align-items:center!important;gap:6px!important;margin-bottom:14px!important;font-size:16px!important;
+}
+html body.public-site-page footer.official-footer .official-social-text .social-link{
+  display:inline-flex!important;align-items:center!important;gap:6px!important;color:#111!important;text-decoration:none!important;width:auto!important;padding:0!important;
+}
+html body.public-site-page footer.official-footer .official-social-text .social-brand{
+  width:25px!important;height:25px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;color:#9b7642!important;font-size:24px!important;line-height:1!important;
+}
+html body.public-site-page footer.official-footer .official-links nav{
+  display:flex!important;justify-content:center!important;flex-wrap:wrap!important;gap:10px 36px!important;margin-bottom:8px!important;
+}
+html body.public-site-page footer.official-footer .official-links nav a{
+  display:inline!important;width:auto!important;padding:0!important;color:#111!important;font-weight:700!important;text-decoration:none!important;
+}
+html body.public-site-page footer.official-footer .official-links p{margin:0!important;color:#111!important;font-size:14px!important;line-height:1.5!important}
+html body.public-site-page footer.official-footer .official-footer-bottom{
+  min-height:220px!important;background:#5A002B!important;color:#fff!important;padding:0!important;display:flex!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-footer-bottom-inner{
+  width:calc(100% - 160px)!important;max-width:1288px!important;margin:0 auto!important;padding:0!important;
+  display:grid!important;grid-template-columns:1.05fr 1.65fr 1.05fr .82fr!important;gap:34px!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-sonora-brand img{
+  display:block!important;width:185px!important;max-width:100%!important;height:auto!important;
+}
+html body.public-site-page footer.official-footer .official-pattern{
+  display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;
+}
+html body.public-site-page footer.official-footer .official-pattern img{
+  display:block!important;width:370px!important;max-width:100%!important;height:auto!important;opacity:1!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons{
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:14px!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row{
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:30px!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row a{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;width:38px!important;height:38px!important;
+  padding:0!important;margin:0!important;color:#fff!important;text-decoration:none!important;background:transparent!important;border:0!important;
+  line-height:64px!important;transition:.3s all ease-in-out!important;transform-origin:50% 50%!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row a:hover{
+  transform:scale(1.2)!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row a i{
+  font-size:31px!important;line-height:1!important;color:#fff!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons .icon-row .x-official{
+  display:inline-block!important;font-family:Arial,Helvetica,sans-serif!important;font-size:31px!important;font-weight:700!important;line-height:1!important;color:#fff!important;
+}
+html body.public-site-page footer.official-footer .official-social-icons strong{font-size:18px!important;color:#fff!important}
+html body.public-site-page footer.official-footer .official-911{
+  display:flex!important;justify-content:flex-end!important;align-items:center!important;
+}
+html body.public-site-page footer.official-footer .official-911 img{
+  display:block!important;width:165px!important;max-width:100%!important;height:auto!important;
+}
+
+@media (max-width:1399.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:1140px!important}
+}
+@media (max-width:1199.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:960px!important}
+}
+@media (max-width:991.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:720px!important}
+  html body.public-site-page header.site-header #primaryNav{
+    position:absolute!important;top:92px!important;left:0!important;right:0!important;height:auto!important;
+    display:none!important;flex-direction:column!important;align-items:stretch!important;transform:none!important;
+    padding:12px 18px!important;background:#fff!important;box-shadow:0 8px 18px rgba(0,0,0,.12)!important;
+  }
+  html body.public-site-page header.site-header #primaryNav.open{display:flex!important}
+  html body.public-site-page header.site-header #primaryNav > a,
+  html body.public-site-page header.site-header #primaryNav > .gov-menu-item > .gov-menu-trigger{
+    width:100%!important;height:auto!important;min-height:48px!important;justify-content:flex-start!important;color:#333!important;
+  }
+  html body.public-site-page header.site-header #primaryNav > .gov-menu-item{height:auto!important;display:block!important}
+  html body.public-site-page header.site-header .gov-dropdown{
+    position:static!important;min-width:0!important;box-shadow:none!important;transform:none!important;
+  }
+  html body.public-site-page .menu-toggle{display:grid!important;color:#fff!important;z-index:4!important}
+}
+@media (max-width:767.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:540px!important}
+}
+@media (max-width:575.98px){
+  html body.public-site-page header.site-header .header-shell,
+  html body.public-site-page .section-nav-inner,
+  html body.public-site-page nav.gov-breadcrumb .gov-breadcrumb-inner{max-width:100%!important}
+  html body.public-site-page header.site-header .brand,
+  html body.public-site-page header.site-header .brand img{height:3.5rem!important;max-height:3.5rem!important}
+}
+@media(max-width:900px){
+  html body.public-site-page .section-nav-inner{
+    height:auto!important;min-height:auto!important;justify-content:flex-start!important;overflow-x:auto!important;padding:12px 15px!important;
+  }
+  html body.public-site-page .section-nav a,
+  html body.public-site-page .section-nav button{white-space:nowrap!important}
+  html body.public-site-page footer.official-footer .official-footer-top,
+  html body.public-site-page footer.official-footer .official-footer-bottom{padding:36px 0!important}
+  html body.public-site-page footer.official-footer .official-footer-top-inner,
+  html body.public-site-page footer.official-footer .official-footer-bottom-inner{
+    width:calc(100% - 36px)!important;grid-template-columns:1fr!important;gap:28px!important;
+  }
+  html body.public-site-page footer.official-footer .official-links{text-align:left!important}
+  html body.public-site-page footer.official-footer .official-social-text,
+  html body.public-site-page footer.official-footer .official-links nav{justify-content:flex-start!important}
+  html body.public-site-page footer.official-footer .official-pattern{display:none!important}
+  html body.public-site-page footer.official-footer .official-social-icons{align-items:flex-start!important}
+  html body.public-site-page footer.official-footer .official-911{justify-content:flex-start!important}
+}
+
+
+/* Ajuste visual: Herramientas y aprendizaje en fondo blanco */
+html body.public-site-page .tools-section{
+  background:#fff!important;
+  color:#222!important;
+}
+html body.public-site-page .tools-section .split-heading h2{
+  color:#222!important;
+}
+html body.public-site-page .tools-section .split-heading p{
+  color:#555!important;
+}
+html body.public-site-page .tools-section .section-kicker,
+html body.public-site-page .tools-section .tool-card > span{
+  color:#960E53!important;
+}
+html body.public-site-page .tools-section .tool-card{
+  background:#fff!important;
+  border:1px solid #e2e2e2!important;
+  box-shadow:none!important;
+}
+html body.public-site-page .tools-section .tool-card h3{
+  color:#222!important;
+}
+html body.public-site-page .tools-section .tool-card p{
+  color:#555!important;
+}
+html body.public-site-page .tools-section .tool-card a{
+  color:#960E53!important;
+}
+html body.public-site-page .tools-section .tool-card a:hover{
+  color:#410324!important;
+}
+html body.public-site-page .tools-section .tool-icon{
+  background:#f6f1f3!important;
+  color:#410324!important;
+}
+html body.public-site-page .tools-section .resource-panel{
+  background:#fff!important;
+  color:#222!important;
+  border:1px solid #e2e2e2!important;
+  box-shadow:none!important;
+}
+html body.public-site-page .tools-section .resource-panel h3,
+html body.public-site-page .tools-section .resource-panel #resourceCount{
+  color:#222!important;
+}
+html body.public-site-page .tools-section .resource-panel .section-kicker{
+  color:#960E53!important;
+}
+html body.public-site-page .tools-section .resource-empty,
+html body.public-site-page .tools-section .resource-shown-count{
+  color:#666!important;
+}
+
+/* El atributo hidden siempre manda: evita mostrar "Mostrar más" sin recursos */
+html body.public-site-page #showMoreResources[hidden]{
+  display:none!important;
+}
+html body.public-site-page .resource-more-wrap:has(#showMoreResources[hidden]) #resourceShownCount:empty{
+  display:none!important;
+}
+
+
+/* =========================================================
+   CALIBRACIÓN TIPOGRÁFICA Y DE COMPONENTES
+   Basada en estilos efectivos del portal oficial Bienestar
+   ========================================================= */
+
+/* Base tipográfica oficial */
+html body.public-site-page{
+  font-family:'Roboto',Arial,sans-serif!important;
+  font-size:16px!important;
+  font-weight:400!important;
+  line-height:1.56!important;
+  color:#333!important;
+  text-decoration:none!important;
+}
+
+html body.public-site-page p,
+html body.public-site-page li,
+html body.public-site-page label,
+html body.public-site-page input,
+html body.public-site-page select,
+html body.public-site-page textarea,
+html body.public-site-page button,
+html body.public-site-page small{
+  font-family:'Roboto',Arial,sans-serif!important;
+}
+
+/* Encabezados: Montserrat y ritmo vertical institucional */
+html body.public-site-page h1,
+html body.public-site-page h2,
+html body.public-site-page h3,
+html body.public-site-page h4,
+html body.public-site-page h5,
+html body.public-site-page h6{
+  font-family:'Montserrat',Arial,sans-serif!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  margin-top:0!important;
+}
+
+html body.public-site-page h1,
+html body.public-site-page .hero h1{
+  font-size:2rem!important;
+  font-weight:800!important;
+}
+
+html body.public-site-page h2{
+  font-size:1.8rem!important;
+  font-weight:700!important;
+}
+
+html body.public-site-page h3{
+  font-size:1.6rem!important;
+  font-weight:700!important;
+}
+
+html body.public-site-page h4{
+  font-size:1.4rem!important;
+  font-weight:600!important;
+}
+
+html body.public-site-page h5{
+  font-size:1.2rem!important;
+  font-weight:600!important;
+}
+
+/* Botones: geometría base del portal oficial */
+html body.public-site-page .btn{
+  font-family:'Roboto',Arial,sans-serif!important;
+  font-size:16px!important;
+  font-weight:500!important;
+  line-height:1.25!important;
+  padding:8px 12px!important;
+  min-height:40px!important;
+  border-radius:4px!important;
+  box-shadow:none!important;
+  transform:none!important;
+  transition:background-color .15s ease-in-out,border-color .15s ease-in-out,color .15s ease-in-out!important;
+}
+
+/* Textos auxiliares y etiquetas */
+html body.public-site-page .eyebrow,
+html body.public-site-page .section-kicker{
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:.75rem!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  letter-spacing:.08em!important;
+}
+
+html body.public-site-page .section-head p,
+html body.public-site-page .split-heading p,
+html body.public-site-page .hero p,
+html body.public-site-page .tool-card p,
+html body.public-site-page .type-card p{
+  line-height:1.56!important;
+}
+
+/* Inputs coherentes con la base oficial */
+html body.public-site-page input,
+html body.public-site-page select,
+html body.public-site-page textarea{
+  font-size:16px!important;
+  line-height:1.25!important;
+  border-radius:4px!important;
+}
+
+/* Responsive del portal oficial */
+@media (min-width:768px) and (max-width:991px){
+  html body.public-site-page{font-size:14px!important}
+}
+@media (max-width:767px){
+  html body.public-site-page{font-size:13px!important}
+}
+
+/* Accesibilidad: hidden siempre debe ocultar */
+html body.public-site-page [hidden]{
+  display:none!important;
+}
+
+
+/* Participación y contacto en fondo blanco, alineado al portal oficial */
+html body.public-site-page .participate{
+  background:#fff!important;
+}
+html body.public-site-page .participate-card{
+  background:#fff!important;
+  color:#222!important;
+  border:1px solid #e2e2e2!important;
+  box-shadow:none!important;
+}
+html body.public-site-page .participate-card h2,
+html body.public-site-page .participate-card p,
+html body.public-site-page .participate-card li,
+html body.public-site-page .participate-card label,
+html body.public-site-page .participate-card small{
+  color:#333!important;
+}
+html body.public-site-page .participate-card .section-kicker{
+  color:#960E53!important;
+}
+html body.public-site-page .participate-card li i{
+  color:#960E53!important;
+}
+html body.public-site-page .participate-card form{
+  color:#333!important;
+}
+html body.public-site-page .participate-card input,
+html body.public-site-page .participate-card select,
+html body.public-site-page .participate-card textarea{
+  background:#fff!important;
+  color:#333!important;
+  border:1px solid #999!important;
+}
+html body.public-site-page .participate-card .btn-light{
+  background:#960E53!important;
+  border-color:#960E53!important;
+  color:#fff!important;
+}
+html body.public-site-page .participate-card .btn-light:hover{
+  background:#7c0c45!important;
+  border-color:#7c0c45!important;
+}
+
+
+/* Hero institucional simplificado para Comités */
+html body.public-site-page .hero{
+  background:#fff!important;
+  padding-top:72px!important;
+  padding-bottom:72px!important;
+}
+
+html body.public-site-page .hero .hero-grid{
+  display:grid!important;
+  grid-template-columns:1.08fr .92fr!important;
+  gap:64px!important;
+  align-items:center!important;
+}
+
+html body.public-site-page .hero .hero-copy{
+  max-width:720px!important;
+}
+
+html body.public-site-page .hero .eyebrow{
+  color:#960E53!important;
+  font-size:.8rem!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+  margin-bottom:14px!important;
+}
+
+html body.public-site-page .hero h1{
+  color:#222!important;
+  font-size:2.45rem!important;
+  font-weight:800!important;
+  line-height:1.12!important;
+  margin:0 0 18px!important;
+  max-width:690px!important;
+}
+
+html body.public-site-page .hero p{
+  color:#555!important;
+  font-size:1rem!important;
+  line-height:1.56!important;
+  max-width:680px!important;
+}
+
+html body.public-site-page .hero .hero-actions{
+  display:flex!important;
+  gap:12px!important;
+  margin:28px 0 22px!important;
+}
+
+html body.public-site-page .hero .trust-row{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:16px!important;
+  color:#666!important;
+  font-size:.82rem!important;
+  font-weight:500!important;
+}
+
+html body.public-site-page .hero .hero-visual{
+  min-height:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+html body.public-site-page .hero-summary-card{
+  width:100%!important;
+  max-width:520px!important;
+  min-height:390px!important;
+  padding:38px 40px!important;
+  background:#fff!important;
+  border:1px solid #eadde3!important;
+  border-radius:8px!important;
+  box-shadow:0 18px 48px rgba(65,3,36,.10)!important;
+  color:#222!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+
+html body.public-site-page .hero-summary-kicker{
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:.8rem!important;
+  font-weight:600!important;
+  line-height:1.25!important;
+  color:#666!important;
+  margin-bottom:14px!important;
+}
+
+html body.public-site-page .hero-summary-number{
+  display:block!important;
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:4.4rem!important;
+  font-weight:800!important;
+  line-height:1!important;
+  color:#410324!important;
+  margin-bottom:10px!important;
+}
+
+html body.public-site-page .hero-summary-label{
+  display:block!important;
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:1.2rem!important;
+  font-weight:700!important;
+  line-height:1.25!important;
+  color:#333!important;
+  margin-bottom:12px!important;
+}
+
+html body.public-site-page .hero-summary-card > p{
+  margin:0 0 28px!important;
+  color:#666!important;
+  font-size:.95rem!important;
+}
+
+html body.public-site-page .hero-summary-meta{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:14px!important;
+  padding-top:22px!important;
+  border-top:1px solid #ececec!important;
+}
+
+html body.public-site-page .hero-summary-meta > div{
+  display:grid!important;
+  grid-template-columns:auto 1fr!important;
+  column-gap:10px!important;
+  row-gap:2px!important;
+  align-items:center!important;
+}
+
+html body.public-site-page .hero-summary-meta i{
+  grid-row:1/3!important;
+  width:34px!important;
+  height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:4px!important;
+  background:#f6f1f3!important;
+  color:#960E53!important;
+  font-size:14px!important;
+}
+
+html body.public-site-page .hero-summary-meta span{
+  color:#777!important;
+  font-size:.72rem!important;
+  line-height:1.2!important;
+}
+
+html body.public-site-page .hero-summary-meta strong{
+  color:#333!important;
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:.78rem!important;
+  font-weight:600!important;
+  line-height:1.25!important;
+}
+
+@media(max-width:900px){
+  html body.public-site-page .hero .hero-grid{
+    grid-template-columns:1fr!important;
+    gap:36px!important;
+  }
+  html body.public-site-page .hero-summary-card{
+    max-width:none!important;
+    min-height:auto!important;
+  }
+}
+
+@media(max-width:600px){
+  html body.public-site-page .hero{
+    padding-top:48px!important;
+    padding-bottom:48px!important;
+  }
+  html body.public-site-page .hero h1{
+    font-size:2rem!important;
+  }
+  html body.public-site-page .hero-summary-card{
+    padding:28px 24px!important;
+  }
+  html body.public-site-page .hero-summary-number{
+    font-size:3.5rem!important;
+  }
+  html body.public-site-page .hero-summary-meta{
+    grid-template-columns:1fr!important;
+  }
+}
+
+
+/* Valor público: sustituye gráficas por información útil y verificable */
+html body.public-site-page .public-value-section{
+  background:#fff!important;
+}
+
+html body.public-site-page .public-kpi-grid{
+  margin-bottom:28px!important;
+}
+
+html body.public-site-page .public-value-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+
+html body.public-site-page .public-value-card{
+  display:grid!important;
+  grid-template-columns:auto 1fr!important;
+  gap:18px!important;
+  align-items:start!important;
+  padding:28px!important;
+  background:#fff!important;
+  border:1px solid #dedede!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+}
+
+html body.public-site-page .public-value-icon{
+  width:46px!important;
+  height:46px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:5px!important;
+  background:#f5eef2!important;
+  color:#410324!important;
+  font-size:20px!important;
+}
+
+html body.public-site-page .public-value-card .section-kicker{
+  color:#960E53!important;
+  margin-bottom:8px!important;
+}
+
+html body.public-site-page .public-value-card h3{
+  color:#222!important;
+  font-size:1.2rem!important;
+  font-weight:700!important;
+  line-height:1.3!important;
+  margin:0 0 10px!important;
+}
+
+html body.public-site-page .public-value-card p{
+  color:#555!important;
+  font-size:.95rem!important;
+  line-height:1.56!important;
+  margin:0 0 16px!important;
+}
+
+html body.public-site-page .public-value-card a{
+  color:#960E53!important;
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:.82rem!important;
+  font-weight:600!important;
+  text-decoration:none!important;
+}
+
+html body.public-site-page .public-value-card a:hover{
+  color:#410324!important;
+  text-decoration:underline!important;
+}
+
+@media(max-width:900px){
+  html body.public-site-page .public-value-grid{
+    grid-template-columns:1fr!important;
+  }
+}
+
+
+/* Gráficas públicas: dimensiones estables y acotadas */
+html body.public-site-page .impact-chart-grid{
+  align-items:stretch!important;
+}
+html body.public-site-page .impact-chart-grid .chart-card{
+  min-height:0!important;
+  height:360px!important;
+  padding:24px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+html body.public-site-page .impact-chart-grid .card-head{
+  flex:0 0 auto!important;
+  min-height:42px!important;
+  margin-bottom:12px!important;
+}
+html body.public-site-page .impact-chart-grid .card-head h3{
+  margin:0!important;
+  font-size:1.15rem!important;
+  line-height:1.25!important;
+}
+html body.public-site-page .impact-chart-grid .chart-viewport{
+  position:relative!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:270px!important;
+  width:100%!important;
+  overflow:hidden!important;
+}
+html body.public-site-page .impact-chart-grid .chart-viewport canvas{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:270px!important;
+}
+@media(max-width:900px){
+  html body.public-site-page .impact-chart-grid .chart-card{
+    height:340px!important;
+  }
+  html body.public-site-page .impact-chart-grid .chart-viewport{
+    height:250px!important;
+  }
+}
+
+
+/* Numeralia pública: cinco indicadores en una sola fila amplia */
+@media (min-width:1100px){
+  html body.public-site-page .public-kpi-grid{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  }
+}
+
+/* Dashboard público: tres visualizaciones no redundantes */
+@media(min-width:1100px){
+  html body.public-site-page .impact-chart-grid-3{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:1099px){
+  html body.public-site-page .impact-chart-grid-3{
+    grid-template-columns:1fr!important;
+  }
+}
+
+
+/* Oficialía v28 · composición demográfica CCS */
+#resultados .ccs-demographic-card{grid-column:1/-1;overflow:hidden}
+#resultados .ccs-demographic-head{align-items:flex-start}
+#resultados .ccs-demographic-head small{display:block;margin-top:4px;color:#75656d;font-size:11px}
+#resultados .ccs-demographic-layout{display:grid;grid-template-columns:minmax(260px,.82fr) minmax(320px,1.18fr);gap:36px;align-items:center;min-height:310px;padding-top:8px}
+#resultados .ccs-demographic-chart{height:290px;position:relative}
+#resultados .ccs-demographic-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#resultados .ccs-demographic-total{grid-column:1/-1;padding:18px 20px;border-radius:16px;background:#f8f5f2;border:1px solid rgba(75,24,48,.12)}
+#resultados .ccs-demographic-total span,#resultados .ccs-demographic-total strong,#resultados .ccs-demographic-total small{display:block}
+#resultados .ccs-demographic-total>span{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#75656d}
+#resultados .ccs-demographic-total strong{font:800 35px/1.1 Montserrat,sans-serif;color:#4b1830;margin:5px 0}
+#resultados .ccs-demographic-total small{font-size:11px;color:#75656d}
+#resultados .ccs-demographic-stat{display:grid;grid-template-columns:12px 1fr auto;gap:8px 10px;align-items:center;padding:16px;border-radius:16px;border:1px solid rgba(75,24,48,.12);background:#fff}
+#resultados .ccs-sex-dot{width:10px;height:10px;border-radius:50%;grid-row:1/3}
+#resultados .ccs-sex-dot.women{background:#8b174b}
+#resultados .ccs-sex-dot.men{background:#b38a4a}
+#resultados .ccs-demographic-stat>span:not(.ccs-sex-dot){font-size:11px;font-weight:800;color:#33252c}
+#resultados .ccs-demographic-stat strong{font:800 24px/1 Montserrat,sans-serif;color:#4b1830}
+#resultados .ccs-demographic-stat small{grid-column:2/4;font-size:11px;color:#75656d}
+#resultados .ccs-demographic-source{grid-column:1/-1;margin:2px 0 0;padding-top:12px;border-top:1px solid rgba(75,24,48,.12);font-size:10px;line-height:1.6;color:#75656d}
+#resultados .ccs-demographic-source i{color:#8b174b;margin-right:5px}
+@media(max-width:900px){#resultados .ccs-demographic-layout{grid-template-columns:1fr}#resultados .ccs-demographic-chart{height:270px}}
+@media(max-width:560px){#resultados .ccs-demographic-summary{grid-template-columns:1fr}#resultados .ccs-demographic-total,#resultados .ccs-demographic-source{grid-column:auto}#resultados .ccs-demographic-chart{height:245px}}
