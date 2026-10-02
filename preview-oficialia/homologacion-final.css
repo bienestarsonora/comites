@@ -824,3 +824,81 @@ html body.public-site-page .hero-summary-meta strong{
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* Valor público: sustituye gráficas por información útil y verificable */
+html body.public-site-page .public-value-section{
+  background:#fff!important;
+}
+
+html body.public-site-page .public-kpi-grid{
+  margin-bottom:28px!important;
+}
+
+html body.public-site-page .public-value-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:16px!important;
+}
+
+html body.public-site-page .public-value-card{
+  display:grid!important;
+  grid-template-columns:auto 1fr!important;
+  gap:18px!important;
+  align-items:start!important;
+  padding:28px!important;
+  background:#fff!important;
+  border:1px solid #dedede!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+}
+
+html body.public-site-page .public-value-icon{
+  width:46px!important;
+  height:46px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:5px!important;
+  background:#f5eef2!important;
+  color:#410324!important;
+  font-size:20px!important;
+}
+
+html body.public-site-page .public-value-card .section-kicker{
+  color:#960E53!important;
+  margin-bottom:8px!important;
+}
+
+html body.public-site-page .public-value-card h3{
+  color:#222!important;
+  font-size:1.2rem!important;
+  font-weight:700!important;
+  line-height:1.3!important;
+  margin:0 0 10px!important;
+}
+
+html body.public-site-page .public-value-card p{
+  color:#555!important;
+  font-size:.95rem!important;
+  line-height:1.56!important;
+  margin:0 0 16px!important;
+}
+
+html body.public-site-page .public-value-card a{
+  color:#960E53!important;
+  font-family:'Montserrat',Arial,sans-serif!important;
+  font-size:.82rem!important;
+  font-weight:600!important;
+  text-decoration:none!important;
+}
+
+html body.public-site-page .public-value-card a:hover{
+  color:#410324!important;
+  text-decoration:underline!important;
+}
+
+@media(max-width:900px){
+  html body.public-site-page .public-value-grid{
+    grid-template-columns:1fr!important;
+  }
+}
