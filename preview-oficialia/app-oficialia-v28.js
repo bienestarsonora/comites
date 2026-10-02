@@ -295,7 +295,7 @@ async function loadPublicData() {
     publicCommitments = [];
     publicManagements = [];
     siteContent = structuredClone(DEFAULT_CONTENT);
-    setConnectionBanner('La plataforma está en modo local hasta completar la conexión de Supabase.', 'warning');
+    setConnectionBanner('La plataforma está temporalmente en modo local mientras se restablece la conexión de datos.', 'warning');
     try { refreshPublic(); } catch (error) { console.error('Render local:', error); }
     return;
   }
@@ -1035,7 +1035,7 @@ function isAdmin() { return currentProfile?.active && currentProfile.role === 'a
 
 async function openAdmin() {
   if (!db) {
-    toast('Primero debe configurarse la conexión con Supabase.', 'error');
+    toast('Primero debe configurarse la conexión institucional de datos.', 'error');
     return;
   }
   await getSessionAndProfile();
@@ -1217,7 +1217,7 @@ async function saveManagement(event) {
   const id=$('#managementId').value;
   const payload={ committee_id:$('#managementCommittee').value, category:$('#managementCategory').value.trim(), title:$('#managementTitle').value.trim(), description:$('#managementDescription').value.trim(), responsible_agency:$('#managementAgency').value.trim(), request_date:$('#managementRequestDate').value, first_response_date:$('#managementResponseDate').value||null, start_date:$('#managementStartDate').value||null, completion_date:$('#managementCompletionDate').value||null, status:$('#managementStatus').value, beneficiaries:Number($('#managementBeneficiaries').value||0), activities_count:Number($('#managementActivities').value||0), reference:$('#managementReference').value.trim(), result:$('#managementResult').value.trim(), public:$('#managementPublic').checked, updated_by:currentSession.user.id };
   const result=id ? await db.from('committee_requests').update(payload).eq('id',id) : await db.from('committee_requests').insert({...payload,created_by:currentSession.user.id});
-  if (result.error) { console.error(result.error); toast('No se pudo guardar la gestión. Ejecuta el supabase.sql de esta versión.', 'error'); return; }
+  if (result.error) { console.error(result.error); toast('No se pudo guardar la gestión. Verifica la configuración de la base de datos institucional.', 'error'); return; }
   closeLayer('#managementModal'); toast(id?'Gestión actualizada.':'Gestión registrada.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('gestiones');
 }
 
@@ -1298,7 +1298,7 @@ async function saveAction(event) {
     const payload = { committee_id:$('#actionCommittee').value, event_type:$('#eventType').value, event_date:$('#eventDate').value, title:$('#actionTitle').value.trim(), description:$('#actionDescription').value.trim(), public:$('#actionPublic').checked, updated_by:currentSession.user.id };
     result = id ? await db.from('committee_events').update(payload).eq('id',id) : await db.from('committee_events').insert({...payload,created_by:currentSession.user.id});
   }
-  if (result.error) { console.error(result.error); toast('No se pudo guardar el registro. Ejecuta el supabase.sql de la versión instalada si aún no lo has hecho.', 'error'); return; }
+  if (result.error) { console.error(result.error); toast('No se pudo guardar el registro. Verifica la configuración de la base de datos institucional.', 'error'); return; }
   closeLayer('#actionModal'); toast(id?'Registro actualizado.':'Registro creado.'); await Promise.all([loadPublicData(),loadAdminData()]); setAdminTab('acciones');
 }
 
@@ -1444,7 +1444,7 @@ function renderCommitteeCoreDocsStatus(committeeId = '') {
   wrap.innerHTML = `
     <div class="core-existing-title">
       <div><strong>Archivos actualmente registrados</strong><span class="expedient-total"><b>${docs.length}</b> ${docs.length === 1 ? 'archivo registrado' : 'archivos registrados'} en total</span></div>
-      <span>La visibilidad de cada archivo se guarda al instante en Supabase. El botón “Guardar comité” no es necesario para este cambio.</span>
+      <span>La visibilidad de cada archivo se guarda al instante. El botón “Guardar comité” no es necesario para este cambio.</span>
     </div>
     <div class="core-existing-grid">${coreCard(acta,'Acta constitutiva','fa-file-signature')}${coreCard(attendance,'Lista de asistencia','fa-list-check')}</div>
     ${extrasHtml}
@@ -1525,14 +1525,14 @@ async function setDocumentVisibility(documentId, nextPublic) {
 
   if (error) {
     console.error('set_document_visibility:', error);
-    toast(`No se pudo guardar la visibilidad: ${error.message || 'error de Supabase'}`, 'error');
+    toast(`No se pudo guardar la visibilidad: ${error.message || 'error del sistema'}`, 'error');
     return false;
   }
 
   const saved = Array.isArray(data) ? data[0] : data;
   if (!saved || Boolean(saved.public) !== Boolean(nextPublic)) {
     console.error('Respuesta inesperada al guardar visibilidad:', data);
-    toast('Supabase no confirmó el cambio de visibilidad.', 'error');
+    toast('El sistema no confirmó el cambio de visibilidad.', 'error');
     return false;
   }
 
@@ -1540,8 +1540,8 @@ async function setDocumentVisibility(documentId, nextPublic) {
   const committeeId = $('#committeeId')?.value || doc.committee_id;
 
   toast(doc.public
-    ? 'Guardado en Supabase: archivo público.'
-    : 'Guardado en Supabase: archivo no público.');
+    ? 'Guardado: archivo público.'
+    : 'Guardado: archivo no público.');
 
   await Promise.all([loadPublicData(), loadAdminData()]);
   if (committeeId) renderCommitteeCoreDocsStatus(committeeId);
@@ -1579,7 +1579,7 @@ async function setCommitteeEvidenceVisibility(committeeId, makePublic) {
 
   if (error) {
     console.error('set_committee_evidence_visibility:', error);
-    toast(`No se pudo guardar la visibilidad: ${error.message || 'error de Supabase'}`, 'error');
+    toast(`No se pudo guardar la visibilidad: ${error.message || 'error del sistema'}`, 'error');
     return;
   }
 
