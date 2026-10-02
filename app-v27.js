@@ -772,7 +772,7 @@ function renderImpactDashboard() {
   };
 
   Object.entries(values).forEach(([key,value]) => {
-    $('[data-impact="' + key + '"]').forEach(el => {
+    $$('[data-impact="' + key + '"]').forEach(el => {
       el.textContent = Number(value || 0).toLocaleString('es-MX');
     });
   });
