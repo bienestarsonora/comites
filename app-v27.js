@@ -664,7 +664,7 @@ async function showDetail(id) {
 }
 
 function charts() {
-  const required = ['#committeeGrowthChart','#committeeSizeChart','#statusChart','#monthlyCreatedChart'];
+  const required = ['#committeeGrowthChart','#committeeSizeChart','#programChart'];
   if (required.some(selector => !$(selector))) return;
   if (typeof Chart === 'undefined') {
     console.error('Chart.js no está disponible.');
@@ -755,17 +755,21 @@ function charts() {
     }
   });
 
-  const statusOrder = ['Activo','En seguimiento','Inactivo'];
-  const statusPairs = statusOrder
-    .map(status => [status, committees.filter(c => c.status === status).length])
-    .filter(([,count]) => count > 0);
+  const programCounts = new Map();
+  committees
+    .filter(c => c.type === 'CCS' && String(c.program || '').trim())
+    .forEach(c => {
+      const program = String(c.program).trim();
+      programCounts.set(program, (programCounts.get(program) || 0) + 1);
+    });
+  const programRows = [...programCounts.entries()].sort((a,b)=>b[1]-a[1]);
 
-  territoryChart = new Chart($('#statusChart'), {
+  territoryChart = new Chart($('#programChart'), {
     type:'doughnut',
     data:{
-      labels:statusPairs.map(([status])=>status),
+      labels:programRows.map(([program])=>program),
       datasets:[{
-        data:statusPairs.map(([,count])=>count),
+        data:programRows.map(([,count])=>count),
         backgroundColor:['#960E53','#410324','#947043'],
         borderWidth:0
       }]
@@ -774,29 +778,11 @@ function charts() {
       responsive:true,
       maintainAspectRatio:false,
       cutout:'68%',
-      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}}
-    }
-  });
-
-  typeChart = new Chart($('#monthlyCreatedChart'), {
-    type:'bar',
-    data:{
-      labels:keys.map(monthLabel),
-      datasets:[{
-        label:'Comités conformados',
-        data:keys.map(key=>monthly.get(key)),
-        backgroundColor:'#960E53',
-        borderRadius:8,
-        borderSkipped:false
-      }]
-    },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        y:{beginAtZero:true,ticks:{precision:0},grid:{color:'#eee4e8'}},
-        x:{grid:{display:false}}
+      plugins:{
+        legend:{
+          position:'bottom',
+          labels:{usePointStyle:true,padding:16}
+        }
       }
     }
   });
