@@ -40,3 +40,15 @@ Si falla cualquiera de estos controles, la gráfica no se construye y se registr
 - Se crea `homologacion-v28.css`.
 - Se crea `data/ccs-demographics-2026.json`.
 - `preview-oficialia/index.html` apunta únicamente a los activos v28 de este entorno.
+
+
+## Revisión de homologación visual · 2 de octubre de 2026
+
+Se eliminó el diseño especial de la gráfica demográfica para homologarla con las visualizaciones existentes del tablero público.
+
+- Las cuatro visualizaciones usan la misma clase `chart-card`.
+- Las cuatro usan `chart-viewport` y comparten altura, padding y encabezado.
+- El tablero se presenta en retícula 2 × 2 en escritorio y una columna en pantallas menores.
+- La composición por sexo se representa como gráfica de dona, consistente con Chart.js ya utilizado por la plataforma.
+- La leyenda muestra cantidad y porcentaje: Mujeres 227 (90.8%) y Hombres 23 (9.2%).
+- Se corrigió la inicialización para ejecutar `loadCcsDemographics()` antes de `loadPublicData()`; esto elimina los valores vacíos observados en la primera versión visual.
