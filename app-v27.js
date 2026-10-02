@@ -766,7 +766,7 @@ function charts() {
     data:{
       labels:keys.map(monthLabel),
       datasets:[{
-        label:'Personas incorporadas',
+        label:'Integrantes de comités conformados',
         data:keys.map(key=>monthlyMembers.get(key) || 0),
         backgroundColor:'#947043',
         hoverBackgroundColor:'#410324',
