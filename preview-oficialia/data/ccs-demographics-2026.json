@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "dataset": "Comités de Contraloría Social 2026",
+  "source": "Secretaría de Bienestar del Estado de Sonora · Dirección General de Participación Social",
+  "source_file": "CONTROL Y SEGUIMIENTO - COMITÉS DE CONTRALORÍA SOCIAL 2026 (3).xlsx",
+  "cutoff_date": "2026-10-02",
+  "committees": 35,
+  "members_total": 250,
+  "women": 227,
+  "men": 23,
+  "validation": {
+    "women_plus_men_equals_total": true,
+    "unclassified": 0,
+    "double_marked": 0
+  },
+  "notes": "Consolidado institucional validado después de depurar el registro duplicado de Bacanora en la plataforma."
+}
