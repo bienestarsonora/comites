@@ -667,8 +667,37 @@ function charts() {
 
 function renderImpactDashboard() {
   const stats = impactStats();
-  const values = { active: stats.active, requests: stats.requests, requestsCompletedPct: `${stats.requestsCompletedPct}%`, avgResponseDays: stats.avgResponseDays == null ? '—' : `${stats.avgResponseDays} días`, inProgress: stats.inProgress, commitmentsCompletedPct: `${stats.commitmentsCompletedPct}%`, events: stats.events, completeFilesPct: `${stats.completeFilesPct}%` };
-  Object.entries(values).forEach(([key,value]) => $$(`[data-impact="${key}"]`).forEach(el => el.textContent = typeof value === 'number' ? value.toLocaleString('es-MX') : value));
+  const members = committees.reduce((sum, x) => sum + Number(x.members || 0), 0);
+  const municipalities = new Set(
+    committees.filter(x => x.type === 'CCS').map(x => x.municipality).filter(Boolean)
+  ).size;
+  const colonies = new Set(
+    committees.filter(x => x.type === 'CPS').map(x => x.colony).filter(Boolean)
+  ).size;
+  const trainings = publicTrainings.length;
+  const completeFiles = publicFileStatus.filter(x => x.has_acta && x.has_attendance).length;
+  const resources = publicDocuments.filter(doc =>
+    !doc.committee_id &&
+    !(String(doc.mime_type || '').startsWith('image/') || doc.category === 'Fotografía')
+  ).length;
+
+  const values = {
+    active: stats.active,
+    requests: stats.requests,
+    members,
+    municipalities,
+    colonies,
+    trainings,
+    completeFiles,
+    resources
+  };
+
+  Object.entries(values).forEach(([key,value]) => {
+    $('[data-impact="' + key + '"]').forEach(el => {
+      el.textContent = Number(value || 0).toLocaleString('es-MX');
+    });
+  });
+
   const updated = $('#openDataUpdated');
   if (updated) updated.textContent = new Date().toLocaleString('es-MX', { dateStyle:'medium', timeStyle:'short' });
 }
@@ -743,7 +772,6 @@ function refreshPublic() {
   renderDirectory();
   renderPublicResources();
   renderImpactDashboard();
-  charts();
 }
 
 async function getSessionAndProfile() {
