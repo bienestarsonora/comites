@@ -217,10 +217,22 @@
       </div>
 
       <div class="container impact-chart-grid">
-        <article class="chart-card reveal"><div class="card-head"><h3>Evolución de comités por mes</h3><i class="fa-solid fa-arrow-trend-up"></i></div><canvas id="committeeGrowthChart" height="230"></canvas></article>
-        <article class="chart-card reveal"><div class="card-head"><h3>Integrantes de Contraloría Social por municipio</h3><i class="fa-solid fa-users"></i></div><canvas id="membersMunicipalityChart" height="230"></canvas></article>
-        <article class="chart-card reveal"><div class="card-head"><h3>Comités por estatus</h3><i class="fa-solid fa-chart-pie"></i></div><canvas id="statusChart" height="230"></canvas></article>
-        <article class="chart-card reveal"><div class="card-head"><h3>Comités conformados por mes</h3><i class="fa-solid fa-chart-column"></i></div><canvas id="monthlyCreatedChart" height="230"></canvas></article>
+        <article class="chart-card reveal">
+          <div class="card-head"><h3>Evolución de comités por mes</h3><i class="fa-solid fa-arrow-trend-up"></i></div>
+          <div class="chart-viewport"><canvas id="committeeGrowthChart"></canvas></div>
+        </article>
+        <article class="chart-card reveal">
+          <div class="card-head"><h3>Comités por rango de integrantes</h3><i class="fa-solid fa-users"></i></div>
+          <div class="chart-viewport"><canvas id="committeeSizeChart"></canvas></div>
+        </article>
+        <article class="chart-card reveal">
+          <div class="card-head"><h3>Comités por estatus</h3><i class="fa-solid fa-chart-pie"></i></div>
+          <div class="chart-viewport"><canvas id="statusChart"></canvas></div>
+        </article>
+        <article class="chart-card reveal">
+          <div class="card-head"><h3>Comités conformados por mes</h3><i class="fa-solid fa-chart-column"></i></div>
+          <div class="chart-viewport"><canvas id="monthlyCreatedChart"></canvas></div>
+        </article>
       </div>
     </section>
 
