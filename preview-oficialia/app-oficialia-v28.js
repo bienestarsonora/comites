@@ -844,16 +844,16 @@ function charts() {
         const { ctx, chartArea } = chart;
         if (!chartArea) return;
         const x = (chartArea.left + chartArea.right) / 2;
-        const y = (chartArea.top + chartArea.bottom) / 2;
+        const y = (chartArea.top + chartArea.bottom) / 2 - 8;
         ctx.save();
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#4b1830';
-        ctx.font = '800 34px Montserrat, sans-serif';
-        ctx.fillText(total.toLocaleString('es-MX'), x, y - 7);
-        ctx.fillStyle = '#74646d';
-        ctx.font = '700 11px Roboto, sans-serif';
-        ctx.fillText('INTEGRANTES CCS', x, y + 22);
+        ctx.fillStyle = '#410324';
+        ctx.font = '800 30px Montserrat, sans-serif';
+        ctx.fillText(total.toLocaleString('es-MX'), x, y);
+        ctx.fillStyle = '#806f77';
+        ctx.font = '700 10px Roboto, sans-serif';
+        ctx.fillText('INTEGRANTES', x, y + 22);
         ctx.restore();
       }
     };
@@ -864,19 +864,39 @@ function charts() {
         labels: ['Mujeres','Hombres'],
         datasets: [{
           data: [women, men],
-          backgroundColor: ['#8b174b','#b38a4a'],
-          borderColor: '#ffffff',
-          borderWidth: 7,
-          hoverOffset: 5
+          backgroundColor: ['#a72861','#6e3f72'],
+          borderWidth: 0,
+          hoverOffset: 4
         }]
       },
       plugins: [centerLabelPlugin],
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '72%',
+        cutout: '70%',
         plugins: {
-          legend: { display: false },
+          legend: {
+            position: 'bottom',
+            labels: {
+              usePointStyle: true,
+              padding: 18,
+              generateLabels(chart) {
+                const dataset = chart.data.datasets[0];
+                return chart.data.labels.map((label, index) => {
+                  const value = Number(dataset.data[index] || 0);
+                  const pct = total ? (value / total * 100).toFixed(1) : '0.0';
+                  return {
+                    text: `${label} · ${value.toLocaleString('es-MX')} (${pct}%)`,
+                    fillStyle: dataset.backgroundColor[index],
+                    strokeStyle: dataset.backgroundColor[index],
+                    pointStyle: 'circle',
+                    hidden: false,
+                    index
+                  };
+                });
+              }
+            }
+          },
           tooltip: {
             callbacks: {
               label(context) {
@@ -2203,6 +2223,7 @@ async function init() {
       if (event === 'PASSWORD_RECOVERY') openLayer('#passwordModal');
     });
   }
+  await loadCcsDemographics();
   await loadPublicData();
   if (configured) await getSessionAndProfile();
   $$('.reveal').forEach(el => new IntersectionObserver(([entry], observer) => {
