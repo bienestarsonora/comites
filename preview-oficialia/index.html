@@ -200,8 +200,8 @@
       <div class="container section-head reveal">
         <div>
           <span class="section-kicker">Valor público y transparencia</span>
-          <h2>Información útil para conocer dónde están, quiénes participan y qué puede consultarse.</h2>
-          <p>La numeralia describe el alcance y la información registrada en la plataforma. No califica el desempeño de otras áreas ni establece tiempos de respuesta institucional.</p>
+          <h2>La participación ciudadana se hace visible en el territorio.</h2>
+          <p>Indicadores descriptivos sobre crecimiento, integración y cobertura de los comités registrados en la plataforma.</p>
         </div>
         <span class="live-badge"><i class="fa-solid fa-database"></i> Datos en línea</span>
       </div>
@@ -212,41 +212,15 @@
         <article><span>Personas integrantes</span><strong data-impact="members">0</strong><small>Integrantes registrados en comités públicos</small></article>
         <article><span>Municipios con presencia</span><strong data-impact="municipalities">0</strong><small>Municipios con Contraloría Social</small></article>
         <article><span>Colonias con presencia</span><strong data-impact="colonies">0</strong><small>Colonias con Bienestar y Participación Ciudadana</small></article>
-        <article><span>Capacitaciones registradas</span><strong data-impact="trainings">0</strong><small>Procesos formativos visibles en la plataforma</small></article>
         <article><span>Expedientes integrados</span><strong data-impact="completeFiles">0</strong><small>Con acta constitutiva y lista de asistencia</small></article>
         <article><span>Recursos públicos</span><strong data-impact="resources">0</strong><small>Guías, formatos y documentos de consulta</small></article>
       </div>
 
-      <div class="container public-value-grid">
-        <article class="public-value-card reveal">
-          <span class="public-value-icon"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i></span>
-          <div>
-            <span class="section-kicker">Cobertura territorial</span>
-            <h3>Ubica la participación en el territorio.</h3>
-            <p>Consulta en el mapa los comités registrados por municipio o colonia y accede a su ficha pública.</p>
-            <a href="#mapa">Explorar mapa <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-          </div>
-        </article>
-
-        <article class="public-value-card reveal">
-          <span class="public-value-icon"><i class="fa-solid fa-folder-open" aria-hidden="true"></i></span>
-          <div>
-            <span class="section-kicker">Información verificable</span>
-            <h3>Consulta expedientes y recursos disponibles.</h3>
-            <p>La plataforma concentra documentos y evidencia pública para facilitar la consulta y la trazabilidad.</p>
-            <a href="#directorio">Consultar comités <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-          </div>
-        </article>
-
-        <article class="public-value-card reveal">
-          <span class="public-value-icon"><i class="fa-solid fa-people-group" aria-hidden="true"></i></span>
-          <div>
-            <span class="section-kicker">Participación organizada</span>
-            <h3>Conoce cómo se articula la ciudadanía.</h3>
-            <p>Distingue los dos mecanismos de participación, su alcance y las herramientas disponibles para fortalecerlos.</p>
-            <a href="#tipos">Conocer los comités <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-          </div>
-        </article>
+      <div class="container impact-chart-grid">
+        <article class="chart-card reveal"><div class="card-head"><h3>Evolución de comités por mes</h3><i class="fa-solid fa-arrow-trend-up"></i></div><canvas id="committeeGrowthChart" height="230"></canvas></article>
+        <article class="chart-card reveal"><div class="card-head"><h3>Personas integrantes por tipo</h3><i class="fa-solid fa-users"></i></div><canvas id="membersByTypeChart" height="230"></canvas></article>
+        <article class="chart-card reveal"><div class="card-head"><h3>Comités por tipo</h3><i class="fa-solid fa-chart-column"></i></div><canvas id="typeChart" height="230"></canvas></article>
+        <article class="chart-card reveal"><div class="card-head"><h3>Cobertura territorial</h3><i class="fa-solid fa-map-location-dot"></i></div><canvas id="territoryChart" height="230"></canvas></article>
       </div>
     </section>
 
