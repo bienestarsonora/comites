@@ -592,3 +592,47 @@ html body.public-site-page textarea{
 html body.public-site-page [hidden]{
   display:none!important;
 }
+
+
+/* Participación y contacto en fondo blanco, alineado al portal oficial */
+html body.public-site-page .participate{
+  background:#fff!important;
+}
+html body.public-site-page .participate-card{
+  background:#fff!important;
+  color:#222!important;
+  border:1px solid #e2e2e2!important;
+  box-shadow:none!important;
+}
+html body.public-site-page .participate-card h2,
+html body.public-site-page .participate-card p,
+html body.public-site-page .participate-card li,
+html body.public-site-page .participate-card label,
+html body.public-site-page .participate-card small{
+  color:#333!important;
+}
+html body.public-site-page .participate-card .section-kicker{
+  color:#960E53!important;
+}
+html body.public-site-page .participate-card li i{
+  color:#960E53!important;
+}
+html body.public-site-page .participate-card form{
+  color:#333!important;
+}
+html body.public-site-page .participate-card input,
+html body.public-site-page .participate-card select,
+html body.public-site-page .participate-card textarea{
+  background:#fff!important;
+  color:#333!important;
+  border:1px solid #999!important;
+}
+html body.public-site-page .participate-card .btn-light{
+  background:#960E53!important;
+  border-color:#960E53!important;
+  color:#fff!important;
+}
+html body.public-site-page .participate-card .btn-light:hover{
+  background:#7c0c45!important;
+  border-color:#7c0c45!important;
+}
