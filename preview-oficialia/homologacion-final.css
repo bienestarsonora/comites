@@ -949,3 +949,11 @@ html body.public-site-page .impact-chart-grid .chart-viewport canvas{
     height:250px!important;
   }
 }
+
+
+/* Numeralia pública: cinco indicadores en una sola fila amplia */
+@media (min-width:1100px){
+  html body.public-site-page .public-kpi-grid{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  }
+}
