@@ -699,8 +699,8 @@ function charts() {
       datasets:[{
         label:'Comités acumulados',
         data:cumulativeValues,
-        borderColor:'#6f1238',
-        backgroundColor:'rgba(111,18,56,.08)',
+        borderColor:'#960E53',
+        backgroundColor:'rgba(150,14,83,.08)',
         tension:.35,
         fill:true,
         pointRadius:3,
@@ -738,7 +738,7 @@ function charts() {
       datasets:[{
         label:'Comités',
         data:sizeValues,
-        backgroundColor:'#a72861',
+        backgroundColor:'#960E53',
         borderRadius:8,
         borderSkipped:false
       }]
@@ -766,7 +766,7 @@ function charts() {
       labels:statusPairs.map(([status])=>status),
       datasets:[{
         data:statusPairs.map(([,count])=>count),
-        backgroundColor:['#a72861','#d8893b','#6e3f72'],
+        backgroundColor:['#960E53','#410324','#947043'],
         borderWidth:0
       }]
     },
@@ -785,7 +785,7 @@ function charts() {
       datasets:[{
         label:'Comités conformados',
         data:keys.map(key=>monthly.get(key)),
-        backgroundColor:'#6e3f72',
+        backgroundColor:'#960E53',
         borderRadius:8,
         borderSkipped:false
       }]
