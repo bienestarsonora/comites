@@ -664,8 +664,12 @@ async function showDetail(id) {
 }
 
 function charts() {
-  const required = ['#committeeGrowthChart','#membersMunicipalityChart','#statusChart','#monthlyCreatedChart'];
+  const required = ['#committeeGrowthChart','#committeeSizeChart','#statusChart','#monthlyCreatedChart'];
   if (required.some(selector => !$(selector))) return;
+  if (typeof Chart === 'undefined') {
+    console.error('Chart.js no está disponible.');
+    return;
+  }
 
   [typeChart, territoryChart, requestStatusChart, requestTrendChart].forEach(chart => chart?.destroy());
 
@@ -689,10 +693,10 @@ function charts() {
   });
 
   requestTrendChart = new Chart($('#committeeGrowthChart'), {
-    type: 'line',
-    data: {
-      labels: keys.map(monthLabel),
-      datasets: [{
+    type:'line',
+    data:{
+      labels:keys.map(monthLabel),
+      datasets:[{
         label:'Comités acumulados',
         data:cumulativeValues,
         borderColor:'#6f1238',
@@ -703,7 +707,7 @@ function charts() {
         pointHoverRadius:5
       }]
     },
-    options: {
+    options:{
       responsive:true,
       maintainAspectRatio:false,
       plugins:{legend:{display:false}},
@@ -714,26 +718,26 @@ function charts() {
     }
   });
 
-  const membersByMunicipality = new Map();
-  committees
-    .filter(c => c.type === 'CCS' && c.municipality)
-    .forEach(c => {
-      membersByMunicipality.set(
-        c.municipality,
-        (membersByMunicipality.get(c.municipality) || 0) + Number(c.members || 0)
-      );
-    });
+  const sizeBands = [
+    { label:'1–5', min:1, max:5 },
+    { label:'6–10', min:6, max:10 },
+    { label:'11–15', min:11, max:15 },
+    { label:'16 o más', min:16, max:Infinity }
+  ];
+  const sizeValues = sizeBands.map(band =>
+    committees.filter(c => {
+      const members = Number(c.members || 0);
+      return members >= band.min && members <= band.max;
+    }).length
+  );
 
-  const municipalityRows = [...membersByMunicipality.entries()]
-    .sort((a,b) => b[1]-a[1]);
-
-  requestStatusChart = new Chart($('#membersMunicipalityChart'), {
+  requestStatusChart = new Chart($('#committeeSizeChart'), {
     type:'bar',
     data:{
-      labels:municipalityRows.map(([name])=>name),
+      labels:sizeBands.map(b=>b.label),
       datasets:[{
-        label:'Personas integrantes',
-        data:municipalityRows.map(([,value])=>value),
+        label:'Comités',
+        data:sizeValues,
         backgroundColor:'#a72861',
         borderRadius:8,
         borderSkipped:false
@@ -752,16 +756,16 @@ function charts() {
   });
 
   const statusOrder = ['Activo','En seguimiento','Inactivo'];
-  const statusValues = statusOrder.map(status => committees.filter(c => c.status === status).length);
-  const statusLabels = statusOrder.filter((_,i)=>statusValues[i] > 0);
-  const statusData = statusValues.filter(value=>value > 0);
+  const statusPairs = statusOrder
+    .map(status => [status, committees.filter(c => c.status === status).length])
+    .filter(([,count]) => count > 0);
 
   territoryChart = new Chart($('#statusChart'), {
     type:'doughnut',
     data:{
-      labels:statusLabels,
+      labels:statusPairs.map(([status])=>status),
       datasets:[{
-        data:statusData,
+        data:statusPairs.map(([,count])=>count),
         backgroundColor:['#a72861','#d8893b','#6e3f72'],
         borderWidth:0
       }]
@@ -770,9 +774,7 @@ function charts() {
       responsive:true,
       maintainAspectRatio:false,
       cutout:'68%',
-      plugins:{
-        legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}
-      }
+      plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:16}}}
     }
   });
 
